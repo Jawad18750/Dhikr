@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { CardMark } from '@/components/site/logo-mark';
 import { libraryIndex } from '@/lib/library';
 import { buildPageMetadata } from '@/lib/seo/metadata';
+import { libraryIdOf, tafsirs } from '@/lib/tafsir';
 
 export const revalidate = 3600;
 
@@ -34,7 +35,7 @@ export default function Page() {
           والسيرة. نصوص كاملة تُقرأ هنا، وهي نفسها التي في تطبيقات ذكر.
         </p>
         <span className="text-[14px] text-on-hero/55">
-          {number.format(books.length)} كتابًا · {number.format(books.reduce((sum, b) => sum + b.items, 0))} فقرة
+          {number.format(books.length)} كتابًا و{number.format(tafsirs().length)} تفاسير كاملة
         </span>
       </section>
 
@@ -47,19 +48,37 @@ export default function Page() {
             {category.subtitle && <p className="text-[15px] text-ink-subtle">{category.subtitle}</p>}
           </div>
           <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-            {books
-              .filter((book) => book.category === category.id)
-              .map((book) => (
+            {[
+              // The tafsirs head their subject; each opens on its surahs.
+              ...(category.id === 'tafsir'
+                ? tafsirs().map((t) => ({
+                    id: t.id,
+                    href: `/tafsir/${t.id}`,
+                    cover: t.hasCover ? libraryIdOf(t.id) : null,
+                    title: t.title,
+                    author: t.author || null,
+                  }))
+                : []),
+              ...books
+                .filter((book) => book.category === category.id)
+                .map((book) => ({
+                  id: book.id,
+                  href: `/library/${book.id}`,
+                  cover: book.hasCover ? book.id : null,
+                  title: book.title,
+                  author: book.author,
+                })),
+            ].map((book) => (
                 <li key={book.id}>
                   <Link
-                    href={`/library/${book.id}`}
+                    href={book.href}
                     className="group flex h-full flex-col gap-3 rounded-[22px] border border-border bg-surface p-2.5 transition-colors hover:border-border-strong"
                   >
                     <span className="relative block aspect-[3/4] overflow-hidden rounded-[16px] bg-surface-sunken">
-                      {book.hasCover ? (
+                      {book.cover ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
-                          src={`/api/library/cover/${book.id}`}
+                          src={`/api/library/cover/${book.cover}`}
                           alt=""
                           loading="lazy"
                           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"

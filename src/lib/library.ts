@@ -96,10 +96,11 @@ export function libraryIndex() {
   const covers = new Map<string, string>();
   const books: BookMeta[] = [];
   for (const b of raw.books) {
-    if (b.type !== 'proseBook' || b.source_kind !== 'asset' || b.status === 'placeholder') continue;
-    if (!fs.existsSync(path.join(LIBRARY, 'books', `${b.id}.json.br`))) continue;
+    // Every cover, the tafsirs' too; the reader below is for prose books.
     const cover = b.cover_asset ? path.join(ROOT, 'app', b.cover_asset) : null;
     if (cover && fs.existsSync(cover)) covers.set(b.id, cover);
+    if (b.type !== 'proseBook' || b.source_kind !== 'asset' || b.status === 'placeholder') continue;
+    if (!fs.existsSync(path.join(LIBRARY, 'books', `${b.id}.json.br`))) continue;
     books.push({
       id: b.id,
       category: b.category_id,
@@ -114,7 +115,7 @@ export function libraryIndex() {
   }
   const categories = raw.categories
     .map((c) => ({ id: c.id, title: c.title_ar, subtitle: c.subtitle_ar ?? '', order: c.sort_order }))
-    .filter((c) => books.some((b) => b.category === c.id))
+    .filter((c) => books.some((b) => b.category === c.id) || c.id === 'tafsir')
     .sort((a, b) => a.order - b.order);
   indexCache = { at: Date.now(), categories, books: books.sort((a, b) => a.order - b.order), covers };
   return indexCache;

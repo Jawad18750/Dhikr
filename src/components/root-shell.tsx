@@ -1,3 +1,4 @@
+import { Inter } from 'next/font/google';
 import localFont from 'next/font/local';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 
@@ -32,6 +33,20 @@ const thmanyah = localFont({
   preload: true,
 });
 
+// Inter for every Latin character, digits included, in Arabic text and English alike:
+// it carries only the Latin range, so Arabic letters fall through to Thmanyah
+// (tailwind.config: Inter first, then Thmanyah).
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+  // No generated fallback face: it is Arial, which has Arabic letters, and would draw
+  // Arabic before Thmanyah is reached. Whatever Inter's Latin range does not cover goes
+  // straight to Thmanyah.
+  adjustFontFallback: false,
+  fallback: [],
+});
+
 /**
  * The document shell shared by the three locale root layouts.
  *
@@ -51,7 +66,7 @@ export function RootShell({
         <HtmlWrapper>
           <body
             suppressHydrationWarning
-            className={`${thmanyah.variable} ${thmanyah.className} min-h-full bg-background antialiased`}
+            className={`${thmanyah.variable} ${inter.variable} min-h-full bg-background font-sans antialiased`}
           >
             <a
               href="#main-content"

@@ -63,7 +63,8 @@ const config: Config = {
         'brand-danger': '#FF4B4B',
       },
       fontFamily: {
-        sans: ['var(--font-thmanyah)', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-inter)', 'var(--font-thmanyah)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-inter)', 'var(--font-thmanyah)', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
         control: '10px',

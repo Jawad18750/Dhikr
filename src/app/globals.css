@@ -905,3 +905,13 @@ html[data-mark-dock='in'] #brand-mark-slot > :is(svg, .mark-dock) {
     animation: none;
   }
 }
+
+/* A printed surah name the first time it arrives: a soft fade, never a font first. */
+@keyframes name-in {
+  from {
+    opacity: 0;
+  }
+}
+.name-in {
+  animation: name-in 220ms ease-out;
+}

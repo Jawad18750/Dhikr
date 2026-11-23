@@ -98,6 +98,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const [repeat, setRepeat] = useState(false);
   // The mushaf line is open unless this listener has closed it (remembered on the device).
   const [reading, setReading] = useState(true);
+  const readingRef = useRef(reading);
+  readingRef.current = reading;
   useEffect(() => {
     try {
       if (localStorage.getItem('dhikr:reader') === 'off') setReading(false);
@@ -115,6 +117,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       return !open;
     });
   const [folded, setFolded] = useState(false);
+  const foldedRef = useRef(folded);
+  foldedRef.current = folded;
   // The bar or pill on its way out (globals.css: player-out, 220 ms), before the change.
   const [leaving, setLeaving] = useState(false);
   const LEAVE_MS = 220;
@@ -126,6 +130,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     }, LEAVE_MS);
   };
   const pendingSeek = useRef<number | null>(null);
+  // Whether the next surah to load should start by itself (not when coming back paused).
+  const pendingPlay = useRef(true);
 
   // The handlers read the latest of these without being rebuilt each time.
   const live = useRef({ album, index, repeat });
@@ -140,10 +146,70 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       return;
     }
     pendingSeek.current = from;
+    pendingPlay.current = true;
     setAlbum(next);
     setIndex(at);
     setTime(from);
     setFolded(false);
+  }, []);
+
+  // Across a full page load (the other language is another document, or a reload) the
+  // recitation carries on: its state is kept for the next page, which picks it up at the
+  // same moment. A phone may want a tap before sound starts again on a fresh page; then it
+  // waits there, paused, at the exact place.
+  const HANDOFF = 'dhikr:player';
+  useEffect(() => {
+    const save = () => {
+      const audio = audioRef.current;
+      const { album: held, index: at } = live.current;
+      try {
+        if (!held || at === null || !audio) {
+          sessionStorage.removeItem(HANDOFF);
+          return;
+        }
+        sessionStorage.setItem(
+          HANDOFF,
+          JSON.stringify({
+            album: held,
+            index: at,
+            time: audio.currentTime,
+            playing: !audio.paused,
+            reading: readingRef.current,
+            folded: foldedRef.current,
+            at: Date.now(),
+          })
+        );
+      } catch {
+        /* storage blocked: it starts afresh */
+      }
+    };
+    window.addEventListener('pagehide', save);
+    return () => window.removeEventListener('pagehide', save);
+  }, []);
+  useEffect(() => {
+    let saved: {
+      album: PlayerAlbum;
+      index: number;
+      time: number;
+      playing: boolean;
+      reading: boolean;
+      folded: boolean;
+      at: number;
+    } | null = null;
+    try {
+      saved = JSON.parse(sessionStorage.getItem(HANDOFF) ?? 'null');
+      sessionStorage.removeItem(HANDOFF);
+    } catch {
+      saved = null;
+    }
+    if (!saved || Date.now() - saved.at > 5 * 60_000 || !saved.album?.tracks?.[saved.index]) return;
+    pendingSeek.current = saved.time;
+    pendingPlay.current = saved.playing;
+    setAlbum(saved.album);
+    setIndex(saved.index);
+    setTime(saved.time);
+    setReading(saved.reading);
+    setFolded(saved.folded);
   }, []);
 
   // A new surah: load it and play from where it was asked for.
@@ -155,9 +221,11 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     audio.src = track.link;
     const from = pendingSeek.current;
     pendingSeek.current = null;
+    const play = pendingPlay.current;
+    pendingPlay.current = true;
     const begin = () => {
       if (from) audio.currentTime = from;
-      void audio.play().catch(() => setPlaying(false));
+      if (play) void audio.play().catch(() => setPlaying(false));
     };
     audio.addEventListener('loadedmetadata', begin, { once: true });
     audio.load();
@@ -323,11 +391,12 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                   <IoPlay className="h-[18px] w-[18px] rtl:translate-x-[1px]" aria-hidden="true" />
                 )}
               </button>
+              <Avatar album={album} className="h-9 w-9 rounded-full" />
               <button
                 type="button"
                 onClick={unfold}
                 aria-label={formatMessage({ id: 'player.unfold' })}
-                className="flex min-w-0 max-w-[220px] flex-col px-2 text-start"
+                className="flex min-w-0 max-w-[200px] flex-col px-1 text-start"
               >
                 <span className="truncate text-[14px] font-bold leading-tight">{track.name}</span>
                 <span className="truncate text-[12px] leading-tight text-on-hero/60">{album.reciter}</span>
@@ -366,11 +435,39 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                   />
                 </div>
               )}
-              {/* One row: the names, the controls with play in the middle, the mushaf. */}
-              <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">
-                <Link href={album.href} className="flex min-w-0 flex-col">
-                  <span className="truncate text-[15px] font-bold sm:text-[16px]">{track.name}</span>
-                  <span className="truncate text-[12px] text-on-hero/60 sm:text-[13px]">{album.reciter}</span>
+              {/* Phones, the names with the avatar, the mushaf and fold on one line… */}
+              <div className="flex items-center gap-2.5 sm:hidden">
+                <Link href={album.href} className="flex min-w-0 flex-1 items-center gap-2.5">
+                  <Avatar album={album} className="h-10 w-10 rounded-[12px]" />
+                  <span className="flex min-w-0 flex-col">
+                    <span className="truncate text-[15px] font-bold">{track.name}</span>
+                    <span className="truncate text-[12px] text-on-hero/60">{album.reciter}</span>
+                  </span>
+                </Link>
+                <button
+                  type="button"
+                  onClick={toggleReading}
+                  aria-pressed={reading}
+                  aria-label={formatMessage({ id: 'reader.open' })}
+                  className={cn(
+                    'flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors',
+                    reading ? 'bg-on-hero text-hero' : 'bg-on-hero/10 text-on-hero'
+                  )}
+                >
+                  <IoBookOutline className="h-[17px] w-[17px]" aria-hidden="true" />
+                </button>
+                <button type="button" onClick={fold} aria-label={formatMessage({ id: 'player.fold' })} className={quiet}>
+                  <IoChevronDown className="h-[18px] w-[18px]" aria-hidden="true" />
+                </button>
+              </div>
+              {/* Wider screens, one row: the names, the controls with play in the middle, the mushaf. */}
+              <div className="hidden grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 sm:grid">
+                <Link href={album.href} className="flex min-w-0 items-center gap-2.5">
+                  <Avatar album={album} className="h-10 w-10 rounded-[12px] sm:h-11 sm:w-11" />
+                  <span className="flex min-w-0 flex-col">
+                    <span className="truncate text-[15px] font-bold sm:text-[16px]">{track.name}</span>
+                    <span className="truncate text-[12px] text-on-hero/60 sm:text-[13px]">{album.reciter}</span>
+                  </span>
                 </Link>
                 <div className="flex items-center justify-center gap-0.5 sm:gap-1">
                   <button
@@ -490,10 +587,58 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                 />
                 <span className="w-12 text-end">{clock(total)}</span>
               </div>
+              {/* …and the controls under the seek bar, play in the middle, with room to breathe. */}
+              <div className="flex items-center justify-center gap-3 sm:hidden">
+                <button type="button" onClick={() => seekBy(-10)} aria-label={formatMessage({ id: 'library.back10' })} className={quiet}>
+                  <IoPlayForwardOutline className="h-[18px] w-[18px] ltr:rotate-180" aria-hidden="true" />
+                </button>
+                <button type="button" onClick={previous} aria-label={formatMessage({ id: 'library.prev' })} className={quiet}>
+                  <IoPlaySkipForward className="h-[18px] w-[18px] ltr:rotate-180" aria-hidden="true" />
+                </button>
+                <button
+                  type="button"
+                  onClick={toggle}
+                  aria-label={formatMessage({ id: playing ? 'library.pause' : 'library.play' })}
+                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-b from-gold-light to-gold text-[#1b1712] transition-transform active:scale-90"
+                >
+                  {playing ? (
+                    <IoPause className="h-5 w-5" aria-hidden="true" />
+                  ) : (
+                    <IoPlay className="h-5 w-5 rtl:translate-x-[1px]" aria-hidden="true" />
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={next}
+                  disabled={index + 1 >= album.tracks.length}
+                  aria-label={formatMessage({ id: 'library.next' })}
+                  className={cn(quiet, 'disabled:opacity-30')}
+                >
+                  <IoPlaySkipBack className="h-[18px] w-[18px] ltr:rotate-180" aria-hidden="true" />
+                </button>
+                <button type="button" onClick={() => seekBy(10)} aria-label={formatMessage({ id: 'library.fwd10' })} className={quiet}>
+                  <IoPlayBackOutline className="h-[18px] w-[18px] ltr:rotate-180" aria-hidden="true" />
+                </button>
+              </div>
             </div>
           )}
         </div>
       )}
     </PlayerContext.Provider>
+  );
+}
+
+/** The reciter's portrait in the player, else his name's first letter. */
+function Avatar({ album, className }: { album: PlayerAlbum; className: string }) {
+  return album.portrait ? (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={album.portrait} alt="" className={`${className} shrink-0 object-cover object-top`} />
+  ) : (
+    <span
+      aria-hidden="true"
+      className={`${className} flex shrink-0 items-center justify-center bg-on-hero/10 text-[15px] font-black text-hero-gold`}
+    >
+      {album.reciter.charAt(0)}
+    </span>
   );
 }

@@ -2,41 +2,52 @@
 
 import { useEffect, useState } from 'react';
 
-import { openReaderSession } from '@/lib/reader/session';
 import { cn } from '@/utils';
 
 /**
  * A surah's name as مصحف الجماهيرية prints it («سورة …»), the same calligraphy as the apps:
  * a picture from the reader service used as a mask, so it takes the text's colour in every
- * theme. The plain name stays beside it for screen readers, search and copying, and shows
- * until the picture arrives.
+ * theme. The plain name stays for screen readers, search and copying, but is never drawn:
+ * until the picture is there the name's place is held empty, never filled with a font.
  *
  * A list asks once for all 114 names at its size (one picture, a cell each); a single name
- * (`alone`) asks for itself.
+ * (`alone`) asks for itself. The picture is asked for as soon as this module loads, kept for
+ * the page's life, and kept by the browser for a month, so on every visit after the first it
+ * is there at once.
  */
 type Names = { url: string; cell: number; height: number };
+const VERSION = 1;
 const sheets = new Map<string, Promise<Names | null>>();
+const ready = new Map<string, Names>();
+
+const dpr = () => (typeof window === 'undefined' ? 1 : Math.min(3, window.devicePixelRatio || 1));
+const heightFor = (size: number) => Math.min(160, Math.max(20, Math.round((size * dpr()) / 2) * 2));
+const keyOf = (height: number, surah?: number) => `${height}:${surah ?? 'all'}`;
 
 function namesAt(height: number, surah?: number): Promise<Names | null> {
-  const key = `${height}:${surah ?? 'all'}`;
+  const key = keyOf(height, surah);
   let held = sheets.get(key);
   if (!held) {
     held = (async () => {
-      if (!(await openReaderSession())) return null;
       const response = await fetch(
-        `/api/reader/names?height=${height}${surah ? `&surah=${surah}` : ''}`,
+        `/api/reader/names?height=${height}${surah ? `&surah=${surah}` : ''}&v=${VERSION}`,
         { credentials: 'same-origin' }
       ).catch(() => null);
       if (!response?.ok) return null;
       const cell = Number(response.headers.get('x-name-cell'));
-      const url = URL.createObjectURL(await response.blob());
-      return { url, cell, height };
+      const names = { url: URL.createObjectURL(await response.blob()), cell, height };
+      ready.set(key, names);
+      return names;
     })();
     sheets.set(key, held);
     held.then((names) => names ?? sheets.delete(key)).catch(() => sheets.delete(key));
   }
   return held;
 }
+
+/** The lists' sheet (names 38 px tall), asked for as soon as this code arrives. */
+export const LIST_NAME_SIZE = 38;
+if (typeof window !== 'undefined') void namesAt(heightFor(LIST_NAME_SIZE));
 
 export function SurahName({
   surah,
@@ -46,7 +57,7 @@ export function SurahName({
   className,
 }: {
   surah: number;
-  /** The plain name, for screen readers and until the picture arrives. */
+  /** The plain name, for screen readers. */
   name: string;
   /** The name's line height on screen, CSS px. */
   size: number;
@@ -54,44 +65,45 @@ export function SurahName({
   alone?: boolean;
   className?: string;
 }) {
-  const [names, setNames] = useState<Names | null>(null);
+  const only = alone ? surah : undefined;
+  const [names, setNames] = useState<Names | null>(() =>
+    typeof window === 'undefined' ? null : (ready.get(keyOf(heightFor(size), only)) ?? null)
+  );
   useEffect(() => {
+    if (names) return;
     let gone = false;
-    const dpr = Math.min(3, window.devicePixelRatio || 1);
-    const height = Math.min(160, Math.max(20, Math.round((size * dpr) / 2) * 2));
-    void namesAt(height, alone ? surah : undefined).then((got) => {
+    void namesAt(heightFor(size), only).then((got) => {
       if (!gone) setNames(got);
     });
     return () => {
       gone = true;
     };
-  }, [size, alone, surah]);
+  }, [size, only, names]);
 
-  if (!names) {
-    return <span className={cn('block truncate', className)}>{name}</span>;
-  }
-  const scale = size / names.height;
+  const scale = names ? size / names.height : 1;
   const row = alone ? 0 : surah - 1;
   const rows = alone ? 1 : 114;
   return (
-    <span className={cn('block', className)}>
+    <span className={cn('block', className)} style={{ height: size }}>
       <span className="sr-only">{name}</span>
-      <span
-        aria-hidden="true"
-        className="block max-w-full bg-current"
-        style={{
-          width: names.cell * scale,
-          height: size,
-          maskImage: `url(${names.url})`,
-          WebkitMaskImage: `url(${names.url})`,
-          maskSize: `${names.cell * scale}px ${size * rows}px`,
-          WebkitMaskSize: `${names.cell * scale}px ${size * rows}px`,
-          maskPosition: `0 ${-row * size}px`,
-          WebkitMaskPosition: `0 ${-row * size}px`,
-          maskRepeat: 'no-repeat',
-          WebkitMaskRepeat: 'no-repeat',
-        }}
-      />
+      {names && (
+        <span
+          aria-hidden="true"
+          className="name-in block max-w-full bg-current"
+          style={{
+            width: names.cell * scale,
+            height: size,
+            maskImage: `url(${names.url})`,
+            WebkitMaskImage: `url(${names.url})`,
+            maskSize: `${names.cell * scale}px ${size * rows}px`,
+            WebkitMaskSize: `${names.cell * scale}px ${size * rows}px`,
+            maskPosition: `0 ${-row * size}px`,
+            WebkitMaskPosition: `0 ${-row * size}px`,
+            maskRepeat: 'no-repeat',
+            WebkitMaskRepeat: 'no-repeat',
+          }}
+        />
+      )}
     </span>
   );
 }

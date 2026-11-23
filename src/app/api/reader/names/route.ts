@@ -1,6 +1,4 @@
-import { cookies } from 'next/headers';
-
-import { denied, gate, READER_COOKIE, sessionTag } from '@/lib/reader/guard';
+import { allow, clientAddress, denied, sameOrigin } from '@/lib/reader/guard';
 import { png } from '@/lib/reader/raster';
 import { readerAvailable, readerNames } from '@/lib/reader/service';
 
@@ -9,13 +7,17 @@ export const dynamic = 'force-dynamic';
 
 /**
  * The surah names as مصحف الجماهيرية prints them, as one PNG: a cell per surah (1 to 114,
- * top to bottom), or `?surah=` alone. Pixels only, black ink the page colours as a mask,
- * and the cell's width (X-Name-Cell); never the shapes.
+ * top to bottom), or `?surah=` alone, and the cell's width (X-Name-Cell). Pixels only,
+ * black ink the page colours as a mask, never the shapes.
+ *
+ * Asked for by this site's pages only (same origin), within a budget per address, and kept
+ * in the browser's own cache for a month (never a shared one), so the names show at once
+ * on every visit after the first. No reader session: names must not wait for one.
  */
 export async function GET(request: Request) {
   if (!readerAvailable()) return denied(503);
-  const passed = gate(request, (await cookies()).get(READER_COOKIE)?.value, 'names');
-  if ('response' in passed) return passed.response;
+  if (!sameOrigin(request)) return denied(403);
+  if (!allow(`names:a:${clientAddress(request)}`, 120, 3600_000)) return denied(429);
   const q = new URL(request.url).searchParams;
   const height = Math.round(Number(q.get('height')) / 2) * 2;
   const surah = q.has('surah') ? Number(q.get('surah')) : undefined;
@@ -27,5 +29,8 @@ export async function GET(request: Request) {
   } catch {
     return denied(404);
   }
-  return png(drawn.svg, sessionTag(passed.session), { 'X-Name-Cell': String(drawn.cell) });
+  return png(drawn.svg, 0, {
+    'X-Name-Cell': String(drawn.cell),
+    'Cache-Control': 'private, max-age=2592000, immutable',
+  });
 }

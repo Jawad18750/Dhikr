@@ -26,13 +26,21 @@ const pill =
 const card =
   'group flex flex-col gap-3 rounded-[26px] p-7 transition-transform duration-300 hover:-translate-y-1';
 
-function CardIcon({ icon: Icon, light }: { icon: IconType; light?: boolean }) {
+/** Cards are gold (`light`), plain (`neutral`, turning with the section in
+ * dark mode) or a dark colour gradient (the default, white ink always). */
+type Tone = 'light' | 'neutral';
+
+function CardIcon({ icon: Icon, tone }: { icon: IconType; tone?: Tone }) {
   return (
     <span
       aria-hidden="true"
       className={cn(
         'flex h-11 w-11 items-center justify-center rounded-2xl transition-transform duration-300 group-hover:rotate-[-6deg] group-hover:scale-110',
-        light ? 'bg-[#1b1712]/10' : 'bg-white/10'
+        tone === 'light'
+          ? 'bg-[#1b1712]/10'
+          : tone === 'neutral'
+            ? 'bg-on-hero/10'
+            : 'bg-white/10'
       )}
     >
       <Icon className="h-[22px] w-[22px]" />
@@ -57,12 +65,16 @@ export function ToolsSection({
 }) {
   const t = (key: string, values?: Record<string, string | number>) =>
     values ? fill(COPY[locale][key], values) : COPY[locale][key];
-  const inProgress = (light?: boolean) => (
+  const inProgress = (tone?: Tone) => (
     <span
       className={cn(
         pill,
         'self-start',
-        light ? 'bg-[#1b1712]/[0.14]' : 'bg-white/10 text-white/80'
+        tone === 'light'
+          ? 'bg-[#1b1712]/[0.14]'
+          : tone === 'neutral'
+            ? 'bg-on-hero/10 text-on-hero/80'
+            : 'bg-white/10 text-white/80'
       )}
     >
       <span
@@ -78,7 +90,7 @@ export function ToolsSection({
       id="tools"
       data-header-tone="dark"
       aria-labelledby="tools-title"
-      className="flex scroll-mt-6 flex-col gap-7 rounded-[28px] bg-hero px-5 py-10 text-on-hero dark:ring-1 dark:ring-border sm:rounded-[40px] sm:px-10 sm:py-14"
+      className="flex scroll-mt-6 flex-col gap-7 rounded-[28px] bg-hero px-5 py-10 text-on-hero sm:rounded-[40px] sm:px-10 sm:py-14"
     >
       <div className="flex flex-col gap-3">
         <h2
@@ -87,7 +99,7 @@ export function ToolsSection({
         >
           {t('tools.title')}
         </h2>
-        <p className="max-w-[680px] text-[17px] leading-[1.75] text-white/65 sm:text-lg">
+        <p className="max-w-[680px] text-[17px] leading-[1.75] text-on-hero/65 sm:text-lg">
           {t('tools.body')}
         </p>
       </div>
@@ -97,7 +109,7 @@ export function ToolsSection({
         <article
           className={cn(
             card,
-            'min-h-[320px] bg-gradient-to-b from-[#1f5a43] via-[#0e2e22] to-[#07150f]'
+            'min-h-[320px] bg-gradient-to-b from-[#1f5a43] via-[#0e2e22] to-[#07150f] text-white'
           )}
         >
           <CardIcon icon={IoTimeOutline} />
@@ -160,7 +172,7 @@ export function ToolsSection({
         <article
           className={cn(
             card,
-            'min-h-[320px] bg-gradient-to-b from-[#2c3550] via-[#151a2a] to-[#0a0c14]'
+            'min-h-[320px] bg-gradient-to-b from-[#2c3550] via-[#151a2a] to-[#0a0c14] text-white'
           )}
         >
           <CardIcon icon={IoTextOutline} />
@@ -195,7 +207,7 @@ export function ToolsSection({
             'min-h-[320px] bg-gradient-to-b from-[#e6c47a] via-[#b78f45] to-[#6b4e1e] text-[#1b1712]'
           )}
         >
-          <CardIcon icon={IoDocumentTextOutline} light />
+          <CardIcon icon={IoDocumentTextOutline} tone="light" />
           <h3 className="text-2xl font-bold leading-[1.35]">
             {t('tools.text')}
           </h3>
@@ -225,26 +237,26 @@ export function ToolsSection({
               {t('tools.textDivisions')}
             </span>
           </div>
-          {inProgress(true)}
+          {inProgress('light')}
         </article>
 
         {/* The API: a request typed, its answer arriving. */}
         <article
           className={cn(
             card,
-            'min-h-[280px] border border-[#2e2c27] bg-[#1a1916]'
+            'min-h-[280px] border border-hero-card-line bg-hero-card'
           )}
         >
-          <CardIcon icon={IoCodeSlashOutline} />
+          <CardIcon icon={IoCodeSlashOutline} tone="neutral" />
           <h3 className="text-2xl font-bold leading-[1.35]">
             {t('tools.api')}
           </h3>
-          <p className="text-base leading-[1.7] text-white/65">
+          <p className="text-base leading-[1.7] text-on-hero/65">
             {t('tools.apiBody')}
           </p>
           <div
             dir="ltr"
-            className="mt-auto flex flex-col gap-1.5 rounded-2xl bg-[#0b0b0c] px-4 py-3.5 text-left font-mono text-sm"
+            className="mt-auto flex flex-col gap-1.5 rounded-2xl bg-[#0b0b0c] px-4 py-3.5 text-left font-mono text-sm text-white"
             aria-hidden="true"
           >
             <span className="text-gold-light">
@@ -259,7 +271,7 @@ export function ToolsSection({
             href={`${DHIKR_AUDIO_BASE}/api/v3/reciters`}
             className={cn(
               pill,
-              'self-start bg-white/[0.14] text-white hover:bg-white/25'
+              'self-start bg-on-hero/[0.08] text-on-hero hover:bg-on-hero/15'
             )}
           >
             <IoCodeSlashOutline aria-hidden="true" />
@@ -271,21 +283,21 @@ export function ToolsSection({
         <article
           className={cn(
             card,
-            'min-h-[280px] border border-[#2e2c27] bg-[#1a1916]'
+            'min-h-[280px] border border-hero-card-line bg-hero-card'
           )}
         >
-          <CardIcon icon={IoSwapHorizontalOutline} />
+          <CardIcon icon={IoSwapHorizontalOutline} tone="neutral" />
           <h3 className="text-2xl font-bold leading-[1.35]">
             {t('tools.converter')}
           </h3>
-          <p className="text-base leading-[1.7] text-white/65">
+          <p className="text-base leading-[1.7] text-on-hero/65">
             {t('tools.converterBody')}
           </p>
           <div
             className="mt-auto flex flex-wrap items-center gap-2.5 text-[15px] [perspective:400px]"
             aria-hidden="true"
           >
-            <span className="rounded-xl bg-[#0b0b0c] px-3.5 py-2.5">
+            <span className="rounded-xl bg-[#0b0b0c] px-3.5 py-2.5 text-white">
               {t('tools.hafs', { ref: '2:286' })}
             </span>
             <IoSwapHorizontalOutline className="tool-anim-nudge h-5 w-5 text-gold-light" />
@@ -293,25 +305,25 @@ export function ToolsSection({
               {t('tools.qalun', { ref: '2:285' })}
             </span>
           </div>
-          {inProgress()}
+          {inProgress('neutral')}
         </article>
 
         {/* Audio: a recitation playing and a download filling. */}
         <article
           className={cn(
             card,
-            'min-h-[280px] border border-[#2e2c27] bg-[#1a1916]'
+            'min-h-[280px] border border-hero-card-line bg-hero-card'
           )}
         >
-          <CardIcon icon={IoCloudDownloadOutline} />
+          <CardIcon icon={IoCloudDownloadOutline} tone="neutral" />
           <h3 className="text-2xl font-bold leading-[1.35]">
             {t('tools.audio')}
           </h3>
-          <p className="text-base leading-[1.7] text-white/65">
+          <p className="text-base leading-[1.7] text-on-hero/65">
             {t('tools.audioBody')}
           </p>
           <div
-            className="mt-auto flex items-center gap-4 rounded-2xl bg-[#0b0b0c] px-4 py-3.5"
+            className="mt-auto flex items-center gap-4 rounded-2xl bg-[#0b0b0c] px-4 py-3.5 text-white"
             aria-hidden="true"
           >
             <span className="flex h-6 items-end gap-[3px]">
@@ -332,7 +344,7 @@ export function ToolsSection({
             href="#reciters"
             className={cn(
               pill,
-              'self-start bg-white/[0.14] text-white hover:bg-white/25'
+              'self-start bg-on-hero/[0.08] text-on-hero hover:bg-on-hero/15'
             )}
           >
             <IoCloudDownloadOutline aria-hidden="true" />

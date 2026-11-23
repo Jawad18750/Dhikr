@@ -24,10 +24,10 @@ export function HomeHero({
     <section
       data-header-tone="dark"
       aria-labelledby="hero-title"
-      className="relative mx-auto flex w-full max-w-[1560px] flex-col-reverse items-center overflow-hidden rounded-[28px] bg-hero text-on-hero dark:ring-1 dark:ring-border sm:rounded-[40px] lg:min-h-[640px] lg:flex-row"
+      className="relative mx-auto flex w-full max-w-[1560px] flex-col-reverse items-center overflow-hidden rounded-[28px] bg-hero text-on-hero sm:rounded-[40px] lg:min-h-[640px] lg:flex-row"
     >
       <div className="flex w-full flex-col items-center gap-7 px-6 pb-10 pt-2 text-center sm:px-12 sm:pb-14 lg:flex-1 lg:items-start lg:px-20 lg:py-20 lg:text-start">
-        <span className="flex items-center gap-2 rounded-full border border-white/20 px-4 py-1.5 text-sm text-white/80 sm:text-[15px]">
+        <span className="flex items-center gap-2 rounded-full border border-on-hero/20 px-4 py-1.5 text-sm text-on-hero/80 sm:text-[15px]">
           <span
             className="h-2 w-2 rounded-full bg-gold-light"
             aria-hidden="true"
@@ -42,7 +42,7 @@ export function HomeHero({
           <br />
           {t['hero.title2']}
         </h1>
-        <p className="max-w-[560px] text-lg leading-[1.75] text-white/70 sm:text-[22px]">
+        <p className="max-w-[560px] text-lg leading-[1.75] text-on-hero/70 sm:text-[22px]">
           {t['hero.body']}
         </p>
         <div className="flex flex-wrap justify-center gap-3 lg:justify-start">
@@ -57,13 +57,13 @@ export function HomeHero({
           )}
           <a
             href="#reciters"
-            className="flex h-[52px] items-center gap-2.5 rounded-full border-[1.5px] border-white/40 px-7 text-[17px] font-bold text-on-hero transition-colors hover:border-white/80"
+            className="flex h-[52px] items-center gap-2.5 rounded-full border-[1.5px] border-on-hero/40 px-7 text-[17px] font-bold text-on-hero transition-colors hover:border-on-hero/80"
           >
             <IoGridOutline className="h-[18px] w-[18px]" aria-hidden="true" />
             {t['hero.browse']}
           </a>
         </div>
-        <span className="mt-2 text-xs font-bold tracking-[0.12em] text-white/50">
+        <span className="mt-2 text-xs font-bold tracking-[0.12em] text-on-hero/50">
           {t['hero.project']}
         </span>
       </div>

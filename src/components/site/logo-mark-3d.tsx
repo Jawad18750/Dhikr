@@ -476,6 +476,12 @@ export function LogoMark3D({
       let gilt = 0;
       const white = new THREE.Color(0xffffff);
       const goldTone = new THREE.Color(0xe2ad48);
+      // Dark mode reverses the hero to white, so the white blades turn to
+      // black lacquer under the same mirror coat; they ease across on a switch.
+      const lacquer = new THREE.Color(0x0d0d0e);
+      const base = new THREE.Color(0xffffff);
+      const root = document.documentElement;
+      let night = root.classList.contains('dark') ? 1 : 0;
       const draw = (time: number) => {
         const dt = last ? Math.min(0.05, (time - last) / 1000) : 0;
         last = time;
@@ -499,7 +505,11 @@ export function LogoMark3D({
         speed += ((landed ? 0.6 : 1) - speed) * Math.min(1, dt * 4);
         // In the header the pale blades turn gold as well: one gold mark.
         gilt += ((landed ? 1 : 0) - gilt) * Math.min(1, dt * 4);
-        mint.color.lerpColors(white, goldTone, gilt);
+        night +=
+          ((root.classList.contains('dark') ? 1 : 0) - night) *
+          Math.min(1, dt * 6);
+        base.lerpColors(white, lacquer, night);
+        mint.color.lerpColors(base, goldTone, gilt);
         mint.metalness = 0.35 * gilt;
         mint.roughness = 0.35 - 0.03 * gilt;
         clock += dt * speed;

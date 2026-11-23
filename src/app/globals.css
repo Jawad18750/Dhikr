@@ -31,6 +31,10 @@
   --gold-light: #e6c47a;
   --hero: #0b0b0c;
   --on-hero: #ffffff;
+  --on-hero-rgb: 255 255 255;
+  --hero-card: #1a1916;
+  --hero-card-line: #2e2c27;
+  --hero-gold: #e6c47a;
 
   /* Backgrounds */
   --background: #f4f4f5; /* warm zinc-100 — not harsh white */
@@ -141,6 +145,10 @@
   --gold-light: #e6c47a;
   --hero: #0b0b0c;
   --on-hero: #ffffff;
+  --on-hero-rgb: 255 255 255;
+  --hero-card: #1a1916;
+  --hero-card-line: #2e2c27;
+  --hero-gold: #e6c47a;
 
   --success: #2e7d5b;
   --warning: #a9690a;
@@ -150,32 +158,38 @@
 [data-theme='warm'].dark {
   color-scheme: dark;
 
-  --background: #15130f;
-  --surface: #1e1c18;
-  --surface-raised: #26231e;
-  --surface-sunken: #110f0c;
-  --card: #1e1c18;
+  /* Dark is the light look reversed: a black page, and the black hero cards
+     turn white with black ink. */
+  --background: #000000;
+  --surface: #0a0a0a;
+  --surface-raised: #141414;
+  --surface-sunken: #121212;
+  --card: #0a0a0a;
 
-  --foreground: #f0ede6;
-  --muted: #a9a397;
-  --foreground-subtle: #7d786e;
+  --foreground: #f5f5f4;
+  --muted: #a3a3a0;
+  --foreground-subtle: #74746f;
 
-  --border: #2e2a24;
-  --border-strong: #3d3830;
+  --border: #242424;
+  --border-strong: #363636;
 
   --accent: #d4b46a;
   --accent-hover: #e6c47a;
-  --accent-soft: #2a2418;
+  --accent-soft: #1c1810;
   --accent-line: #4a3e25;
   --accent-ring: rgba(212, 180, 106, 0.3);
-  --on-primary: #15130f;
+  --on-primary: #000000;
 
   --mark: #d4b46a;
 
   --gold: #d4b46a;
   --gold-light: #e6c47a;
-  --hero: #0b0a08;
-  --on-hero: #f0ede6;
+  --hero: #ffffff;
+  --on-hero: #0b0b0c;
+  --on-hero-rgb: 11 11 12;
+  --hero-card: #f4f2ee;
+  --hero-card-line: #e2ded6;
+  --hero-gold: #8a6420;
 
   --success: #63c9a6;
   --warning: #e0a34a;
@@ -640,14 +654,25 @@ html[data-mark-dock='in'] #brand-mark-slot svg {
   box-shadow: 0 1px 0 var(--border);
 }
 .dark .header-shell[data-tone='light'] {
-  background-color: rgb(21 19 15 / 0.82);
+  background-color: rgb(0 0 0 / 0.8);
 }
 .header-shell[data-tone='dark'] {
   --foreground: #f5f2ea;
   --muted: rgb(245 242 234 / 0.7);
   --border: rgb(255 255 255 / 0.22);
   --border-strong: rgb(255 255 255 / 0.45);
+  --background: #0b0b0c;
   background-color: rgb(11 11 12 / 0.55);
   backdrop-filter: blur(14px) saturate(1.4);
   color: var(--foreground);
+}
+/* In dark mode the hero cards are white, so over them the bar is white glass
+   with black ink. */
+.dark .header-shell[data-tone='dark'] {
+  --foreground: #0b0b0c;
+  --muted: rgb(11 11 12 / 0.65);
+  --border: rgb(0 0 0 / 0.14);
+  --border-strong: rgb(0 0 0 / 0.3);
+  --background: #ffffff;
+  background-color: rgb(255 255 255 / 0.72);
 }

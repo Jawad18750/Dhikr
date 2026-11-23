@@ -38,7 +38,12 @@ const config: Config = {
         gold: 'var(--gold)',
         'gold-light': 'var(--gold-light)',
         hero: 'var(--hero)',
-        'on-hero': 'var(--on-hero)',
+        // Ink on the hero cards, with opacity (`text-on-hero/70`): white on
+        // black in light mode, black on white in dark mode.
+        'on-hero': 'rgb(var(--on-hero-rgb) / <alpha-value>)',
+        'hero-card': 'var(--hero-card)',
+        'hero-card-line': 'var(--hero-card-line)',
+        'hero-gold': 'var(--hero-gold)',
         success: 'var(--success)',
         warning: 'var(--warning)',
         danger: 'var(--danger)',

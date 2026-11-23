@@ -9,6 +9,8 @@ DEST="Abdeljawad:/opt/dhikr-content"
 ssh Abdeljawad 'mkdir -p /opt/dhikr-content/app/assets/data /opt/dhikr-content/app/assets/images'
 rsync -az --delete "$SRC/app/assets/data/library/" "$DEST/app/assets/data/library/"
 rsync -az --delete "$SRC/app/assets/images/library/" "$DEST/app/assets/images/library/"
+# The hadith collections.
+rsync -rlt --compress --delete "$SRC/app/assets/data/hadith/" "$DEST/app/assets/data/hadith/"
 # The thematic encyclopedia, as the masahif app ships it.
 ssh Abdeljawad 'mkdir -p /opt/dhikr-content/masahif_app/assets/data/library'
 rsync -rlt --compress --delete "$SRC/masahif_app/assets/data/library/mawsuah/" "$DEST/masahif_app/assets/data/library/mawsuah/"
@@ -18,5 +20,5 @@ node --no-warnings "$(dirname "$0")/build-quranpedia.mjs" "$SRC" "$QP"
 rsync -rlt --compress --delete "$QP/" "$DEST/quranpedia/"
 rm -rf "$QP"
 # Readable by the site whatever the copies' modes were here (macOS rsync has no --chmod).
-ssh Abdeljawad 'chmod -R u=rwX,go=rX /opt/dhikr-content/quranpedia /opt/dhikr-content/masahif_app'
+ssh Abdeljawad 'chmod -R u=rwX,go=rX /opt/dhikr-content/quranpedia /opt/dhikr-content/masahif_app /opt/dhikr-content/app/assets/data/hadith'
 echo "synced from $SRC ($(cd "$SRC" && git rev-parse --short HEAD 2>/dev/null || echo 'no git'))"

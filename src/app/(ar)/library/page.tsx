@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 import { CardMark } from '@/components/site/logo-mark';
+import { ABOUT, collections } from '@/lib/hadith';
 import { libraryIndex } from '@/lib/library';
 import { PDF_BOOKS } from '@/lib/library-pdfs';
 import { mawsuahIndex } from '@/lib/mawsuah';
@@ -43,7 +44,7 @@ export default function Page() {
           والسيرة. نصوص كاملة تُقرأ هنا، وهي نفسها التي في تطبيقات ذكر.
         </p>
         <span className="text-[14px] text-on-hero/55">
-          {number.format(books.length + PDF_BOOKS.length)} كتابًا و{number.format(tafsirs().length)} تفاسير كاملة
+          {number.format(books.length + PDF_BOOKS.length + collections().length)} كتابًا و{number.format(tafsirs().length)} تفاسير كاملة
         </span>
       </section>
 
@@ -75,6 +76,16 @@ export default function Page() {
           </div>
           <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
             {[
+              // The hadith collections, each to its chapters.
+              ...(category.id === 'hadith'
+                ? collections().map((h) => ({
+                    id: h.slug,
+                    href: `/hadith/${h.slug}`,
+                    cover: h.slug === 'lulu_marjan' ? 'hadith_lulu_marjan' : null,
+                    title: h.title,
+                    author: ABOUT[h.slug]?.author || null,
+                  }))
+                : []),
               // The tafsirs head their subject; each opens on its surahs.
               ...(category.id === 'tafsir'
                 ? tafsirs().map((t) => ({

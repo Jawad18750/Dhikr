@@ -32,6 +32,7 @@ const TOC: ContentsItem[] = [
   { id: 'ayah', title: 'دراسة الآية', group: 'المرجع' },
   { id: 'library', title: 'المكتبة', group: 'المرجع' },
   { id: 'mawsuah', title: 'التفسير الموضوعي', group: 'المرجع' },
+  { id: 'hadith', title: 'كتب الحديث', group: 'المرجع' },
   { id: 'errors', title: 'الأخطاء', group: 'المرجع' },
   { id: 'guide-ayah', title: 'تظليل الآية مع التلاوة', group: 'دروس' },
   { id: 'guide-words', title: 'تظليل كلمة كلمة', group: 'دروس' },
@@ -176,6 +177,7 @@ export default function Page() {
             ['/ayah/{surah}/{ayah}', 'دراسة الآية', 'المعاني والأسباب والبلاغة والأحكام والإعراب والتدبّر، من موسوعة quranpedia.'],
             ['/library/{book}/{section}', 'المكتبة', 'كتب التجويد والرسم والضبط والمتون، نصًّا مقسّمًا.'],
             ['/mawsuah/{id}', 'التفسير الموضوعي', '333 موضوعًا من موسوعة التفسير الموضوعي، بنصها وحواشيها.'],
+            ['/hadith/{slug}/{number}', 'كتب الحديث', 'سبعة كتب: اللؤلؤ والمرجان ورياض الصالحين وبلوغ المرام وغيرها، مبوّبة.'],
           ]}
         />
       </Section>
@@ -499,6 +501,27 @@ GET /numbering/qalun/1/1
         <p className={p}>حوّل أرقام الاستشهادات إلى آياتنا بـ<C>/numbering/hafs</C>، واذكر الموسوعة وناشرها بجوار ما تعرضه منها.</p>
       </Section>
 
+      <Section id="hadith" title="كتب الحديث">
+        <Endpoint path="/hadith" />
+        <p className={p}>
+          الكتب: <C>{'[{ slug, title, author, hadiths, page }]'}</C>.
+        </p>
+        <Endpoint path="/hadith/{slug}?chapter={n}" />
+        <p className={p}>
+          أبواب الكتاب: <C>{'{ slug, title, source, chapters: [{ chapter, title, from, to, hadiths }] }'}</C>. ومع{' '}
+          <C>chapter</C> تأتي أحاديث ذلك الباب في <C>hadiths</C>.
+        </p>
+        <Endpoint path="/hadith/{slug}/{number}" />
+        <p className={p}>
+          حديث واحد برقمه في الكتاب: <C>{'{ collection, number, chapter, title, text, narrator, grade, reference, page }'}</C>.
+          و<C>title</C> الباب حيث يختلف عن الكتاب (في اللؤلؤ والمرجان)، والحقول الفارغة <C>null</C>.
+        </p>
+        <Code>{`GET /hadith/lulu_marjan/1
+{ "collection": "lulu_marjan", "number": 1,
+  "chapter": "تغليظ الكذب على رسول الله صلى الله عليه وسلم", "title": null,
+  "text": "حديث عليّ قال: …", "reference": "أخرجه البخاري في: 3 كتاب العلم: 38 باب …" }`}</Code>
+      </Section>
+
       <Section id="errors" title="الأخطاء">
         <p className={p}>كل خطأ يجيب بهذا الشكل، مع رمز ثابت تبني عليه:</p>
         <Code>{`{ "error": { "code": "not_found",
@@ -621,7 +644,7 @@ for s in reciter["surahs"]:
       <Section id="changelog" title="سجل التغييرات">
         <ul className="flex flex-col gap-2.5">
           {[
-            ['2026-11-24', 'التفاسير (/tafsir)، ودراسة الآية (/ayah)، والمكتبة (/library)، والتفسير الموضوعي (/mawsuah).'],
+            ['2026-11-24', 'التفاسير (/tafsir)، ودراسة الآية (/ayah)، والمكتبة (/library)، والتفسير الموضوعي (/mawsuah)، وكتب الحديث (/hadith).'],
             ['2026-11-23', 'نص القرآن برواية قالون (/text) ومحوّل الترقيم (/numbering).'],
             ['2026-11-23', 'الإصدار 1: القرّاء، وتوقيت الآيات والكلمات، بمفتاح شخصي.'],
           ].map(([date, what]) => (

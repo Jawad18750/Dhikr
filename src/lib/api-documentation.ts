@@ -20,7 +20,7 @@ Arabic documentation: https://dhikr.ly/developers
 4. Response shape
 5. Concepts and numbering
 6. Endpoints: /reciters, /reciters/{slug}, /timings, /word-timings, /text, /numbering,
-   /tafsir, /ayah, /library, /mawsuah
+   /tafsir, /ayah, /library, /mawsuah, /hadith
 7. Errors
 8. Guides: highlight the recited ayah; word by word; Hafs tafsir beside a Qalun ayah;
    download a whole recitation
@@ -204,6 +204,15 @@ of runs \`r\`: a plain string, \`["q", ayah text]\`, \`["a", surah, from, to, la
 numbers: convert with /numbering/hafs) or \`["f", footnote]\`. Credit the encyclopedia and its
 publisher next to what you show.
 
+### GET /hadith, /hadith/{slug}, /hadith/{slug}/{number}
+The seven hadith collections the apps carry (اللؤلؤ والمرجان, رياض الصالحين, بلوغ المرام,
+الأدب المفرد, الشمائل المحمدية, the Nawawi and Qudsi forties), in their authors' chapters.
+- \`/hadith\` → \`[{ slug, title, author, hadiths, page }]\`
+- \`/hadith/{slug}\` → \`{ slug, title, source, chapters: [{ chapter, title, from, to, hadiths }] }\`;
+  with \`?chapter=n\` it adds \`hadiths\`: that chapter's hadiths.
+- \`/hadith/{slug}/{number}\` → \`{ collection, number, chapter, title, text, narrator, grade, reference, page }\`
+  (\`title\` is the باب where it differs from the chapter; missing fields are null).
+
 ## 7. Errors
 
 \`{ "error": { "code": "...", "message": "...", "docs": "https://dhikr.ly/developers" } }\`
@@ -286,7 +295,7 @@ used; you see your own use on your account page. https://dhikr.ly/privacy
 ## 12. Changelog
 
 - 2026-11-24: tafsirs (/tafsir), the ayah study (/ayah), the library (/library) and the
-  thematic encyclopedia (/mawsuah).
+  thematic encyclopedia (/mawsuah) and the hadith collections (/hadith).
 - 2026-11-23: the Qalun text (/text) and the numbering converter (/numbering).
 - 2026-11-23: v1: reciters, ayah and word timings, with personal keys.
 

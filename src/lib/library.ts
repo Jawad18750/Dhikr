@@ -115,7 +115,7 @@ export function libraryIndex() {
   }
   const categories = raw.categories
     .map((c) => ({ id: c.id, title: c.title_ar, subtitle: c.subtitle_ar ?? '', order: c.sort_order }))
-    .filter((c) => books.some((b) => b.category === c.id) || c.id === 'tafsir')
+    .filter((c) => books.some((b) => b.category === c.id) || c.id === 'tafsir' || c.id === 'hadith')
     .sort((a, b) => a.order - b.order);
   indexCache = { at: Date.now(), categories, books: books.sort((a, b) => a.order - b.order), covers };
   return indexCache;

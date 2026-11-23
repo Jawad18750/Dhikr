@@ -1,5 +1,6 @@
 import { RECITER_COUNTRY } from '@/lib/reciter-countries';
 import { reciterRouteFor } from '@/lib/reciter-route';
+import { SITE_PORTRAITS } from '@/lib/site-portraits';
 import { DHIKR_AUDIO_BASE } from '@/services/reciters/dhikr.adapter';
 import { LinkSource } from '@/types';
 
@@ -21,7 +22,10 @@ export type CatalogueReciter = {
   /** ISO 3166 code of the reciter's country, where it has been checked. */
   country: string | null;
   surahTotal: number;
+  /** The photo these pages show: the site's own studio portrait, else the catalogue's. */
   portrait: string | null;
+  /** The shared catalogue's photo, the one the public API gives out. */
+  cataloguePortrait: string | null;
   /** 1-based place in the «popular» ranking, or null. */
   rank: number | null;
   isNew: boolean;
@@ -71,7 +75,8 @@ export const toCatalogue = (data: ApiResponse): CatalogueReciter[] => {
         ...splitMoshafName(moshaf.name),
         country: RECITER_COUNTRY[slug] ?? null,
         surahTotal: moshaf.surah_total,
-        portrait: data.portraits?.[slug] ?? null,
+        portrait: SITE_PORTRAITS[slug] ?? data.portraits?.[slug] ?? null,
+        cataloguePortrait: data.portraits?.[slug] ?? null,
         rank: rankIndex === -1 ? null : rankIndex + 1,
         isNew: fresh.has(slug),
       });

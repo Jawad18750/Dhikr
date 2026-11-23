@@ -588,6 +588,12 @@ body:has([data-mark-anchor]) #brand-mark-slot svg {
   visibility: hidden;
 }
 
+/* On the home the slot starts closed, the wordmark at the edge; the flight
+   opens it as the mark arrives (logo-mark-3d.tsx). */
+body:has([data-mark-anchor]) #brand-mark-slot {
+  width: 0;
+}
+
 /* The sticky header reads what passes behind it (header-shell.tsx): clear at
    the top, light glass over the page, dark glass with light ink over the
    black cards. Its contents use the ink and border tokens, so re-pointing

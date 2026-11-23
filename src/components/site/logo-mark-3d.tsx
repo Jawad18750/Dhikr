@@ -7,6 +7,8 @@ import { PETALS } from './logo-mark';
 
 /** The header's landing place for the mark (site-header.tsx). */
 export const MARK_SLOT_ID = 'brand-mark-slot';
+/** Space between the landed mark and the wordmark, in px (site-header.tsx). */
+const SLOT_GAP = 10;
 
 // three.js starts downloading as soon as this module runs in the browser,
 // not after hydration, so the 3D mark is not the last thing on the page.
@@ -60,7 +62,19 @@ export function LogoMark3D({
     const place = () => {
       ticking = false;
       const from = anchor.getBoundingClientRect();
-      const to = slot.getBoundingClientRect();
+      // The slot opens as the mark arrives (the wordmark slides aside to make
+      // room), so aim for the square it will be once fully open: its height
+      // wide, at its start edge (the right in Arabic).
+      const box = slot.getBoundingClientRect();
+      const side = box.height;
+      const rtl = getComputedStyle(slot).direction === 'rtl';
+      const to = {
+        left: rtl ? box.right - side : box.left,
+        top: box.top,
+        width: side,
+        height: side,
+        bottom: box.bottom,
+      };
       if (from.width === 0) return;
       // Landed by the time two thirds of the anchor has passed the header.
       const travel = from.top + window.scrollY + from.height * 0.66 - to.bottom;
@@ -84,6 +98,7 @@ export function LogoMark3D({
       flyer.style.width = `${from.width}px`;
       flyer.style.height = `${from.height}px`;
       flyer.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${scale})`;
+      slot.style.width = `${t * (side + SLOT_GAP)}px`;
       landedRef.current = progress >= 1;
       scaleRef.current = scale;
       // Only at rest in the hero can it be grabbed and spun; in flight and in
@@ -103,6 +118,7 @@ export function LogoMark3D({
     observer.observe(anchor);
     return () => {
       delete root.dataset.markFlight;
+      slot.style.removeProperty('width');
       window.removeEventListener('scroll', place);
       window.removeEventListener('resize', request);
       observer.disconnect();

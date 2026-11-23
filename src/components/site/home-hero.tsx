@@ -26,8 +26,8 @@ export function HomeHero({
       aria-labelledby="hero-title"
       className="relative mx-auto flex w-full max-w-[1560px] flex-col-reverse items-center overflow-hidden rounded-[28px] bg-hero text-on-hero dark:ring-1 dark:ring-border sm:rounded-[40px] lg:min-h-[640px] lg:flex-row"
     >
-      <div className="flex w-full flex-col gap-7 px-6 pb-10 pt-2 sm:px-12 sm:pb-14 lg:flex-1 lg:px-20 lg:py-20">
-        <span className="flex items-center gap-2 self-start rounded-full border border-white/20 px-4 py-1.5 text-sm text-white/80 sm:text-[15px]">
+      <div className="flex w-full flex-col items-center gap-7 px-6 pb-10 pt-2 text-center sm:px-12 sm:pb-14 lg:flex-1 lg:items-start lg:px-20 lg:py-20 lg:text-start">
+        <span className="flex items-center gap-2 rounded-full border border-white/20 px-4 py-1.5 text-sm text-white/80 sm:text-[15px]">
           <span
             className="h-2 w-2 rounded-full bg-gold-light"
             aria-hidden="true"
@@ -45,7 +45,7 @@ export function HomeHero({
         <p className="max-w-[560px] text-lg leading-[1.75] text-white/70 sm:text-[22px]">
           {t['hero.body']}
         </p>
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap justify-center gap-3 lg:justify-start">
           {listenHref && (
             <a
               href={listenHref}
@@ -67,10 +67,10 @@ export function HomeHero({
           {t['hero.project']}
         </span>
       </div>
-      <div className="flex w-full items-center justify-start px-6 pt-10 lg:w-[46%] lg:justify-center lg:p-8">
+      <div className="flex w-full items-center justify-center px-6 pt-10 lg:w-[46%] lg:p-8">
         <LogoMark3D
           label={t['hero.art']}
-          className="-ms-10 aspect-square w-[260px] sm:w-[360px] lg:ms-0 lg:w-[540px]"
+          className="aspect-square w-[260px] sm:w-[360px] lg:w-[540px]"
         />
       </div>
     </section>

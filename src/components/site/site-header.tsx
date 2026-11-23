@@ -33,14 +33,15 @@ export function SiteHeader({ locale }: { locale: SeoLocale }) {
         <Link
           href={home}
           aria-label={t['nav.home']}
-          className="flex items-center gap-2.5 text-ink"
+          className="flex items-center text-ink"
         >
-          {/* The 3D mark lands here from the home hero; elsewhere the flat one shows. */}
+          {/* The 3D mark lands here from the home hero; elsewhere the flat one
+              shows. The slot's width holds the 10px gap to the wordmark. */}
           <span
             id={MARK_SLOT_ID}
-            className="block h-9 w-9 shrink-0 sm:h-11 sm:w-11"
+            className="block h-9 w-[46px] shrink-0 overflow-hidden sm:h-11 sm:w-[54px]"
           >
-            <LogoMark className="h-full w-full text-gold" />
+            <LogoMark className="h-full w-9 text-gold sm:w-11" />
           </span>
           <Wordmark className="h-9 w-auto sm:h-11" />
           <span className="sr-only">{BRAND[locale]}</span>

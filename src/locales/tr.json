@@ -446,5 +446,11 @@
   "tools.convertSurah": "Sure",
   "tools.convertAyah": "Ayet",
   "tools.convertSwap": "Yönü değiştir",
-  "tools.convertNone": "Besmelenin Kalun’da numarası yok"
+  "tools.convertNone": "Besmelenin Kalun’da numarası yok",
+  "tools.learnMore": "Daha fazla",
+  "tools.coverageTimed": "Surelerin {share}'i zamanlandı · {count} kâri",
+  "tools.coverageReciters": "{total} kâriden {done}",
+  "tools.coverageAyahs": "{total} ayetten {done}",
+  "tools.coverageBoth": "Kalun {qalun} ↔ Hafs {hafs}, tamamı",
+  "tools.coverageAudio": "{count} kâriden {surahs} sure"
 }

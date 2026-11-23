@@ -5,6 +5,7 @@ import { getDhikrCatalogue } from '@/lib/dhikr-catalogue';
 import { reciterName } from '@/lib/reciter-names';
 import { buildPageMetadata } from '@/lib/seo/metadata';
 import type { SeoLocale } from '@/lib/seo/routes';
+import { toolCoverage } from '@/lib/tool-coverage';
 import { MESSAGES } from '@/locales';
 
 const COPY = MESSAGES;
@@ -37,6 +38,7 @@ export async function HomeRoute({ locale }: { locale: SeoLocale }) {
         <ToolsSection
           locale={locale}
           reciterCount={reciters.length}
+          coverage={await toolCoverage()}
         />
       </div>
     </div>

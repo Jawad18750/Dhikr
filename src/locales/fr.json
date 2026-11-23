@@ -446,5 +446,11 @@
   "tools.convertSurah": "Sourate",
   "tools.convertAyah": "Verset",
   "tools.convertSwap": "Inverser le sens",
-  "tools.convertNone": "La basmala n’a pas de numéro chez Qaloun"
+  "tools.convertNone": "La basmala n’a pas de numéro chez Qaloun",
+  "tools.learnMore": "En savoir plus",
+  "tools.coverageTimed": "{share} des sourates synchronisées · {count} récitateurs",
+  "tools.coverageReciters": "{done} récitateurs sur {total}",
+  "tools.coverageAyahs": "{done} versets sur {total}",
+  "tools.coverageBoth": "Qaloun {qalun} ↔ Hafs {hafs}, complet",
+  "tools.coverageAudio": "{surahs} sourates par {count} récitateurs"
 }

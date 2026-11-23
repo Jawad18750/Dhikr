@@ -1,94 +1,261 @@
 // The API documentation as plain Markdown: for /developers.md, /llms.txt, and for pasting
-// into an AI assistant. English, since that is what code and assistants read best.
+// into an AI assistant. English, since that is what code and assistants read best. It
+// says what the Arabic page (src/app/(ar)/developers/page.tsx) says; change both together.
 
-export const API_DOCS_MARKDOWN = `# Dhikr API (dhikr.ly)
+export const API_DOCS_MARKDOWN = `# Dhikr API v1 (dhikr.ly)
 
-Quran recitations in the Qalun narration (قالون عن نافع), with the timing of every ayah and
-every word, as JSON. Free, with a personal key. Arabic site: https://dhikr.ly/developers
+Quran recitations in the Qalun narration (قالون عن نافع): reciters and their surahs, the
+timing of every ayah and every word, the Qalun text, and an ayah-number converter between
+Hafs and Qalun. JSON, free, with a personal key, no quotas.
+Arabic documentation: https://dhikr.ly/developers
 
-## Authentication
+## Contents
 
-1. Sign in at https://dhikr.ly/account (Google, or a one-time email link).
-2. Create a key there. It starts with \`dk_\` and is shown once; store it on your server.
-3. Send it with every request:
+1. Overview
+2. Quick start
+3. Keys and authentication
+4. Response shape
+5. Concepts and numbering
+6. Endpoints: /reciters, /reciters/{slug}, /timings, /word-timings, /text, /numbering
+7. Errors
+8. Guides: highlight the recited ayah; word by word; Hafs tafsir beside a Qalun ayah;
+   download a whole recitation
+9. Limits and caching
+10. Licence and attribution
+11. What is logged
+12. Changelog
+13. FAQ
 
+## 1. Overview
+
+Base URL: \`https://dhikr.ly/api/v1\`. Every request is a GET, and every answer is UTF-8
+JSON. The data follows the Qalun narration and the ayah boundaries the Jamahiriya mushaf
+prints (6214 ayahs), unless Hafs is named.
+
+| Endpoint | Gives |
+|---|---|
+| \`/reciters\` | Every recitation: name, riwaya, style, country, surah count, rank, portrait, page |
+| \`/reciters/{slug}\` | One recitation's surahs: ayah count, length, size, MP3 URL |
+| \`/timings/{slug}/{surah}\` | When each ayah starts and ends (every recitation) |
+| \`/word-timings/{slug}/{surah}\` | When each word starts and ends (most recitations) |
+| \`/text/{surah}\` | The surah's Qalun text, ayah by ayah, with juz, hizb and thumun |
+| \`/numbering/{hafs\\|qalun}/{surah}/{ayah}\` | An ayah's number in the other count |
+
+## 2. Quick start
+
+1. Sign in at https://dhikr.ly/account (Google, or a link sent by email).
+2. Create a key on the account page and copy it. It is shown in full only once.
+3. Send it on every request: \`Authorization: Bearer dk_…\`
+
+\`\`\`sh
+curl https://dhikr.ly/api/v1/reciters -H "Authorization: Bearer $DHIKR_KEY"
 \`\`\`
-Authorization: Bearer dk_...
+
+\`\`\`js
+const response = await fetch('https://dhikr.ly/api/v1/timings/abdulhamid_algriw/1', {
+  headers: { Authorization: \`Bearer \${process.env.DHIKR_KEY}\` },
+});
+if (!response.ok) throw new Error((await response.json()).error.message);
+const { data } = await response.json();
+console.log(data.ayahs[0]); // { ayah: 1, start: 13080, end: 17080 }
 \`\`\`
 
-Keep the key out of code that runs in a browser or a shipped app; call the API from your
-server and cache what you get. Revoke a leaked key from your account page and make another.
+\`\`\`python
+import os, requests
+r = requests.get("https://dhikr.ly/api/v1/text/1",
+                 headers={"Authorization": f"Bearer {os.environ['DHIKR_KEY']}"}, timeout=10)
+r.raise_for_status()
+for ayah in r.json()["data"]["ayahs"]:
+    print(ayah["ayah"], ayah["text"])
+\`\`\`
 
-## Base URL
+## 3. Keys and authentication
 
-\`https://dhikr.ly/api/v1\`
+Every request carries a personal key in \`Authorization: Bearer dk_…\` (keys start with
+\`dk_\`). An account may hold up to ten keys, created and deleted on the account page, which
+also shows each key's use.
 
-Every response is JSON. CORS is open (\`Access-Control-Allow-Origin: *\`).
+- Keep the key on your server, never in code that reaches a browser or ships inside an app:
+  whoever sees it can use it in your name.
+- Only a hash of the key is stored, so it cannot be shown again. If you lose it, make another.
+- If a key leaks, delete it on the account page; it stops working within a minute.
+- CORS is open (any origin may call), but the safer pattern is to call from your server.
+
+## 4. Response shape
+
+A success (200) carries the data in \`data\`, with the licence and attribution:
 
 \`\`\`json
-{ "data": { ... }, "license": "CC BY-NC 4.0", "attribution": "ذكر · dhikr.ly" }
+{ "data": { }, "license": "CC BY-NC 4.0", "attribution": "ذكر · dhikr.ly" }
 \`\`\`
 
-## Endpoints
+Headers: \`X-License\`, \`Link\` (licence and docs), \`Cache-Control: private, no-store\`.
+All numbers are integers. Times are milliseconds from the start of the surah's MP3. Text is
+Arabic, as in the mushaf.
+
+## 5. Concepts and numbering
+
+- **slug**: a recitation's fixed name in lowercase Latin letters, digits and underscores,
+  e.g. \`abdulhamid_algriw\`. It is the same in its page URL and audio URLs, and never changes.
+- **Ayah counts**: ayahs are numbered as the Jamahiriya mushaf prints them in Qalun, by the
+  Madinan count: 6214 ayahs. Hafs uses the Kufan count: 6236. They differ in many places
+  (al-Baqara has 285 ayahs here, 286 in Hafs). Al-Fatiha's basmala is not an ayah in Qalun,
+  so 1:1 here is «الحمد لله رب العالمين». Most tafsirs and translations are numbered by Hafs:
+  convert with /numbering before joining them to these ayahs.
+- **Word numbers**: words are numbered within each ayah from 1, as the printed mushaf shows
+  them. The hizb sign «۞» is not a word and has no audio, so it is not counted.
+- **Juz, hizb, thumun**: 30 juz, 2 hizbs each, 8 thumuns per hizb: 480 thumuns. Thumun starts
+  are read from the «۞» signs printed in the mushaf; every juz begins on a thumun.
+- **Audio**: one complete MP3 per surah, named by its number in three digits (001.mp3 to
+  114.mp3). An isti'adha or basmala may precede the first ayah, so the first ayah's timing
+  starts after the file does.
+
+## 6. Endpoints
 
 ### GET /reciters
-Every recitation: slug, name, riwaya, style, country (ISO code), number of surahs, rank in
-listening, portrait URL, page URL.
+Every recitation, most listened first.
+
+| Field | Type | Meaning |
+|---|---|---|
+| slug | string | The recitation's fixed name |
+| name | string | The reciter's name in Arabic |
+| riwaya | string | The narration, e.g. «قالون عن نافع» |
+| style | string \\| null | مرتل, مجود, حدر or معلم |
+| country | string \\| null | ISO 3166 code, e.g. LY |
+| surahs | number | Surahs recorded |
+| rank | number \\| null | Place in «most listened» |
+| portrait | string \\| null | Portrait URL |
+| page | string | The reciter's page on dhikr.ly |
 
 ### GET /reciters/{slug}
-One recitation and its surahs. For each surah: number, Arabic name, ayah count in the Qalun
-(later Madinan) count, length in seconds, MP3 size in bytes, MP3 URL.
+One recitation and all its surahs: \`slug, name, riwaya, style, country, page\` as above, and
+\`surahs[]\` of \`{ surah, name, ayahs (Qalun count), seconds, bytes, audio (MP3 URL) }\`.
+
+\`\`\`json
+{ "slug": "abdulhamid_algriw", "name": "عبدالحميد القريو",
+  "surahs": [{ "surah": 2, "name": "البقرة", "ayahs": 285, "seconds": 7910, "bytes": 63301843,
+               "audio": "https://quran-audio.abdeljawad.com/audio/abdulhamid_algriw/002.mp3" }] }
+\`\`\`
 
 ### GET /timings/{slug}/{surah}
-When each ayah starts and ends, in milliseconds from the start of the surah's MP3.
-\`{ "slug", "surah", "ayahs": [{ "ayah": 1, "start": 13080, "end": 17080 }, ...] }\`
-Row 0, where present, is what precedes the first ayah (the basmala).
+When each ayah starts and ends in the surah's file; every recitation has them.
+\`{ "slug", "surah", "ayahs": [{ "ayah", "start", "end" }] }\`. Row 0, where present, is
+what precedes the first ayah (isti'adha or basmala).
 
 ### GET /word-timings/{slug}/{surah}
-When each word starts and ends, in milliseconds, with words numbered as the Qalun mushaf
-counts them within each ayah.
-\`{ "slug", "surah", "words": [{ "ayah": 1, "word": 1, "start": 13080, "end": 13880 }, ...] }\`
+When each word starts and ends, numbered as the mushaf counts words. Most recitations have
+them; one without answers 404.
+\`{ "slug", "surah", "words": [{ "ayah", "word", "start", "end" }] }\` in reciting order.
 
 ### GET /text/{surah}
-The surah's text in Qalun, ayah by ayah as the Jamahiriya mushaf prints them (6214 ayahs in
-all), with the juz of each ayah, and \`thumun\` and \`hizb\` on the ayah where one begins
-(480 thumuns, 60 hizbs).
-\`{ "surah": 1, "name": "الفاتحة", "riwaya": "qalun", "count": 7,
-  "ayahs": [{ "ayah": 1, "text": "اِ۬لْحَمْدُ لِلهِ رَبِّ اِ۬لْعَٰلَمِينَ", "juz": 1, "thumun": 1, "hizb": 1 }, ...] }\`
+The surah's text ayah by ayah as the Jamahiriya mushaf prints it, in Qalun orthography,
+each ayah with its juz; the ayah where a thumun begins also carries \`thumun\` (1–480) and
+\`hizb\` (1–60). In two places (2:84, 18:22) the thumun sign falls inside the ayah, as printed.
+\`{ "surah", "name", "riwaya": "qalun", "count", "ayahs": [{ "ayah", "text", "juz", "thumun"?, "hizb"? }] }\`
 
 ### GET /numbering/{hafs|qalun}/{surah}/{ayah}
-One ayah's number in the other count, both ways: Hafs (Kufan, 6236) and Qalun as the
-Jamahiriya mushaf numbers it (Madinan, 6214). An ayah can hold more than one of the other
-count, so \`ayahs\` is a list. Hafs 1:1, the basmala, has no Qalun number.
-\`GET /numbering/hafs/2/286\` → \`{ "from": "hafs", "to": "qalun", "surah": 2, "ayah": 286, "ayahs": [285] }\`
+An ayah's number in the other count: \`hafs\` converts Hafs → Qalun, \`qalun\` Qalun → Hafs.
+An ayah can hold more than one of the other count, so \`ayahs\` is a list. Hafs 1:1 (the
+basmala) has no Qalun number: its list is empty, with a \`note\`. The tables are the ones the
+Dhikr apps use, checked against the printed mushaf's index; every ayah of both counts
+round-trips.
+- \`GET /numbering/hafs/2/286\` → \`{ "from": "hafs", "to": "qalun", "surah": 2, "ayah": 286, "ayahs": [285] }\`
+- \`GET /numbering/qalun/1/1\` → \`{ "from": "qalun", "to": "hafs", "surah": 1, "ayah": 1, "ayahs": [2] }\`
 
-\`slug\` is the recitation's name as in its page URL (for example \`abdulhamid_algriw\`);
-\`surah\` is 1 to 114.
-
-## Errors
+## 7. Errors
 
 \`{ "error": { "code": "...", "message": "...", "docs": "https://dhikr.ly/developers" } }\`
 
-- 401 \`missing_key\` / \`invalid_key\`: no key, or a key that does not exist or was revoked.
-- 404 \`not_found\`: no such recitation, or no such surah for it.
-- 502 \`upstream\`: the data source did not answer; retry shortly.
+| Status | Code | Meaning |
+|---|---|---|
+| 401 | missing_key | No key in the request |
+| 401 | invalid_key | The key does not exist or was deleted |
+| 404 | not_found | No such recitation, no such surah for it, or no word timings yet |
+| 502 | upstream | The data source did not answer; retry shortly |
 
-There are no quotas. Each request is logged with its account (endpoint, time, country,
-response size) so Dhikr knows what is used.
+## 8. Guides
 
-## Licence
+### Highlight the ayah being recited
+\`\`\`js
+const { data: reciter } = await api('/reciters/abdulhamid_algriw');
+const { data: timing } = await api('/timings/abdulhamid_algriw/1');
+const audio = new Audio(reciter.surahs.find((s) => s.surah === 1).audio);
+audio.addEventListener('timeupdate', () => {
+  const ms = audio.currentTime * 1000;
+  const current = timing.ayahs.find((a) => a.ayah > 0 && ms >= a.start && ms < a.end);
+  highlight(current?.ayah);
+});
+audio.play();
+\`\`\`
+
+### Word by word
+\`\`\`js
+const { data } = await api('/word-timings/abdulhamid_algriw/2');
+function wordAt(ms) {               // words are in reciting order: binary search
+  let lo = 0, hi = data.words.length - 1;
+  while (lo <= hi) {
+    const mid = (lo + hi) >> 1, w = data.words[mid];
+    if (ms < w.start) hi = mid - 1; else if (ms >= w.end) lo = mid + 1; else return w;
+  }
+  return null;
+}
+\`\`\`
+
+### A Hafs-numbered tafsir beside a Qalun ayah
+\`\`\`js
+const { data } = await api('/numbering/qalun/2/285');   // → ayahs: [286]
+const text = data.ayahs.map((hafs) => myTafsir[\`2:\${hafs}\`]).join('\\n');
+\`\`\`
+
+### Download a whole recitation
+\`\`\`python
+import os, requests
+H = {"Authorization": f"Bearer {os.environ['DHIKR_KEY']}"}
+reciter = requests.get("https://dhikr.ly/api/v1/reciters/abdulhamid_algriw", headers=H).json()["data"]
+os.makedirs(reciter["slug"], exist_ok=True)
+for s in reciter["surahs"]:
+    path = f"{reciter['slug']}/{s['surah']:03d}.mp3"
+    with requests.get(s["audio"], stream=True) as r, open(path, "wb") as f:
+        for chunk in r.iter_content(1 << 16): f.write(chunk)
+    assert os.path.getsize(path) == s["bytes"], path
+\`\`\`
+
+## 9. Limits and caching
+
+No quotas and no rate limits: it is free, and an app may have millions of users. Most of
+this data does not change, so cache it: the text and numbering are fixed, timings change
+rarely, and the reciter list changes when a reciter is added. Fetch the list once a day and
+the rest when first needed.
+
+## 10. Licence and attribution
 
 The data is licensed CC BY-NC 4.0 (https://creativecommons.org/licenses/by-nc/4.0/): use,
-share and build on it with credit to «ذكر · dhikr.ly», for non-commercial purposes. For
-commercial use, write to Dhikr (https://dhikr.ly/contact).
+share and build on it for non-commercial purposes, crediting «ذكر · dhikr.ly» next to what
+you show. For commercial use, contact us (https://dhikr.ly/contact). The recitations'
+audio belongs to its reciters.
 
-## Example
+## 11. What is logged
 
-\`\`\`js
-const res = await fetch('https://dhikr.ly/api/v1/timings/abdulhamid_algriw/1', {
-  headers: { Authorization: \`Bearer \${process.env.DHIKR_KEY}\` },
-});
-const { data } = await res.json();
-// data.ayahs[0] → { ayah: 1, start: 13080, end: 17080 }
-\`\`\`
+Each request is logged with the key's account: path, time, status, size, duration and
+country. Not the content of what you ask for, and not the IP address. It tells Dhikr what is
+used; you see your own use on your account page. https://dhikr.ly/privacy
+
+## 12. Changelog
+
+- 2026-11-23: the Qalun text (/text) and the numbering converter (/numbering).
+- 2026-11-23: v1: reciters, ayah and word timings, with personal keys.
+
+v1 changes only by addition (new fields, new endpoints). No field is removed or changes
+meaning.
+
+## 13. FAQ
+
+- **Is it free?** Yes, without limits, for any non-commercial use.
+- **Why do ayah numbers differ from the mushaf I know?** Most digital mushafs follow Hafs
+  and the Kufan count; Dhikr follows the Jamahiriya mushaf in Qalun and the Madinan count.
+  Use /numbering to link the two.
+- **Other narrations?** Qalun first; others will follow.
+- **Can I put the key in a mobile app?** Better not: anyone who unpacks the app sees it. Have
+  your app ask your server, and your server ask the API.
+- **Found an error in the data?** Tell us at https://dhikr.ly/contact.
 `;

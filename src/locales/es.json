@@ -446,5 +446,11 @@
   "tools.convertSurah": "Sura",
   "tools.convertAyah": "Aleya",
   "tools.convertSwap": "Invertir el sentido",
-  "tools.convertNone": "La basmala no tiene número en Qalun"
+  "tools.convertNone": "La basmala no tiene número en Qalun",
+  "tools.learnMore": "Saber más",
+  "tools.coverageTimed": "{share} de las suras sincronizadas · {count} recitadores",
+  "tools.coverageReciters": "{done} de {total} recitadores",
+  "tools.coverageAyahs": "{done} de {total} aleyas",
+  "tools.coverageBoth": "Qalun {qalun} ↔ Hafs {hafs}, completo",
+  "tools.coverageAudio": "{surahs} suras de {count} recitadores"
 }

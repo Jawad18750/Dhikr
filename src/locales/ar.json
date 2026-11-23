@@ -447,5 +447,11 @@
   "tools.convertSurah": "السورة",
   "tools.convertAyah": "الآية",
   "tools.convertSwap": "اعكس الاتجاه",
-  "tools.convertNone": "البسملة بلا رقم في قالون"
+  "tools.convertNone": "البسملة بلا رقم في قالون",
+  "tools.learnMore": "اعرف المزيد",
+  "tools.coverageTimed": "{share} من السور مؤقّتة · {count} قارئًا",
+  "tools.coverageReciters": "{done} من {total} قارئًا",
+  "tools.coverageAyahs": "{done} من {total} آية",
+  "tools.coverageBoth": "قالون {qalun} ↔ حفص {hafs}، كاملًا",
+  "tools.coverageAudio": "{surahs} سورة بصوت {count} قارئًا"
 }

@@ -446,5 +446,11 @@
   "tools.convertSurah": "Сура",
   "tools.convertAyah": "Аят",
   "tools.convertSwap": "Поменять направление",
-  "tools.convertNone": "У басмалы нет номера у Калуна"
+  "tools.convertNone": "У басмалы нет номера у Калуна",
+  "tools.learnMore": "Подробнее",
+  "tools.coverageTimed": "{share} сур с таймингами · чтецов: {count}",
+  "tools.coverageReciters": "{done} из {total} чтецов",
+  "tools.coverageAyahs": "{done} из {total} аятов",
+  "tools.coverageBoth": "Калун {qalun} ↔ Хафс {hafs}, полностью",
+  "tools.coverageAudio": "{surahs} сур от {count} чтецов"
 }

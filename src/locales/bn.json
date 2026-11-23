@@ -446,5 +446,11 @@
   "tools.convertSurah": "সূরা",
   "tools.convertAyah": "আয়াত",
   "tools.convertSwap": "দিক বদলান",
-  "tools.convertNone": "কালুনে বিসমিল্লাহর কোনো নম্বর নেই"
+  "tools.convertNone": "কালুনে বিসমিল্লাহর কোনো নম্বর নেই",
+  "tools.learnMore": "আরও জানুন",
+  "tools.coverageTimed": "{share} সূরার সময় চিহ্নিত · {count} জন ক্বারী",
+  "tools.coverageReciters": "{total} জনের মধ্যে {done} জন ক্বারী",
+  "tools.coverageAyahs": "{total}টির মধ্যে {done}টি আয়াত",
+  "tools.coverageBoth": "কালুন {qalun} ↔ হাফস {hafs}, সম্পূর্ণ",
+  "tools.coverageAudio": "{count} জন ক্বারীর {surahs}টি সূরা"
 }

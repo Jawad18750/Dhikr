@@ -446,5 +446,11 @@
   "tools.convertSurah": "سورت",
   "tools.convertAyah": "آیت",
   "tools.convertSwap": "سمت بدلیں",
-  "tools.convertNone": "قالون میں بسملہ کا نمبر نہیں"
+  "tools.convertNone": "قالون میں بسملہ کا نمبر نہیں",
+  "tools.learnMore": "مزید جانیں",
+  "tools.coverageTimed": "{share} سورتوں کے اوقات · {count} قاری",
+  "tools.coverageReciters": "{total} میں سے {done} قاری",
+  "tools.coverageAyahs": "{total} میں سے {done} آیات",
+  "tools.coverageBoth": "قالون {qalun} ↔ حفص {hafs}، مکمل",
+  "tools.coverageAudio": "{count} قاریوں کی {surahs} سورتیں"
 }

@@ -446,5 +446,11 @@
   "tools.convertSurah": "Surah",
   "tools.convertAyah": "Ayat",
   "tools.convertSwap": "Tukar arah",
-  "tools.convertNone": "Basmalah tidak bernombor dalam Qalun"
+  "tools.convertNone": "Basmalah tidak bernombor dalam Qalun",
+  "tools.learnMore": "Ketahui lagi",
+  "tools.coverageTimed": "{share} surah bermasa · {count} qari",
+  "tools.coverageReciters": "{done} daripada {total} qari",
+  "tools.coverageAyahs": "{done} daripada {total} ayat",
+  "tools.coverageBoth": "Qalun {qalun} ↔ Hafs {hafs}, lengkap",
+  "tools.coverageAudio": "{surahs} surah daripada {count} qari"
 }

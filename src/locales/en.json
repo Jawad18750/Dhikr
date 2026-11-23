@@ -446,5 +446,11 @@
   "tools.convertSurah": "Surah",
   "tools.convertAyah": "Ayah",
   "tools.convertSwap": "Swap direction",
-  "tools.convertNone": "The basmala has no Qalun number"
+  "tools.convertNone": "The basmala has no Qalun number",
+  "tools.learnMore": "Learn more",
+  "tools.coverageTimed": "{share} of surahs timed · {count} reciters",
+  "tools.coverageReciters": "{done} of {total} reciters",
+  "tools.coverageAyahs": "{done} of {total} ayahs",
+  "tools.coverageBoth": "Qalun {qalun} ↔ Hafs {hafs}, complete",
+  "tools.coverageAudio": "{surahs} surahs from {count} reciters"
 }

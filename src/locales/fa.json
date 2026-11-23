@@ -446,5 +446,11 @@
   "tools.convertSurah": "سوره",
   "tools.convertAyah": "آیه",
   "tools.convertSwap": "جهت را برگردان",
-  "tools.convertNone": "بسمله در قالون شماره ندارد"
+  "tools.convertNone": "بسمله در قالون شماره ندارد",
+  "tools.learnMore": "بیشتر بدانید",
+  "tools.coverageTimed": "{share} سوره‌ها زمان‌بندی شده · {count} قاری",
+  "tools.coverageReciters": "{done} از {total} قاری",
+  "tools.coverageAyahs": "{done} از {total} آیه",
+  "tools.coverageBoth": "قالون {qalun} ↔ حفص {hafs}، کامل",
+  "tools.coverageAudio": "{surahs} سوره از {count} قاری"
 }

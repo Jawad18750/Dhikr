@@ -13,6 +13,7 @@ import {
 
 import { SURAHS } from '@/constants';
 import type { SeoLocale } from '@/lib/seo/routes';
+import type { Coverage } from '@/lib/tool-coverage';
 import { MESSAGES } from '@/locales';
 import { cn, getSurahDisplayName } from '@/utils';
 
@@ -60,6 +61,8 @@ const TONES = {
     idea: 'text-[#a9c9b8]',
     preview: 'bg-white/[0.07]',
     details: 'bg-white/[0.14] text-white hover:bg-white/25',
+    track: 'bg-white/10',
+    fill: 'bg-[#a9ddbc]',
     icon: undefined,
   },
   blue: {
@@ -68,6 +71,8 @@ const TONES = {
     idea: 'text-[#a7b0c8]',
     preview: 'bg-white/[0.07]',
     details: 'bg-white/[0.14] text-white hover:bg-white/25',
+    track: 'bg-white/10',
+    fill: 'bg-gold-light',
     icon: undefined,
   },
   gold: {
@@ -76,6 +81,8 @@ const TONES = {
     idea: 'text-[#4a3a1d]',
     preview: 'bg-white/40',
     details: 'bg-[#1b1712]/[0.12] text-[#1b1712] hover:bg-[#1b1712]/20',
+    track: 'bg-[#1b1712]/15',
+    fill: 'bg-[#1b1712]/70',
     icon: 'light',
   },
   plain: {
@@ -84,6 +91,8 @@ const TONES = {
     idea: 'text-on-hero/50',
     preview: 'bg-[#0b0b0c] text-white',
     details: 'bg-on-hero/[0.08] text-on-hero hover:bg-on-hero/15',
+    track: 'bg-on-hero/10',
+    fill: 'bg-gold-light',
     icon: 'neutral',
   },
 } as const;
@@ -102,7 +111,8 @@ function ToolCard({
   href,
   details,
   preview,
-  footer,
+  meter,
+  extra,
 }: {
   tone?: keyof typeof TONES;
   icon: IconType;
@@ -113,7 +123,10 @@ function ToolCard({
   href: string;
   details: string;
   preview: React.ReactNode;
-  footer: React.ReactNode;
+  /** How far the dataset reaches: a short line and a share from 0 to 1. */
+  meter?: { label: string; share: number };
+  /** A second link beside «learn more», where a card has one. */
+  extra?: React.ReactNode;
 }) {
   const look = TONES[tone];
   return (
@@ -128,12 +141,30 @@ function ToolCard({
       <div className={cn('mt-auto min-h-[104px] overflow-hidden rounded-2xl px-4 py-3.5 md:h-[104px]', look.preview)}>
         {preview}
       </div>
-      <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+      {meter && (
+        <div className="flex flex-col gap-1.5">
+          <div
+            role="meter"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={Math.round(meter.share * 100)}
+            aria-label={meter.label}
+            className={cn('h-1.5 overflow-hidden rounded-full', look.track)}
+          >
+            <span
+              className={cn('block h-full rounded-full', look.fill)}
+              style={{ width: `${Math.max(2, Math.min(100, meter.share * 100))}%` }}
+            />
+          </div>
+          <span className={cn('text-[13px] tabular-nums', look.idea)}>{meter.label}</span>
+        </div>
+      )}
+      <div className="flex flex-wrap items-center gap-2 pt-1">
         <Link href={href} className={cn(pill, look.details)}>
           {details}
           <IoArrowBack className="h-4 w-4 ltr:rotate-180" aria-hidden="true" />
         </Link>
-        {footer}
+        {extra}
       </div>
     </article>
   );
@@ -147,30 +178,40 @@ function ToolCard({
 export function ToolsSection({
   locale,
   reciterCount,
+  coverage,
 }: {
   locale: SeoLocale;
   reciterCount: number;
+  coverage: Coverage | null;
 }) {
   const t = (key: string, values?: Record<string, string | number>) =>
     values ? fill(COPY[locale][key], values) : COPY[locale][key];
-  const available = (tone?: Tone) => (
-    <span
-      className={cn(
-        pill,
-        tone === 'light'
-          ? 'bg-[#1b1712]/[0.14]'
-          : tone === 'neutral'
-            ? 'bg-on-hero/10 text-on-hero/80'
-            : 'bg-white/10 text-white/80'
-      )}
-    >
-      <span
-        className="h-1.5 w-1.5 rounded-full bg-[#7fcf9e]"
-        aria-hidden="true"
-      />
-      {t('tools.available')}
-    </span>
-  );
+  const number = (value: number) => new Intl.NumberFormat(locale === 'ar' ? 'ar-u-nu-latn' : locale).format(value);
+  const percent = (share: number) =>
+    new Intl.NumberFormat(locale === 'ar' ? 'ar-u-nu-latn' : locale, { style: 'percent', maximumFractionDigits: 0 }).format(share);
+  // Measured from the data (lib/tool-coverage); none is shown when it could not be read.
+  const meters = {
+    ayahs: coverage
+      ? {
+          share: coverage.timedSurahs / coverage.surahs,
+          label: t('tools.coverageTimed', { share: percent(coverage.timedSurahs / coverage.surahs), count: number(coverage.reciters) }),
+        }
+      : undefined,
+    words: coverage
+      ? {
+          share: coverage.wordReciters / coverage.reciters,
+          label: t('tools.coverageReciters', { done: number(coverage.wordReciters), total: number(coverage.reciters) }),
+        }
+      : undefined,
+    text: { share: 1, label: t('tools.coverageAyahs', { done: number(6214), total: number(6214) }) },
+    numbering: { share: 1, label: t('tools.coverageBoth', { qalun: number(6214), hafs: number(6236) }) },
+    audio: coverage
+      ? {
+          share: coverage.surahs / (coverage.reciters * 114),
+          label: t('tools.coverageAudio', { surahs: number(coverage.surahs), count: number(coverage.reciters) }),
+        }
+      : undefined,
+  };
 
   return (
     <section
@@ -217,13 +258,9 @@ export function ToolsSection({
           idea={t('tools.ayahTimingsIdea')}
           ideaLabel={t('tools.ideaLabel')}
           href="/developers#timings"
-          details={t('tools.details')}
+          details={t('tools.learnMore')}
           preview={<AyahTimeline />}
-          footer={
-            <span dir="ltr" className="font-mono text-[13px] text-[#a9c9b8]">
-              timings/&lt;reciter&gt;/001.json
-            </span>
-          }
+          meter={meters.ayahs}
         />
         <ToolCard
           tone="blue"
@@ -233,9 +270,9 @@ export function ToolsSection({
           idea={t('tools.wordTimingsIdea')}
           ideaLabel={t('tools.ideaLabel')}
           href="/developers#word-timings"
-          details={t('tools.details')}
+          details={t('tools.learnMore')}
           preview={<WordLights />}
-          footer={available()}
+          meter={meters.words}
         />
         <ToolCard
           tone="gold"
@@ -245,7 +282,7 @@ export function ToolsSection({
           idea={t('tools.textIdea')}
           ideaLabel={t('tools.ideaLabel')}
           href="/developers#text"
-          details={t('tools.details')}
+          details={t('tools.learnMore')}
           preview={
             <div className="flex h-full flex-col justify-between gap-2">
               <p dir="rtl" lang="ar" className="text-[19px] font-bold leading-[1.7]">
@@ -260,7 +297,7 @@ export function ToolsSection({
               </div>
             </div>
           }
-          footer={available('light')}
+          meter={meters.text}
         />
         <ToolCard
           icon={IoCodeSlashOutline}
@@ -269,7 +306,7 @@ export function ToolsSection({
           idea={t('tools.apiIdea')}
           ideaLabel={t('tools.ideaLabel')}
           href="/developers#reciters"
-          details={t('tools.details')}
+          details={t('tools.learnMore')}
           preview={
             <div dir="ltr" className="flex h-full flex-col justify-center gap-1 text-left font-mono text-[13px] leading-[1.6]">
               <span className="text-gold-light">
@@ -281,7 +318,6 @@ export function ToolsSection({
               </span>
             </div>
           }
-          footer={available('neutral')}
         />
         <ToolCard
           icon={IoSwapHorizontalOutline}
@@ -290,7 +326,7 @@ export function ToolsSection({
           idea={t('tools.converterIdea')}
           ideaLabel={t('tools.ideaLabel')}
           href="/developers#converter"
-          details={t('tools.details')}
+          details={t('tools.learnMore')}
           preview={
             <NumberingConverter
               surahs={SURAHS.map((surah) => getSurahDisplayName(surah, locale))}
@@ -304,7 +340,7 @@ export function ToolsSection({
               }}
             />
           }
-          footer={available('neutral')}
+          meter={meters.numbering}
         />
         <ToolCard
           icon={IoCloudDownloadOutline}
@@ -313,7 +349,7 @@ export function ToolsSection({
           idea={t('tools.audioIdea')}
           ideaLabel={t('tools.ideaLabel')}
           href="/developers#audio"
-          details={t('tools.details')}
+          details={t('tools.learnMore')}
           preview={
             <div className="flex h-full flex-col justify-between gap-2">
               <span dir="ltr" className="flex items-center justify-between font-mono text-[13px] text-white/75">
@@ -336,7 +372,8 @@ export function ToolsSection({
               </div>
             </div>
           }
-          footer={
+          meter={meters.audio}
+          extra={
             <a href="#reciters" className={cn(pill, 'bg-on-hero/[0.08] text-on-hero hover:bg-on-hero/15')}>
               <IoCloudDownloadOutline aria-hidden="true" />
               {t('tools.audioHow')}

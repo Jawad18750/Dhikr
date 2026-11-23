@@ -1,6 +1,43 @@
 /**
  * Each reciter's country (ISO 3166 code), by moshaf slug, for the country
- * filter. Only entries the owner has checked belong here: a reciter's country
- * is never guessed. A reciter left out simply has no country chip.
+ * filter. Researched 2026-11-23 from public sources (way2quran, Midad, LANA,
+ * archive.org, the reciters' own pages) and approved by the owner; a reciter
+ * left out has no checked country and simply gets no country chip.
  */
-export const RECITER_COUNTRY: Readonly<Record<string, string>> = {};
+export const RECITER_COUNTRY: Readonly<Record<string, string>> = {
+  ali_alyounse: 'LY',
+  moaad_benhamed: 'LY',
+  ahmed_algriw: 'LY',
+  taha_alfahd: 'LY',
+  ibrahim_kishidan: 'LY',
+  walid_alnaehi: 'LY',
+  ahmed_alqulaib: 'LY',
+  bilal_ben_mahmoud: 'TN',
+  mustafa_alfarjani: 'LY',
+  abdulhamid_algriw: 'LY',
+  ahmed_saleh_rajab: 'LY',
+  mustafa_mtawa: 'LY',
+  ahmed_hussein_alalam: 'LY',
+  khaled_alturki: 'LY',
+  mohamed_fadil: 'LY',
+  mohamed_khalil_alzarouq: 'LY',
+  ahmed_almajidi: 'YE',
+  mohamed_saleh_kitti: 'LY',
+  mohamed_alsharif_hwail: 'LY',
+  mohamed_aldarouqi: 'LY',
+  nooreddine_almeslati_v2: 'LY',
+  mohamed_alhudairi: 'LY',
+  issam_alrubai: 'LY',
+  abdulaziz_alwarghami: 'TN',
+  ahmed_shahin_qaloon: 'EG',
+  abdulsalam_alabidi: 'LY',
+  hudhaifa_alfitouri: 'LY',
+  abdulrahman_benhamed: 'LY',
+  naji_atiya_bensalman: 'LY',
+  salah_albaji: 'LY',
+  abdulbaset_dabbaj: 'LY',
+  khalifa_bitro: 'LY',
+  saber_abdulhakam: 'EG',
+  arafat_aljumaii: 'TN',
+  shaya_altamimi: 'KW',
+};

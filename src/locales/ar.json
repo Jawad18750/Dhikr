@@ -375,5 +375,13 @@
   "library.next": "السورة التالية",
   "library.prev": "السورة السابقة",
   "library.download": "تنزيل السورة",
-  "library.seek": "موضع التلاوة"
+  "library.seek": "موضع التلاوة",
+  "download.open": "تنزيل",
+  "download.close": "إغلاق",
+  "download.all": "تحديد الكل",
+  "download.none": "إلغاء التحديد",
+  "download.hint": "اختر السور التي تريد تنزيلها.",
+  "download.summary": "{count, plural, zero {لا سور} one {سورة واحدة} two {سورتان} few {# سور} many {# سورة} other {# سورة}} · {size}",
+  "download.go": "تنزيل",
+  "download.khatma": "الختمة كاملة"
 }

@@ -28,3 +28,48 @@ export async function getSurahFacts(slug: string): Promise<Record<number, SurahF
     return {};
   }
 }
+
+/** A recitation's files as our audio server lists them. */
+export type RecitationFiles = {
+  name: string;
+  riwaya: string;
+  /** Surah number → bytes of its MP3. */
+  sizes: Map<number, number>;
+};
+
+type ApiReciters = {
+  reciters: {
+    name: string;
+    moshaf: { name: string; server: string; slug?: string; surah_audio?: string }[];
+  }[];
+};
+
+/**
+ * One recitation's surahs and their sizes, from the catalogue's `surah_audio`
+ * ("surah:bytes:hash,…"), revalidated hourly. Null for a slug we do not serve.
+ */
+export async function getRecitationFiles(slug: string): Promise<RecitationFiles | null> {
+  try {
+    const response = await fetch(`${DHIKR_AUDIO_BASE}/api/v3/reciters`, {
+      next: { revalidate: 3600 },
+    });
+    if (!response.ok) return null;
+    const data = (await response.json()) as ApiReciters;
+    for (const reciter of data.reciters) {
+      for (const moshaf of reciter.moshaf) {
+        const own = moshaf.slug ?? moshaf.server.replace(/\/+$/, '').split('/').pop();
+        if (own !== slug) continue;
+        const sizes = new Map<number, number>();
+        for (const part of (moshaf.surah_audio ?? '').split(',')) {
+          const [surah, bytes] = part.split(':');
+          const s = Number(surah), b = Number(bytes);
+          if (Number.isInteger(s) && s >= 1 && s <= 114 && b > 0) sizes.set(s, b);
+        }
+        return { name: reciter.name, riwaya: moshaf.name.split(/\s+-\s+/)[0] ?? '', sizes };
+      }
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}

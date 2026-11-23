@@ -374,5 +374,13 @@
   "library.next": "Next surah",
   "library.prev": "Previous surah",
   "library.download": "Download the surah",
-  "library.seek": "Position"
+  "library.seek": "Position",
+  "download.open": "Download",
+  "download.close": "Close",
+  "download.all": "Select all",
+  "download.none": "Clear",
+  "download.hint": "Choose the surahs to download.",
+  "download.summary": "{count, plural, one {# surah} other {# surahs}} · {size}",
+  "download.go": "Download",
+  "download.khatma": "Whole khatma"
 }

@@ -843,3 +843,6 @@ html[data-mark-dock='in'] #brand-mark-slot > :is(svg, .mark-dock) {
 .player-bar {
   animation: site-menu-row 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+.download-bar {
+  animation: site-menu-row 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}

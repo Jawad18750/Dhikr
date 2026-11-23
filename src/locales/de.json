@@ -360,5 +360,13 @@
   "library.next": "Nächste Sure",
   "library.prev": "Vorige Sure",
   "library.download": "Sure herunterladen",
-  "library.seek": "Position"
+  "library.seek": "Position",
+  "download.open": "Herunterladen",
+  "download.close": "Schließen",
+  "download.all": "Alle wählen",
+  "download.none": "Auswahl leeren",
+  "download.hint": "Wähle die Suren zum Herunterladen.",
+  "download.summary": "{count, plural, one {# Sure} other {# Suren}} · {size}",
+  "download.go": "Herunterladen",
+  "download.khatma": "Ganze Khatma"
 }

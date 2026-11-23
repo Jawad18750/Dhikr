@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { ReciterHero } from '@/components/site/reciter-hero';
 import { ReciterLibrary } from '@/components/site/reciter-library';
 import { getDhikrPortrait } from '@/lib/dhikr-catalogue';
-import { getSurahFacts } from '@/lib/dhikr-surah-facts';
+import { getRecitationFiles, getSurahFacts } from '@/lib/dhikr-surah-facts';
 import { breadcrumbTrail } from '@/lib/seo/json-ld';
 import { buildPageMetadata } from '@/lib/seo/metadata';
 import { type SeoLocale, withLocale } from '@/lib/seo/routes';
@@ -165,6 +165,9 @@ export default async function Page({ params, searchParams }: Props) {
         <ReciterLibrary
           reciter={reciter}
           facts={await getSurahFacts(reciter.moshaf.id)}
+          sizes={Object.fromEntries(
+            (await getRecitationFiles(reciter.moshaf.id))?.sizes ?? []
+          )}
           initialSurah={initialSurah}
         />
       ) : (

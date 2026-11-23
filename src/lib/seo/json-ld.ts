@@ -39,7 +39,6 @@ export function websiteGraph({
     name: SITE.name,
     url: siteUrl,
     logo: `${siteUrl.replace(/\/$/, '')}${SITE.logo}`,
-    sameAs: [SITE.github],
   };
 
   return {

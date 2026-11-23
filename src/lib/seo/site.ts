@@ -7,7 +7,6 @@ const appUrl = clientConfig.APP_URL.replace(/\/+$/, '');
 export const SITE = {
   name: clientConfig.APP_NAME,
   url: appUrl,
-  github: 'https://github.com/adelpro/open-tarteel',
   ogImage: '/opengraph-image.png',
   logo: '/images/icon-512.png',
   verification: process.env.GOOGLE_SITE_VERIFICATION,

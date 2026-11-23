@@ -11,16 +11,10 @@ export default function PrivacyPage() {
         <div className="border-b pb-6">
           <h1 className="text-3xl font-bold">
             <FormattedMessage
-              defaultMessage="سياسة خصوصية Quran.us.kg"
+              defaultMessage="سياسة خصوصية ذكر"
               id="privacy.title"
             />
           </h1>
-          <p className="mt-2 text-gray-600">
-            <FormattedMessage
-              defaultMessage="المطور/الشركة: Benyahia-DEV"
-              id="privacy.developer"
-            />
-          </p>
           <p className="mt-2 text-gray-600">
             <FormattedMessage
               defaultMessage="تاريخ السريان: 14 فبراير 2025"

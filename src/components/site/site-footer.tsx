@@ -1,8 +1,7 @@
 import Link from 'next/link';
-import { IoLogoGithub } from 'react-icons/io5';
 
 import { type SeoLocale, withLocale } from '@/lib/seo/routes';
-import { BRAND, SITE } from '@/lib/seo/site';
+import { BRAND } from '@/lib/seo/site';
 import ar from '@/locales/ar.json';
 import de from '@/locales/de.json';
 import en from '@/locales/en.json';
@@ -12,7 +11,7 @@ import { Wordmark } from './wordmark';
 
 const COPY = { ar, en, de } as const;
 
-/** The page foot: the name, the credit open-tarteel's MIT licence asks for, links. */
+/** The page foot: the name and the links. */
 export function SiteFooter({ locale }: { locale: SeoLocale }) {
   const t = COPY[locale];
 
@@ -24,13 +23,6 @@ export function SiteFooter({ locale }: { locale: SeoLocale }) {
           <Wordmark className="h-9 w-auto text-ink" title={BRAND[locale]} />
           <span dir="ltr">dhikr.ly</span>
         </span>
-        <a
-          href={SITE.github}
-          className="flex items-center gap-1.5 hover:text-ink"
-        >
-          <IoLogoGithub className="h-[18px] w-[18px]" aria-hidden="true" />
-          {t['site.credit']}
-        </a>
         <span className="flex flex-wrap gap-5">
           <Link href={withLocale(locale, '/about')} className="hover:text-ink">
             {t['nav.about']}

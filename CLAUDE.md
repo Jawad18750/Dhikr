@@ -1,7 +1,7 @@
 # Project notes for AI agents
 
-Open Tarteel is a Next.js 15 Quran streaming PWA. Production is
-`https://tarteel.quran.us.kg`; Netlify builds only from `main`.
+«ذكر» (Dhikr) is a Next.js 15 Quran recitations PWA. Production is
+`https://dhikr.ly`, served from the VPS (pm2 `dhikr-site`).
 
 ## Skill routing
 
@@ -21,4 +21,4 @@ Do not suggest or auto-invoke other gstack skills: they run when the user types 
 - URL policy and the deployed audit live in `docs/SEO.md`.
 - `src/lib/seo/routes.ts` is the only source of public paths, indexability,
   sitemap inclusion, and locale prefixes.
-- Run `CHECK_URL=https://tarteel.quran.us.kg npm run seo:audit` after a deploy.
+- Run `CHECK_URL=https://dhikr.ly npm run seo:audit` after a deploy.

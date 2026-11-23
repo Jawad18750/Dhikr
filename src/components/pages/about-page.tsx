@@ -115,35 +115,6 @@ export default function AboutPage() {
             @ {currentYear} v{version}
           </p>
         </div>
-        {/* Credits section at the very bottom */}
-        <div className="flex w-full justify-center text-gray-600">
-          <div className="px-4 py-2 text-sm">
-            <FormattedMessage
-              id="about.footer.madeBy"
-              defaultMessage="Made by"
-            />{' '}
-            <a
-              href="https://adelpro.us.kg"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline"
-            >
-              adelpro
-            </a>{' '}
-            &middot;{' '}
-            <a
-              href="https://github.com/adelpro/open-tarteel"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline"
-            >
-              <FormattedMessage
-                id="about.footer.source"
-                defaultMessage="Source"
-              />
-            </a>
-          </div>
-        </div>
       </div>
     </div>
   );

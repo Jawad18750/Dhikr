@@ -164,7 +164,7 @@ export function NumberingConverter({
           className="h-9 w-[72px] rounded-lg bg-white/10 px-2 text-center tabular-nums text-white outline-none focus-visible:ring-2 focus-visible:ring-gold-light/60"
         />
       </div>
-      <div className="flex items-center gap-1.5 text-[13px] sm:gap-2.5 sm:text-[14px]">
+      <div className="flex flex-wrap items-center gap-1.5 text-[13px] sm:gap-2.5 sm:text-[14px]">
         <span className="whitespace-nowrap rounded-lg bg-white/10 px-2 py-1 tabular-nums text-white">
           {from} {surah}:{ayah}
         </span>
@@ -180,7 +180,7 @@ export function NumberingConverter({
         >
           ⇄
         </button>
-        <span className="min-w-0 truncate whitespace-nowrap rounded-lg bg-white/10 px-2 py-1 tabular-nums text-gold-light">
+        <span className="whitespace-nowrap rounded-lg bg-white/10 px-2 py-1 tabular-nums text-gold-light">
           {answer.length ? `${to} ${surah}:${answer.join('، ')}` : labels.none}
         </span>
       </div>

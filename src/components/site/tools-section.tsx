@@ -125,7 +125,7 @@ function ToolCard({
         <span className="font-bold">{ideaLabel}: </span>
         {idea}
       </p>
-      <div className={cn('mt-auto h-[104px] overflow-hidden rounded-2xl px-4 py-3.5', look.preview)}>
+      <div className={cn('mt-auto min-h-[104px] overflow-hidden rounded-2xl px-4 py-3.5 md:h-[104px]', look.preview)}>
         {preview}
       </div>
       <div className="flex flex-wrap items-center justify-between gap-2 pt-1">

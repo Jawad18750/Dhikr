@@ -1,9 +1,11 @@
+import { IoGridOutline, IoPlay } from 'react-icons/io5';
+
 import type { SeoLocale } from '@/lib/seo/routes';
 import ar from '@/locales/ar.json';
 import de from '@/locales/de.json';
 import en from '@/locales/en.json';
 
-import { Rosette } from './rosette';
+import { LogoMark3D } from './logo-mark-3d';
 
 const COPY = { ar, en, de } as const;
 
@@ -20,56 +22,55 @@ export function HomeHero({
 
   return (
     <section
+      data-header-tone="dark"
       aria-labelledby="hero-title"
-      className="flex flex-col-reverse items-center overflow-hidden rounded-[28px] bg-hero text-on-hero dark:ring-1 dark:ring-border sm:rounded-[36px] lg:min-h-[520px] lg:flex-row"
+      className="relative mx-auto flex w-full max-w-[1560px] flex-col-reverse items-center overflow-hidden rounded-[28px] bg-hero text-on-hero dark:ring-1 dark:ring-border sm:rounded-[40px] lg:min-h-[640px] lg:flex-row"
     >
-      <div className="flex w-full flex-col gap-6 px-6 pb-8 pt-2 sm:px-10 sm:pb-12 lg:flex-1 lg:px-16 lg:py-14">
-        <span className="border-gold-light/35 self-start rounded-full border px-4 py-1.5 text-sm font-medium text-gold-light sm:text-[15px]">
+      <div className="flex w-full flex-col gap-7 px-6 pb-10 pt-2 sm:px-12 sm:pb-14 lg:flex-1 lg:px-20 lg:py-20">
+        <span className="flex items-center gap-2 self-start rounded-full border border-white/20 px-4 py-1.5 text-sm text-white/80 sm:text-[15px]">
+          <span
+            className="h-2 w-2 rounded-full bg-gold-light"
+            aria-hidden="true"
+          />
           {t['hero.badge']}
         </span>
         <h1
           id="hero-title"
-          className="font-display text-[32px] font-black leading-[1.3] sm:text-[52px] lg:text-[60px]"
+          className="text-[34px] font-medium leading-[1.3] sm:text-[54px] lg:text-[64px]"
         >
           {t['hero.title1']}
           <br />
           {t['hero.title2']}
         </h1>
-        <p className="max-w-[540px] text-[17px] leading-[1.75] text-[#cfcac0] sm:text-xl">
+        <p className="max-w-[560px] text-lg leading-[1.75] text-white/70 sm:text-[22px]">
           {t['hero.body']}
         </p>
         <div className="flex flex-wrap gap-3">
           {listenHref && (
             <a
               href={listenHref}
-              className="flex h-[52px] items-center gap-2.5 rounded-full bg-gradient-to-b from-gold-light to-gold px-7 text-[17px] font-bold text-[#1b1712] transition-opacity hover:opacity-90"
+              className="flex h-[52px] items-center gap-2.5 rounded-full bg-gradient-to-b from-gold-light to-gold px-7 text-[17px] font-bold text-[#1b1712] transition-transform hover:-translate-y-0.5"
             >
-              <svg
-                width="15"
-                height="15"
-                viewBox="0 0 16 16"
-                aria-hidden="true"
-              >
-                <path d="M12 2.5 L12 13.5 L3 8 Z" fill="currentColor" />
-              </svg>
+              <IoPlay className="h-4 w-4" aria-hidden="true" />
               {t['hero.listen']}
             </a>
           )}
           <a
             href="#reciters"
-            className="flex h-[52px] items-center rounded-full border-[1.5px] border-white/40 px-7 text-[17px] font-bold text-on-hero transition-colors hover:border-white/70"
+            className="flex h-[52px] items-center gap-2.5 rounded-full border-[1.5px] border-white/40 px-7 text-[17px] font-bold text-on-hero transition-colors hover:border-white/80"
           >
+            <IoGridOutline className="h-[18px] w-[18px]" aria-hidden="true" />
             {t['hero.browse']}
           </a>
         </div>
-        <span className="text-[13px] tracking-[0.06em] text-[#8f8a80]">
+        <span className="mt-2 text-xs font-bold tracking-[0.12em] text-white/50">
           {t['hero.project']}
         </span>
       </div>
-      <div className="flex w-full items-center justify-center px-6 pt-8 lg:w-[44%] lg:p-6">
-        <Rosette
+      <div className="flex w-full items-center justify-center px-6 pt-10 lg:w-[46%] lg:p-8">
+        <LogoMark3D
           label={t['hero.art']}
-          className="h-[180px] w-[180px] sm:h-[260px] sm:w-[260px] lg:h-[420px] lg:w-[420px]"
+          className="aspect-square w-[260px] sm:w-[360px] lg:w-[540px]"
         />
       </div>
     </section>

@@ -367,5 +367,8 @@
   "settings.playback": "التشغيل",
   "settings.subtitle": "اللغة والمظهر والتنزيلات على هذا الجهاز.",
   "sort.shortPopular": "الأشهر",
-  "sort.shortViews": "المشاهدات"
+  "sort.shortViews": "المشاهدات",
+  "nav.darkMode": "الوضع الداكن",
+  "nav.lightMode": "الوضع الفاتح",
+  "tools.apiAnswer": "200 · {count} قارئًا"
 }

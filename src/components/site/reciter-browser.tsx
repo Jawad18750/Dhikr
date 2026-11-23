@@ -2,6 +2,19 @@
 
 import { useAtomValue } from 'jotai';
 import { useMemo, useState } from 'react';
+import type { IconType } from 'react-icons';
+import {
+  IoAppsOutline,
+  IoBookOutline,
+  IoCheckmarkDoneOutline,
+  IoChevronDown,
+  IoChevronUp,
+  IoMicOutline,
+  IoPersonOutline,
+  IoPlayOutline,
+  IoSearchOutline,
+  IoSpeedometerOutline,
+} from 'react-icons/io5';
 import { useIntl } from 'react-intl';
 
 import { SURAHS } from '@/constants';
@@ -39,25 +52,34 @@ export function ReciterBrowser({ reciters }: { reciters: CatalogueReciter[] }) {
   const chips = useMemo(
     () =>
       [
-        { id: 'all', label: 'browse.chipAll', count: reciters.length },
+        {
+          id: 'all',
+          label: 'browse.chipAll',
+          icon: IoAppsOutline,
+          count: reciters.length,
+        },
         {
           id: 'murattal',
           label: 'browse.chipMurattal',
+          icon: IoMicOutline,
           count: reciters.filter((r) => r.style === 'مرتل').length,
         },
         {
           id: 'hadr',
           label: 'browse.chipHadr',
+          icon: IoSpeedometerOutline,
           count: reciters.filter((r) => r.style === 'حدر').length,
         },
         {
           id: 'complete',
           label: 'browse.chipComplete',
+          icon: IoCheckmarkDoneOutline,
           count: reciters.filter((r) => r.surahTotal === 114).length,
         },
       ].filter((item) => item.count > 0) as {
         id: Chip;
         label: string;
+        icon: IconType;
         count: number;
       }[],
     [reciters]
@@ -107,24 +129,10 @@ export function ReciterBrowser({ reciters }: { reciters: CatalogueReciter[] }) {
       <div className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center gap-2 rounded-[28px] bg-surface-sunken p-2 sm:rounded-full">
           <label className="flex min-w-0 flex-1 basis-[240px] items-center gap-3 px-4">
-            <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
-              <circle
-                cx="11"
-                cy="11"
-                r="7"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                className="text-ink-muted"
-              />
-              <path
-                d="M16.5 16.5 L21 21"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                className="text-ink-muted"
-              />
-            </svg>
+            <IoSearchOutline
+              className="h-5 w-5 shrink-0 text-ink-muted"
+              aria-hidden="true"
+            />
             <span className="sr-only">
               {formatMessage({ id: 'browse.searchLabel' })}
             </span>
@@ -153,12 +161,23 @@ export function ReciterBrowser({ reciters }: { reciters: CatalogueReciter[] }) {
                 aria-pressed={mode === item}
                 onClick={() => setMode(item)}
                 className={cn(
-                  'h-11 rounded-full px-5 text-base transition-colors',
+                  'flex h-11 items-center gap-2 rounded-full px-5 text-base transition-colors',
                   mode === item
                     ? 'bg-ink font-bold text-background'
                     : 'text-ink-muted hover:text-ink'
                 )}
               >
+                {item === 'reciter' ? (
+                  <IoPersonOutline
+                    className="h-[18px] w-[18px]"
+                    aria-hidden="true"
+                  />
+                ) : (
+                  <IoBookOutline
+                    className="h-[18px] w-[18px]"
+                    aria-hidden="true"
+                  />
+                )}
                 {formatMessage({
                   id:
                     item === 'reciter'
@@ -189,6 +208,7 @@ export function ReciterBrowser({ reciters }: { reciters: CatalogueReciter[] }) {
                     : 'border border-border font-medium text-ink hover:border-border-strong'
                 )}
               >
+                <item.icon className="h-[18px] w-[18px]" aria-hidden="true" />
                 {formatMessage({ id: item.label })}
                 <span
                   className={cn(
@@ -217,7 +237,7 @@ export function ReciterBrowser({ reciters }: { reciters: CatalogueReciter[] }) {
             })}
           </h2>
           {shown.length > 0 ? (
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(250px,1fr))] sm:gap-5">
+            <div className="grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 lg:grid-cols-4">
               {shown.map((reciter) => (
                 <ReciterCard key={reciter.slug} reciter={reciter} />
               ))}
@@ -231,8 +251,16 @@ export function ReciterBrowser({ reciters }: { reciters: CatalogueReciter[] }) {
             <button
               type="button"
               onClick={() => setExpanded((value) => !value)}
-              className="h-12 self-center rounded-full border-[1.5px] border-ink px-6 text-base font-bold text-ink hover:bg-surface-sunken"
+              className="flex h-12 items-center gap-2 self-center rounded-full border-[1.5px] border-ink px-6 text-base font-bold text-ink hover:bg-surface-sunken"
             >
+              {expanded ? (
+                <IoChevronUp className="h-[18px] w-[18px]" aria-hidden="true" />
+              ) : (
+                <IoChevronDown
+                  className="h-[18px] w-[18px]"
+                  aria-hidden="true"
+                />
+              )}
               {expanded
                 ? formatMessage({ id: 'browse.showLess' })
                 : formatMessage(
@@ -269,9 +297,13 @@ export function ReciterBrowser({ reciters }: { reciters: CatalogueReciter[] }) {
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-surface-sunken text-[15px] font-bold text-ink">
                     {surah.id}
                   </span>
-                  <span className="text-lg font-bold leading-[1.4] text-ink">
+                  <span className="flex-1 text-lg font-bold leading-[1.4] text-ink">
                     {getSurahDisplayName(surah, locale)}
                   </span>
+                  <IoPlayOutline
+                    className="h-5 w-5 shrink-0 text-ink-muted"
+                    aria-hidden="true"
+                  />
                 </a>
               ))}
             </div>

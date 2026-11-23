@@ -11,7 +11,6 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import CacheManagement from '@/components/cache-management';
 import LanguageSwitcher from '@/components/language-switcher';
 import ProviderBadges from '@/components/provider-badge';
-import ThemePicker from '@/components/theme-picker';
 import Row from '@/components/ui/row';
 import Segmented from '@/components/ui/segmented';
 import Switch from '@/components/ui/switch';
@@ -148,18 +147,6 @@ export default function SettingsPage() {
               defaultMessage: 'Appearance',
             })}
           >
-            <div className="p-4">
-              <p className="text-[15px] font-bold text-ink">
-                <FormattedMessage id="settings.theme" defaultMessage="Theme" />
-              </p>
-              <p className="mt-0.5 text-[13px] text-ink-muted">
-                <FormattedMessage
-                  id="settings.themeDescription"
-                  defaultMessage="Choose a palette and a light or dark mode."
-                />
-              </p>
-              <ThemePicker className="mt-3" />
-            </div>
             <Row
               label={formatMessage({
                 id: 'settings.language',

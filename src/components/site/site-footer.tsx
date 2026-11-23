@@ -1,10 +1,14 @@
 import Link from 'next/link';
+import { IoLogoGithub } from 'react-icons/io5';
 
 import { type SeoLocale, withLocale } from '@/lib/seo/routes';
 import { BRAND, SITE } from '@/lib/seo/site';
 import ar from '@/locales/ar.json';
 import de from '@/locales/de.json';
 import en from '@/locales/en.json';
+
+import { LogoMark } from './logo-mark';
+import { Wordmark } from './wordmark';
 
 const COPY = { ar, en, de } as const;
 
@@ -14,11 +18,17 @@ export function SiteFooter({ locale }: { locale: SeoLocale }) {
 
   return (
     <footer className="mt-auto w-full border-t border-border">
-      <div className="mx-auto flex w-full max-w-[1280px] flex-wrap items-center justify-between gap-4 px-4 py-8 text-[15px] text-ink-muted sm:px-6">
-        <span>
-          <b className="font-black text-ink">{BRAND[locale]}</b> · dhikr.ly
+      <div className="mx-auto flex w-full max-w-[1360px] flex-wrap items-center justify-between gap-4 px-4 py-8 text-[15px] text-ink-muted sm:px-6">
+        <span className="flex items-center gap-3">
+          <LogoMark className="h-9 w-9 text-gold" />
+          <Wordmark className="h-9 w-auto text-ink" title={BRAND[locale]} />
+          <span dir="ltr">dhikr.ly</span>
         </span>
-        <a href={SITE.github} className="hover:text-ink">
+        <a
+          href={SITE.github}
+          className="flex items-center gap-1.5 hover:text-ink"
+        >
+          <IoLogoGithub className="h-[18px] w-[18px]" aria-hidden="true" />
           {t['site.credit']}
         </a>
         <span className="flex flex-wrap gap-5">

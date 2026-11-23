@@ -26,10 +26,16 @@ export async function HomeRoute({ locale }: { locale: SeoLocale }) {
   const reciters = await getDhikrCatalogue();
 
   return (
-    <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-12 px-4 pb-16 sm:gap-[72px] sm:px-6">
+    <div className="flex w-full flex-col gap-12 px-4 pb-16 sm:gap-[72px] sm:px-6">
       <HomeHero locale={locale} listenHref={reciters[0]?.href} />
-      <HomeClient reciters={reciters} />
-      <ToolsSection locale={locale} sampleSlug={reciters[0]?.slug} />
+      <div className="mx-auto flex w-full max-w-[1360px] flex-col gap-12 sm:gap-[72px]">
+        <HomeClient reciters={reciters} />
+        <ToolsSection
+          locale={locale}
+          sampleSlug={reciters[0]?.slug}
+          reciterCount={reciters.length}
+        />
+      </div>
     </div>
   );
 }

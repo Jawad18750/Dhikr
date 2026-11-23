@@ -7,17 +7,15 @@ import useDirection from '@/hooks/use-direction';
 import { useTheme } from '@/hooks/use-theme';
 
 /**
- * Runs before first paint: restores the palette and the light/dark mode so the
- * app never flashes the default theme on reload.
+ * Runs before first paint: restores dark mode when the visitor chose it, so the
+ * page never flashes light first. The site is light unless asked; there is one
+ * palette (the ذكر look, `warm`).
  */
 const themeScript = `(function(){try{
-var p=localStorage.getItem('theme-palette');
-if(p){try{p=JSON.parse(p)}catch(e){}}
-if(p!=='classic'&&p!=='night'&&p!=='warm'){p='warm';}
 var s=localStorage.getItem('theme-preference'),t=null;
 if(s){try{t=JSON.parse(s)}catch(e){t=s;}}
-var d=t==='dark'||((!t||t==='system')&&window.matchMedia('(prefers-color-scheme: dark)').matches);
-var el=document.documentElement;el.setAttribute('data-theme',p);
+var d=t==='dark';
+var el=document.documentElement;el.setAttribute('data-theme','warm');
 var cl=el.classList;
 if(d){cl.add('dark');cl.remove('light');}else{cl.add('light');cl.remove('dark');}
 }catch(e){}})();`;

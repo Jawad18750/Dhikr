@@ -348,5 +348,8 @@
   "settings.playback": "Wiedergabe",
   "settings.subtitle": "Sprache, Darstellung und Downloads für dieses Gerät.",
   "sort.shortPopular": "Beliebt",
-  "sort.shortViews": "Aufrufe"
+  "sort.shortViews": "Aufrufe",
+  "nav.darkMode": "Dunkler Modus",
+  "nav.lightMode": "Heller Modus",
+  "tools.apiAnswer": "200 · {count} Rezitatoren"
 }

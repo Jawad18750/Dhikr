@@ -90,7 +90,7 @@ export const selectedReciterAtom = createAtomWithStorage<Reciter | null>(
 export type Theme = 'light' | 'dark' | 'system';
 export const themeAtom = createAtomWithStorage<Theme>(
   'theme-preference',
-  'system'
+  'light'
 );
 
 /** The colour palette is a separate axis from the light/dark mode. */

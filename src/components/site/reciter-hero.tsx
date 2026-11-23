@@ -27,6 +27,7 @@ export function ReciterHero({
 
   return (
     <section
+      data-header-tone="dark"
       aria-labelledby="reciter-title"
       className="flex w-full flex-wrap items-center gap-6 rounded-[28px] bg-hero p-5 text-on-hero dark:ring-1 dark:ring-border sm:gap-8 sm:rounded-[36px] sm:p-8"
     >

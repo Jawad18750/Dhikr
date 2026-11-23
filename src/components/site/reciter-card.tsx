@@ -1,13 +1,23 @@
+import {
+  IoBookOutline,
+  IoListOutline,
+  IoSparklesOutline,
+} from 'react-icons/io5';
 import { useIntl } from 'react-intl';
 
 import type { CatalogueReciter } from '@/lib/dhikr-catalogue';
+import { cn } from '@/utils';
 
 /** «قالون عن نافع» → «قالون»: the pill keeps the riwaya's first name. */
 const shortRiwaya = (riwaya: string) => riwaya.split(/\s+/)[0] ?? riwaya;
 
+const pill =
+  'flex items-center gap-1 rounded-full bg-surface-sunken px-2 py-0.5 text-[11px] text-ink-muted sm:gap-1.5 sm:px-2.5 sm:py-1 sm:text-[13px]';
+
 /**
- * One recitation: the portrait, its place in the listening ranking, the
- * name, and what it offers. The whole card opens the reciter.
+ * One recitation as a near-square box: the portrait on top, left clear of any
+ * label, then the name and what it offers. The ranking sits in the photo's
+ * corner, away from the face. The whole box opens the reciter.
  */
 export function ReciterCard({ reciter }: { reciter: CatalogueReciter }) {
   const { formatMessage } = useIntl();
@@ -16,9 +26,9 @@ export function ReciterCard({ reciter }: { reciter: CatalogueReciter }) {
   return (
     <a
       href={reciter.href}
-      className="group flex flex-col gap-3 rounded-[22px] border border-[#ece8e1] bg-surface p-2 transition-colors hover:border-border-strong dark:border-border sm:rounded-[28px] sm:p-2.5"
+      className="group flex flex-col gap-3 rounded-[22px] border border-border bg-surface p-2 transition-colors hover:border-border-strong sm:rounded-[28px] sm:p-2.5"
     >
-      <div className="relative aspect-[5/4] overflow-hidden rounded-[16px] bg-surface-sunken sm:rounded-[20px]">
+      <span className="relative block aspect-square overflow-hidden rounded-[16px] bg-surface-sunken sm:rounded-[20px]">
         {reciter.portrait ? (
           // Portraits come from our audio server at their own size; next/image
           // would proxy them through the app for no gain.
@@ -28,19 +38,19 @@ export function ReciterCard({ reciter }: { reciter: CatalogueReciter }) {
             alt=""
             loading="lazy"
             decoding="async"
-            className="h-full w-full object-cover object-top transition-transform duration-240 group-hover:scale-[1.03]"
+            className="absolute inset-0 h-full w-full object-cover object-[50%_20%] transition-transform duration-500 group-hover:scale-[1.04]"
           />
         ) : (
           <span
             aria-hidden="true"
-            className="font-display flex h-full w-full items-center justify-center text-6xl font-black text-ink-subtle"
+            className="absolute inset-0 flex items-center justify-center text-6xl font-black text-ink-subtle"
           >
             {initials}
           </span>
         )}
         {reciter.rank !== null && (
           <span
-            className="absolute end-3 top-3 flex h-[30px] min-w-[30px] items-center justify-center rounded-full bg-[#0b0b0c]/75 px-2 text-sm font-bold text-gold-light"
+            className="absolute end-2 top-2 flex h-7 min-w-7 items-center justify-center rounded-full bg-black/60 px-2 text-[13px] font-bold text-gold-light backdrop-blur-sm sm:end-2.5 sm:top-2.5"
             aria-label={formatMessage(
               { id: 'browse.rank' },
               { rank: reciter.rank }
@@ -50,31 +60,35 @@ export function ReciterCard({ reciter }: { reciter: CatalogueReciter }) {
           </span>
         )}
         {reciter.isNew && (
-          <span className="absolute start-3 top-3 rounded-full bg-gold-light px-2.5 py-1 text-xs font-bold text-[#1b1712]">
+          <span className="absolute start-2 top-2 rounded-full bg-gold-light px-2.5 py-1 text-xs font-bold text-[#1b1712] sm:start-2.5 sm:top-2.5">
             {formatMessage({ id: 'browse.new' })}
           </span>
         )}
-      </div>
-      <div className="flex flex-col gap-2 px-1.5 pb-1.5 sm:gap-2.5 sm:px-2 sm:pb-2">
-        <span className="text-base font-bold leading-[1.4] text-ink sm:text-xl">
+      </span>
+
+      <span className="flex flex-col gap-2 px-1.5 pb-1.5 sm:px-2 sm:pb-2">
+        <span className="text-[15px] font-bold leading-[1.4] text-ink sm:text-lg">
           {reciter.name}
         </span>
-        <div className="flex flex-wrap gap-1.5">
-          <span className="rounded-full bg-surface-sunken px-2.5 py-1 text-xs text-ink-muted sm:px-3 sm:text-[13px]">
+        <span className="flex flex-wrap gap-1 sm:gap-1.5">
+          <span className={pill}>
+            <IoBookOutline aria-hidden="true" />
             {shortRiwaya(reciter.riwaya)}
             {reciter.style ? ` · ${reciter.style}` : ''}
           </span>
-          <span className="rounded-full bg-surface-sunken px-2.5 py-1 text-xs text-ink-muted sm:px-3 sm:text-[13px]">
+          <span className={pill}>
+            <IoListOutline aria-hidden="true" />
             {formatMessage(
               { id: 'browse.surahCount' },
               { count: reciter.surahTotal }
             )}
           </span>
-          <span className="rounded-full bg-primary-soft px-2.5 py-1 text-xs text-primary sm:px-3 sm:text-[13px]">
+          <span className={cn(pill, 'bg-primary-soft text-primary')}>
+            <IoSparklesOutline aria-hidden="true" />
             {formatMessage({ id: 'browse.wordByWord' })}
           </span>
-        </div>
-      </div>
+        </span>
+      </span>
     </a>
   );
 }

@@ -151,7 +151,7 @@ export default async function Page({ params, searchParams }: Props) {
     },
   ]);
   return (
-    <div className="mx-auto flex w-full max-w-[1280px] flex-col items-center gap-6 px-4 pb-16 text-foreground sm:px-6">
+    <div className="mx-auto flex w-full max-w-[1360px] flex-col items-center gap-6 px-4 pb-16 text-foreground sm:px-6">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

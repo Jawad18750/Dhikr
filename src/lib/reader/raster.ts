@@ -31,3 +31,17 @@ export async function rasterise(svg: string, tag: number): Promise<Buffer> {
     .png({ compressionLevel: 9, adaptiveFiltering: true })
     .toBuffer();
 }
+
+/** The PNG response a reader route sends: private, never cached, never sniffed. */
+export async function png(svg: string, tag: number, extra: Record<string, string> = {}) {
+  const body = await rasterise(svg, tag);
+  return new Response(new Uint8Array(body), {
+    headers: {
+      'Content-Type': 'image/png',
+      'Cache-Control': 'private, no-store',
+      'Content-Disposition': 'inline',
+      'X-Content-Type-Options': 'nosniff',
+      ...extra,
+    },
+  });
+}

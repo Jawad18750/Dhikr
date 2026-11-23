@@ -25,7 +25,7 @@ import type { SurahFacts } from '@/lib/dhikr-surah-facts';
 import type { Reciter } from '@/types';
 import { cn, getSurahDisplayName, normalizeArabicText } from '@/utils';
 
-import { ReaderSheet } from './reader-sheet';
+import { ReaderLine } from './reader-line';
 
 /** Where a listener was in this recitation, kept on this device only. */
 type Resume = { index: number; time: number };
@@ -567,9 +567,26 @@ export function ReciterLibrary({
         }}
       />
 
+      {/* Room under the list for the line, when it rides on the player. */}
+      {reading && current && <div aria-hidden="true" className="h-24 w-full" />}
       {current && (
         <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[70] px-3 pb-3 sm:px-6 sm:pb-5">
-          <div className="player-bar pointer-events-auto mx-auto flex max-w-[920px] flex-col gap-2 rounded-[24px] bg-hero px-4 pb-3 pt-3 text-on-hero shadow-[0_18px_50px_rgb(0_0_0/0.25)] sm:px-5">
+          <div className="player-bar pointer-events-auto mx-auto flex max-w-[920px] flex-col gap-2 overflow-hidden rounded-[24px] bg-hero px-4 pb-3 pt-3 text-on-hero shadow-[0_18px_50px_rgb(0_0_0/0.25)] sm:px-5">
+            {reading && (
+              <div className="reader-in -mx-4 -mt-3 border-b border-on-hero/10 pb-1 pt-2 sm:-mx-5">
+                <ReaderLine
+                  slug={slug}
+                  surah={current.id}
+                  audio={audioRef}
+                  onSeek={(seconds) => {
+                    const audio = audioRef.current;
+                    if (!audio) return;
+                    audio.currentTime = seconds;
+                    if (audio.paused) void audio.play();
+                  }}
+                />
+              </div>
+            )}
             <div className="flex items-center gap-3">
               <button
                 type="button"
@@ -592,15 +609,16 @@ export function ReciterLibrary({
                   type="button"
                   onClick={() => setReading((open) => !open)}
                   aria-pressed={reading}
+                  aria-label={formatMessage({ id: 'reader.open' })}
                   className={cn(
-                    'flex h-10 items-center gap-1.5 rounded-full px-3 text-[14px] font-bold transition-colors',
+                    'flex h-10 w-10 items-center justify-center gap-1.5 rounded-full text-[14px] font-bold transition-colors sm:w-auto sm:px-3',
                     reading
                       ? 'bg-on-hero text-hero'
                       : 'bg-on-hero/10 text-on-hero hover:bg-on-hero/20'
                   )}
                 >
                   <IoBookOutline className="h-[17px] w-[17px]" aria-hidden="true" />
-                  {formatMessage({ id: 'reader.open' })}
+                  <span className="hidden sm:inline">{formatMessage({ id: 'reader.open' })}</span>
                 </button>
                 <button
                   type="button"
@@ -689,21 +707,6 @@ export function ReciterLibrary({
             </div>
           </div>
         </div>
-      )}
-      {reading && current && (
-        <ReaderSheet
-          slug={slug}
-          surah={current.id}
-          title={current.name}
-          audio={audioRef}
-          onSeek={(seconds) => {
-            const audio = audioRef.current;
-            if (!audio) return;
-            audio.currentTime = seconds;
-            if (audio.paused) void audio.play();
-          }}
-          onClose={() => setReading(false)}
-        />
       )}
       {toast && (
         <div

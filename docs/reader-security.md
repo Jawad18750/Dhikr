@@ -29,15 +29,17 @@ browser, never in a reusable form, and never fast enough to collect the whole bo
 
 ## What the browser receives
 
-- **A row:** one image of one laid-out line of ink, sized for the reader's column.
+- **The line:** the surah is laid out as one continuous line (right to left) at the
+  screen's own height and density; the browser gets its total width in pixels and asks for
+  it in tiles of 1200 px, each one image of that stretch of ink. Nothing about which word
+  sits where.
 - **A lit word:** the lit word is the word's own ink **recoloured** (no glow, no halo, no
-  frame). It comes as a row-sized image that is transparent except that word's ink, laid
-  over the row in gold. It carries no number, box or offset: the position exists only as
-  pixels, the same pixels the screen shows.
-- **Ayah bands:** per row, which ayahs it holds and the row's height, for scrolling and
-  following. No word or ayah geometry inside a row.
-- **Tap to jump:** the browser sends where it was tapped (row, x, y); the server answers with
-  a time to seek to. The server never answers "where is word N".
+  frame). It comes as a tile-sized image (two where it crosses a seam) that is transparent
+  except that word's ink, with only the tile's number. It carries no box and no offset: the
+  page finds where to centre it from its own pixels, the same pixels the screen shows.
+- **Tap to jump:** the browser sends where on the line it was tapped (x, y); the server
+  answers with the word there, which the page turns into a time to seek to. The server never
+  answers "where is word N".
 
 ## Pace and abuse
 

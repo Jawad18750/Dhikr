@@ -8,22 +8,8 @@
 const base = () => process.env.READER_URL ?? '';
 const token = () => process.env.READER_TOKEN ?? '';
 
-export const READER_ZOOMS = [1.3, 1.6, 2.0, 2.5] as const;
-
-export type ReaderLayout = {
-  surah: number;
-  zoom: number;
-  column: number;
-  rows: {
-    top: number;
-    height: number;
-    y0: number;
-    y1: number;
-    kind: 'text' | 'header' | 'basmala';
-    /** [ayah, first word, last word] for each ayah with words on the row. */
-    words: [number, number, number][];
-  }[];
-};
+/** A surah as one line at a height in pixels: its width and how it is cut into tiles. */
+export type ReaderStrip = { surah: number; height: number; width: number; tile: number; tiles: number };
 
 export const readerAvailable = () => base() !== '' && token().length >= 24;
 
@@ -39,28 +25,33 @@ async function call(path: string, params: Record<string, string | number>) {
   return response;
 }
 
-export async function readerLayout(surah: number, zoom: number): Promise<ReaderLayout> {
-  return (await call('/layout', { surah, zoom })).json() as Promise<ReaderLayout>;
+export async function readerStrip(surah: number, height: number): Promise<ReaderStrip> {
+  return (await call('/strip', { surah, height })).json() as Promise<ReaderStrip>;
 }
 
-export async function readerRowSvg(
+export async function readerStripTile(
   surah: number,
-  zoom: number,
-  row: number,
-  width: number,
-  theme: 'light' | 'dark',
-  lit?: { ayah: number; word: number }
+  height: number,
+  tile: number,
+  theme: 'light' | 'dark'
 ): Promise<string> {
-  const params: Record<string, string | number> = { surah, zoom, row, width, theme };
-  if (lit) {
-    params.ayah = lit.ayah;
-    params.word = lit.word;
-  }
-  return (await call('/row', params)).text();
+  return (await call('/strip/tile', { surah, height, tile, theme })).text();
 }
 
-export async function readerHit(surah: number, zoom: number, row: number, x: number, y: number) {
-  return (await call('/hit', { surah, zoom, row, x, y })).json() as Promise<{
+/** The lit word on a transparent overlay of the tile(s) it sits in, and the first tile. */
+export async function readerStripWord(
+  surah: number,
+  height: number,
+  ayah: number,
+  word: number,
+  theme: 'light' | 'dark'
+): Promise<{ svg: string; tile: number }> {
+  const response = await call('/strip/word', { surah, height, ayah, word, theme });
+  return { svg: await response.text(), tile: Number(response.headers.get('x-word-tile')) };
+}
+
+export async function readerStripHit(surah: number, height: number, x: number, y: number) {
+  return (await call('/strip/hit', { surah, height, x, y })).json() as Promise<{
     ayah: number;
     word: number;
   } | null>;

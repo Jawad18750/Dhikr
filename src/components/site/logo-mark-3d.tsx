@@ -18,13 +18,12 @@ if (typeof window !== 'undefined') void loadThree();
 
 const smooth = (x: number) => x * x * (3 - 2 * x);
 /**
- * Where the mark does not fly: phones and touch screens (the flight is a
- * per-scroll transform of a live canvas, too heavy there) and reduced motion.
- * There it stays in the hero, and once it has scrolled past, its live canvas
- * moves into the header and turns in beside the wordmark.
+ * The mark does not fly on any screen: tied to the scroll, a flight stopped
+ * wherever the reader stopped, half way, over the headline (Jawad, 2026-11-23:
+ * a bug, as it read). It stays in the hero, and once it has scrolled past, its
+ * live canvas moves into the header and turns in beside the wordmark.
  */
-const GROUNDED =
-  '(prefers-reduced-motion: reduce), (max-width: 767px), (pointer: coarse)';
+const GROUNDED = 'all';
 
 /**
  * The blades' own turning, as QUL's ring turns its chips (qul.tarteel.ai,

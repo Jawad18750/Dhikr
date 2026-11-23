@@ -7,7 +7,7 @@ import { SURAHS } from '@/constants';
 import { getDhikrCatalogue } from '@/lib/dhikr-catalogue';
 import { getSurahFacts } from '@/lib/dhikr-surah-facts';
 import { buildPageMetadata } from '@/lib/seo/metadata';
-import { removeTashkeel } from '@/utils';
+import { ayahCountAr, removeTashkeel } from '@/utils';
 
 export const revalidate = 3600;
 
@@ -59,7 +59,7 @@ export default async function Page() {
                   />
                   <span className="truncate text-[13px] text-ink-subtle">
                     {surah.revelationType === 'Meccan' ? 'مكية' : 'مدنية'}
-                    {facts[surah.id]?.ayahs ? ` · ${facts[surah.id].ayahs} آية` : ''}
+                    {facts[surah.id]?.ayahs ? ` · ${ayahCountAr(facts[surah.id].ayahs)}` : ''}
                   </span>
                 </span>
                 <IoChevronBack className="h-5 w-5 shrink-0 text-ink-subtle" aria-hidden="true" />

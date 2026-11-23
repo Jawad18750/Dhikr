@@ -14,7 +14,7 @@ import { withLocale } from '@/lib/seo/routes';
 import { SITE } from '@/lib/seo/site';
 import ar from '@/locales/ar.json';
 import { DHIKR_AUDIO_BASE } from '@/services/reciters/dhikr.adapter';
-import { removeTashkeel } from '@/utils';
+import { ayahCountAr, removeTashkeel } from '@/utils';
 
 export const revalidate = 3600;
 
@@ -107,7 +107,7 @@ export default async function Page({ params }: Props) {
           </h1>
           <span className="flex flex-wrap gap-1.5 text-[13px] sm:gap-2 sm:text-[15px]">
             <span className={chip}>{surah.revelationType === 'Meccan' ? ar['library.meccan'] : ar['library.medinan']}</span>
-            {ayahs > 0 && <span className={chip}>{ar['surah.ayahs'].replace('{count}', String(ayahs))}</span>}
+            {ayahs > 0 && <span className={chip}>{ayahCountAr(ayahs)}</span>}
             <span className="rounded-full border border-hero-gold/35 px-2.5 py-0.5 text-hero-gold sm:px-3.5 sm:py-1">
               {ar['surah.reciterCount'].replace('{count}', String(reciters.length))}
             </span>

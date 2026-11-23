@@ -16,3 +16,6 @@ export const getSurahDisplayName = (
   if (locale === 'de') return surah.germanName;
   return removeTashkeel(surah.name);
 };
+
+/** «7 آيات», «285 آية»: Arabic takes the plural from three to ten. */
+export const ayahCountAr = (count: number) => `${count} ${count >= 3 && count <= 10 ? 'آيات' : 'آية'}`;

@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/utils';
 
 /** Bumped when the reader draws ayahs differently, so browsers drop their old copies. */
-const INK_VERSION = 2;
+const INK_VERSION = 3;
 
 /**
  * An ayah (or one word of it) in the Jamahiriya mushaf's own ink: the printed words,

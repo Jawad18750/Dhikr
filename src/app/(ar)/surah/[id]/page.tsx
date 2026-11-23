@@ -81,7 +81,7 @@ export default async function Page({ params }: Props) {
   ]);
   const chip = 'rounded-full border border-on-hero/20 px-2.5 py-0.5 text-on-hero/80 sm:px-3.5 sm:py-1';
   const step =
-    'flex h-10 w-10 items-center justify-center rounded-full border border-on-hero/15 text-on-hero/80 transition-colors hover:border-on-hero/40 hover:text-on-hero';
+    'flex h-9 items-center gap-1.5 rounded-full border border-on-hero/15 px-3.5 text-[14px] text-on-hero/80 transition-colors hover:border-on-hero/40 hover:text-on-hero';
 
   return (
     <div className="mx-auto flex w-full max-w-[1360px] flex-col items-start gap-5 px-4 pb-12 text-foreground sm:gap-8 sm:px-6">
@@ -92,8 +92,9 @@ export default async function Page({ params }: Props) {
       <section
         data-header-tone="dark"
         aria-labelledby="surah-title"
-        className="flex w-full items-center gap-4 rounded-[28px] bg-hero p-5 text-on-hero sm:gap-6 sm:rounded-[36px] sm:p-8"
+        className="flex w-full flex-col gap-5 rounded-[28px] bg-hero p-5 text-on-hero sm:gap-7 sm:rounded-[36px] sm:p-8"
       >
+        <div className="flex items-center gap-4 sm:gap-6">
         <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-hero-gold/40 text-[20px] font-bold tabular-nums text-hero-gold sm:h-20 sm:w-20 sm:text-[28px]">
           {surah.id}
         </span>
@@ -109,24 +110,25 @@ export default async function Page({ params }: Props) {
             </span>
           </span>
         </div>
-        <nav aria-label={ar['surah.nav']} className="flex shrink-0 flex-col gap-2 sm:flex-row">
+        </div>
+        {/* The surahs on either side, by name: the one before on the right, as the
+            mushaf runs, the one after on the left. */}
+        <nav aria-label={ar['surah.nav']} className="flex items-center justify-between gap-3 border-t border-on-hero/10 pt-4">
           {previous ? (
             <Link href={`/surah/${previous.id}`} aria-label={`${ar['surah.previous']}: ${removeTashkeel(previous.name)}`} className={step}>
-              <IoChevronForward className="h-[18px] w-[18px]" aria-hidden="true" />
+              <IoChevronForward className="h-4 w-4" aria-hidden="true" />
+              {removeTashkeel(previous.name)}
             </Link>
           ) : (
-            <span className={`${step} pointer-events-none opacity-30`} aria-hidden="true">
-              <IoChevronForward className="h-[18px] w-[18px]" />
-            </span>
+            <span />
           )}
           {next ? (
             <Link href={`/surah/${next.id}`} aria-label={`${ar['surah.next']}: ${removeTashkeel(next.name)}`} className={step}>
-              <IoChevronBack className="h-[18px] w-[18px]" aria-hidden="true" />
+              {removeTashkeel(next.name)}
+              <IoChevronBack className="h-4 w-4" aria-hidden="true" />
             </Link>
           ) : (
-            <span className={`${step} pointer-events-none opacity-30`} aria-hidden="true">
-              <IoChevronBack className="h-[18px] w-[18px]" />
-            </span>
+            <span />
           )}
         </nav>
       </section>

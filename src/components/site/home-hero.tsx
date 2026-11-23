@@ -29,9 +29,7 @@ export function HomeHero({ locale }: { locale: SeoLocale }) {
           id="hero-title"
           className="text-[34px] font-medium leading-[1.3] sm:text-[54px] lg:text-[64px]"
         >
-          {t['hero.title1']}
-          <br />
-          {t['hero.title2']}
+          {t['hero.title']}
         </h1>
         <p className="max-w-[560px] text-lg leading-[1.75] text-on-hero/70 sm:text-[22px]">
           {t['hero.body']}

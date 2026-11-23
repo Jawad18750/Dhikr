@@ -1,5 +1,5 @@
 import type { IconType } from 'react-icons';
-import { IoBookOutline, IoCloudDownloadOutline, IoTimeOutline, IoTrophyOutline } from 'react-icons/io5';
+import { IoCloudDownloadOutline, IoTimeOutline, IoTrophyOutline } from 'react-icons/io5';
 
 import { splitMoshafName } from '@/lib/dhikr-catalogue';
 import { flagOf } from '@/lib/reciter-countries';
@@ -45,9 +45,7 @@ export function ReciterHero({
 }) {
   const t = COPY[locale];
   const { riwaya, style } = splitMoshafName(reciter.moshaf.name);
-  const surahs = Number(reciter.moshaf.surah_total) || 0;
   const cells = [
-    surahs > 0 && { value: String(surahs), label: t['stats.surahs'], icon: IoBookOutline },
     figures &&
       figures.seconds > 0 && {
         value: `${Math.floor(figures.seconds / 3600)}:${String(Math.floor((figures.seconds % 3600) / 60)).padStart(2, '0')}`,

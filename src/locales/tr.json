@@ -407,6 +407,7 @@
   "tools.converterIdea": "Tefsir ve meallerin çoğu Hafs'a göre numaralandırılmıştır; dönüştürücü onları Kalun mushafındaki doğru ayete, kayma olmadan bağlar.",
   "tools.audioIdea": "Çevrimdışı dinlemek için ve tilavet yayını yapan radyolar ile camiler için: insanların burada dinlediği dosyaların aynısı.",
   "nav.surahs": "Sureler",
+  "nav.library": "Kütüphane",
   "nav.developers": "API",
   "nav.account": "Hesap",
   "cta.title": "Dhikr üzerine inşa edin",

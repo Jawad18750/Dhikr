@@ -407,6 +407,7 @@
   "tools.converterIdea": "La plupart des tafsirs et des traductions sont numérotés selon Hafs ; le convertisseur les relie au bon verset du moushaf de Qaloun, sans décalage.",
   "tools.audioIdea": "Pour écouter hors ligne, et pour les radios et les mosquées qui diffusent la récitation : les mêmes fichiers que ceux qu'on entend ici.",
   "nav.surahs": "Sourates",
+  "nav.library": "Bibliothèque",
   "nav.developers": "API",
   "nav.account": "Compte",
   "cta.title": "Construire avec Dhikr",

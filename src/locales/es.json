@@ -407,6 +407,7 @@
   "tools.converterIdea": "La mayoría de los tafsires y traducciones están numerados según Hafs; el conversor los enlaza con la aleya correcta del mushaf de Qalun, sin desfases.",
   "tools.audioIdea": "Para escuchar sin conexión, y para emisoras de radio y mezquitas que emiten recitaciones: los mismos archivos que se escuchan aquí.",
   "nav.surahs": "Suras",
+  "nav.library": "Biblioteca",
   "nav.developers": "API",
   "nav.account": "Cuenta",
   "cta.title": "Construye sobre Dhikr",

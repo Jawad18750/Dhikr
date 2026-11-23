@@ -4,6 +4,7 @@ import {
   IoBookOutline,
   IoCodeSlashOutline,
   IoInformationCircleOutline,
+  IoLibraryOutline,
   IoPersonCircleOutline,
 } from 'react-icons/io5';
 
@@ -36,6 +37,11 @@ export function SiteHeader({ locale }: { locale: SeoLocale }) {
       href: '/surahs',
       label: t['nav.surahs'],
       icon: <IoBookOutline className={icon} aria-hidden="true" />,
+    },
+    {
+      href: '/library',
+      label: t['nav.library'],
+      icon: <IoLibraryOutline className={icon} aria-hidden="true" />,
     },
     {
       href: withLocale(locale, '/developers'),

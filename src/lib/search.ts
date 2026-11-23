@@ -1,6 +1,8 @@
 // Server only: the site's search over its texts.
 import { SURAHS } from '@/constants';
+import { fold, foldLetter } from '@/lib/arabic-fold.mjs';
 import { qalunForHafs } from '@/lib/ayah-numbering';
+import { databaseAvailable, pool } from '@/lib/database';
 import { collection, collections } from '@/lib/hadith';
 import { libraryIndex, loadBook, sectionsOf } from '@/lib/library';
 import { mawsuahArticle, mawsuahIndex, partsOf, type Run } from '@/lib/mawsuah';
@@ -10,9 +12,9 @@ import { removeTashkeel } from '@/utils';
 
 /**
  * Search over what the site publishes as text: the Quran (Qalun), the hadith collections,
- * the thematic encyclopedia, the library's books and the short tafsirs. The long tafsirs
- * (Ibn Kathir, al-Qurtubi, al-Shawkani …, 260 million letters) are left out: they are read
- * by ayah.
+ * the thematic encyclopedia, the library's books, and the nine tafsirs. The tafsirs (170
+ * million letters) are searched in Postgres, through a trigram index the indexer fills
+ * (scripts/index-tafsir.mjs); the rest is held in memory.
  *
  * Everything is held in memory, folded the way Arabic is searched: no diacritics or Quranic
  * marks, one alef, ى as ي, ة as ه, hamza seats as their letters. In the Quran, whose
@@ -31,43 +33,6 @@ export type Group = (typeof GROUPS)[number]['id'];
 
 type Document = { group: Group; title: string; where: string; href: string; text: string; folded: string; surah?: number; ayah?: number };
 
-/** Diacritics, Quranic marks and tatweel: not searched. */
-const isMark = (c: number) =>
-  (c >= 0x0610 && c <= 0x061a) || (c >= 0x064b && c <= 0x065f) || c === 0x0670 || (c >= 0x06d6 && c <= 0x06ed) || c === 0x0640 || (c >= 0x08d3 && c <= 0x08ff);
-
-/** One letter folded: '' to drop it, else what it is searched as. */
-function foldLetter(ch: string): string {
-  const c = ch.codePointAt(0) ?? 0;
-  if (isMark(c)) return '';
-  switch (ch) {
-    case 'أ':
-    case 'إ':
-    case 'آ':
-    case 'ٱ':
-      return 'ا';
-    case 'ى':
-    case 'ئ':
-    case 'ے':
-    case 'ی':
-      return 'ي';
-    case 'ؤ':
-      return 'و';
-    case 'ة':
-      return 'ه';
-  }
-  if (c >= 0x0621 && c <= 0x064a) return ch;
-  if ((c >= 0x30 && c <= 0x39) || (c >= 0x61 && c <= 0x7a)) return ch;
-  if (c >= 0x41 && c <= 0x5a) return ch.toLowerCase();
-  if (c >= 0x0660 && c <= 0x0669) return String(c - 0x0660);
-  return /\p{L}/u.test(ch) ? ch : ' ';
-}
-
-export function fold(text: string): string {
-  let out = '';
-  for (const ch of text) out += foldLetter(ch);
-  return out.replace(/\s+/g, ' ').trim();
-}
-
 /** The Quran's folding: alefs, lone hamzas and spaces dropped too (ءَامَنُواْ is آمنوا). */
 const QURAN_DROP = /[ اء]/g;
 /** The mushaf's و for alef before a final ة (الصلوٰة، الزكوٰة، الحيوٰة): dropped on both sides. */
@@ -79,8 +44,6 @@ const surahName = (n: number) => removeTashkeel(SURAHS.find((s) => s.id === n)?.
 const flatten = (runs: Run[] | undefined) =>
   (runs ?? []).map((r) => (typeof r === 'string' ? r : r[0] === 'q' ? `﴿${r[1]}﴾` : r[0] === 'a' ? ` ${r[4]}` : '')).join('');
 
-/** The short tafsirs, searched whole. */
-const SHORT_TAFSIRS = ['muyassar', 'mukhtasar', 'jalalayn'];
 
 function build(): Document[] {
   const entries: Document[] = [];
@@ -104,15 +67,6 @@ function build(): Document[] {
           .map((b) => [flatten(b.r), ...(b.items ?? []).map(flatten), ...(b.rows ?? []).flatMap((row) => row.map(flatten))].join(' '))
           .join('\n');
         entries.push({ group: 'mawsuah', title: topic.title_ar, where: part.title, href: `/mawsuah/${topic.id}/${n + 1}`, text, folded: fold(text) });
-      }
-    }
-  }
-  for (const t of tafsirs().filter((x) => SHORT_TAFSIRS.includes(x.id))) {
-    for (let s = 1; s <= 114; s++) {
-      for (const [hafs, text] of surahEntries(t.id, s) ?? []) {
-        if (!text) continue;
-        const ours = qalunForHafs(s, hafs)[0] ?? 1;
-        entries.push({ group: 'tafsir', title: `${surahName(s)} ${ours}`, where: t.title, href: `/tafsir/${t.id}/${s}/${ours}`, text, folded: fold(text) });
       }
     }
   }
@@ -198,6 +152,58 @@ export type Results = { query: string; counts: Record<Group, number>; hits: Hit[
 
 const CAP = 1000;
 
+/** The tafsir passages holding every word, phrase matches first: a page of them and how many. */
+async function tafsirMatches(phrase: string, words: string[], offset: number, limit: number) {
+  const none = { count: 0, hits: [] as Hit[] };
+  // Only a word of three letters or more can use the index; without one, no scan of it all.
+  if (!databaseAvailable() || !words.some((w) => w.length > 2)) return none;
+  // Folded text holds letters, digits and spaces only, so nothing in it is a LIKE wildcard.
+  const values: string[] = [];
+  const conditions = words.map((w) => {
+    values.push(w.length > 2 ? `%${w}%` : `% ${w} %`);
+    return w.length > 2 ? `folded LIKE $${values.length}` : `(' ' || folded || ' ') LIKE $${values.length}`;
+  });
+  values.push(`%${phrase}%`);
+  const exact = `$${values.length}`;
+  const order = tafsirs().map((t) => t.id);
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN READ ONLY');
+    await client.query("SET LOCAL statement_timeout = '4s'");
+    const { rows } = await client.query<{ tafsir: string; surah: number; hafs: number; n: string }>(
+      `WITH m AS (
+         SELECT tafsir, surah, hafs, folded LIKE ${exact} AS exact
+         FROM tafsir_passages WHERE ${conditions.join(' AND ')} LIMIT ${CAP})
+       SELECT tafsir, surah, hafs, count(*) OVER () AS n FROM m
+       ORDER BY exact DESC, array_position($${values.length + 1}::text[], tafsir), surah, hafs
+       OFFSET ${offset} LIMIT ${limit}`,
+      [...values, order]
+    );
+    await client.query('COMMIT');
+    const count = rows.length > 0 ? Number(rows[0].n) : 0;
+    const titles = new Map(tafsirs().map((t) => [t.id, t.title]));
+    return {
+      count,
+      hits: rows.map((r): Hit => {
+        const text = (surahEntries(r.tafsir, r.surah) ?? []).find(([h]) => h === r.hafs)?.[1] ?? '';
+        const ours = qalunForHafs(r.surah, r.hafs)[0] ?? 1;
+        return {
+          group: 'tafsir',
+          title: `${surahName(r.surah)} ${ours}`,
+          where: titles.get(r.tafsir) ?? r.tafsir,
+          href: `/tafsir/${r.tafsir}/${r.surah}/${ours}`,
+          ...snippet(text, [phrase, ...words.toSorted((a, b) => b.length - a.length)], false),
+        };
+      }),
+    };
+  } catch {
+    await client.query('ROLLBACK').catch(() => {});
+    return none;
+  } finally {
+    client.release();
+  }
+}
+
 /**
  * Every word of the query must be there (in any order); a document holding the words as
  * one phrase comes first. `group` narrows to one kind; `page` is 1-based, `per` a page.
@@ -227,18 +233,30 @@ export async function search(query: string, group: Group | null, page = 1, per =
   }
   // Phrase matches first; otherwise the texts' own order (mushaf, book, chapter).
   found.sort((a, b) => a.rank - b.rank);
+  // The tafsirs from Postgres: a page of them when they are asked for, else the first four
+  // (and their count, for the tab, even when another kind is shown).
+  const tafsir = await tafsirMatches(phrase, words, group === 'tafsir' ? (page - 1) * per : 0, group === 'tafsir' ? per : 4);
+  counts.tafsir = tafsir.count;
   const shown = group ? found.slice((page - 1) * per, page * per) : GROUPS.flatMap((g) => found.filter((f) => f.doc.group === g.id).slice(0, 4));
-  return {
-    query,
-    counts,
-    total: group ? counts[group] : Object.values(counts).reduce((a, b) => a + b, 0),
-    hits: shown.map(({ doc }) => ({
+  const hits: Hit[] = shown.map(({ doc }) => ({
       group: doc.group,
       title: doc.title,
       where: doc.where,
       href: doc.href,
       ...(doc.group === 'quran' ? { surah: doc.surah, ayah: doc.ayah, text: doc.text } : {}),
       ...snippet(doc.text, doc.group === 'quran' ? [quranPhrase] : [phrase, ...words.toSorted((a, b) => b.length - a.length)], doc.group === 'quran'),
-    })),
+  }));
+  // The tafsirs take their place among the kinds.
+  const ordered =
+    group === 'tafsir'
+      ? tafsir.hits
+      : group
+        ? hits
+        : GROUPS.flatMap((g) => (g.id === 'tafsir' ? tafsir.hits : hits.filter((h) => h.group === g.id)));
+  return {
+    query,
+    counts,
+    total: group ? counts[group] : Object.values(counts).reduce((a, b) => a + b, 0),
+    hits: ordered,
   };
 }

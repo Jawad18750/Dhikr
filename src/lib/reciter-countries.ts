@@ -28,6 +28,7 @@ export const RECITER_COUNTRY: Readonly<Record<string, string>> = {
   nooreddine_almeslati_v2: 'LY',
   mohamed_alhudairi: 'LY',
   issam_alrubai: 'LY',
+  ibrahim_shehata_almaghribi: 'EG',
   abdulaziz_alwarghami: 'TN',
   ahmed_shahin_qaloon: 'EG',
   abdulsalam_alabidi: 'LY',

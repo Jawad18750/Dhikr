@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { AyahInk } from '@/components/site/ayah-ink';
 import { SURAHS } from '@/constants';
 import { qalunSurah } from '@/lib/qalun-text';
 import { buildPageMetadata } from '@/lib/seo/metadata';
@@ -71,9 +72,9 @@ export default async function Page({ params }: Props) {
                 href={`/tafsir/${t.id}/${n}/${a.ayah}`}
                 className="flex flex-col gap-2.5 rounded-[22px] border border-border bg-surface p-4 transition-colors hover:border-border-strong sm:p-5"
               >
-                <p lang="ar" className="text-[21px] font-bold leading-[2] text-ink">
-                  {a.text} <span className="text-[15px] text-gold">﴿{a.ayah}﴾</span>
-                </p>
+                <div className="text-ink">
+                  <AyahInk surah={n} ayah={a.ayah} text={a.text} line={64} />
+                </div>
                 {passages.length > 0 && (
                   <p className="text-[15px] leading-[1.9] text-ink-muted">{excerpt(passages.map((p) => p.text).join(' '))}</p>
                 )}

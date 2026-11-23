@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { IoChevronBack, IoChevronForward } from 'react-icons/io5';
 
+import { AyahInk } from '@/components/site/ayah-ink';
 import { SURAHS } from '@/constants';
 import { qalunSurah } from '@/lib/qalun-text';
 import { buildPageMetadata } from '@/lib/seo/metadata';
@@ -52,9 +53,9 @@ export default async function Page({ params }: Props) {
             سورة {surahName(n)}
           </Link>
         </div>
-        <p lang="ar" className="rounded-[22px] bg-surface-sunken px-5 py-4 text-[24px] font-bold leading-[2] text-ink">
-          {a.text} <span className="text-[17px] text-gold">﴿{a.ayah}﴾</span>
-        </p>
+        <div className="rounded-[22px] bg-surface-sunken px-5 py-4 text-ink">
+          <AyahInk surah={n} ayah={a.ayah} text={a.text} line={84} />
+        </div>
       </header>
 
       {passages.length === 0 ? (

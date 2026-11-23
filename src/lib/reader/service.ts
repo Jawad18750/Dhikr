@@ -68,6 +68,19 @@ export async function readerNames(
   return { svg: await response.text(), cell: Number(response.headers.get('x-name-cell')) };
 }
 
+/** One ayah as printed, wrapped at [width] px, [height] px a line (black, SVG). */
+export async function readerAyah(
+  surah: number,
+  ayah: number,
+  height: number,
+  width: number,
+  word?: number
+): Promise<string> {
+  const params: Record<string, number> = { surah, ayah, height, width };
+  if (word) params.word = word;
+  return (await call('/strip/ayah', params)).text();
+}
+
 export async function readerStars(surah: number): Promise<Record<string, number>> {
   return (await call('/stars', { surah, zoom: 1.6 })).json() as Promise<Record<string, number>>;
 }

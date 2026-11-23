@@ -2,6 +2,7 @@ import Link from 'next/link';
 
 import { CardMark } from '@/components/site/logo-mark';
 import { libraryIndex } from '@/lib/library';
+import { PDF_BOOKS } from '@/lib/library-pdfs';
 import { buildPageMetadata } from '@/lib/seo/metadata';
 import { libraryIdOf, tafsirs } from '@/lib/tafsir';
 
@@ -20,7 +21,12 @@ const number = new Intl.NumberFormat('ar-u-nu-latn');
 
 /** Every book the apps carry, by subject, each to its own page. */
 export default function Page() {
-  const { categories, books } = libraryIndex();
+  const { categories: known, books } = libraryIndex();
+  // The printed editions we have only as PDF; the mutun are a subject of their own.
+  const categories = [
+    ...known,
+    { id: 'mutun', title: 'المتون والمنظومات', subtitle: 'متون ومنظومات في التجويد والرسم', order: 99 },
+  ];
 
   return (
     <div className="mx-auto flex w-full max-w-[1360px] flex-col gap-8 px-4 pb-16 pt-6 text-foreground sm:gap-10 sm:px-6 sm:pt-10">
@@ -35,7 +41,7 @@ export default function Page() {
           والسيرة. نصوص كاملة تُقرأ هنا، وهي نفسها التي في تطبيقات ذكر.
         </p>
         <span className="text-[14px] text-on-hero/55">
-          {number.format(books.length)} كتابًا و{number.format(tafsirs().length)} تفاسير كاملة
+          {number.format(books.length + PDF_BOOKS.length)} كتابًا و{number.format(tafsirs().length)} تفاسير كاملة
         </span>
       </section>
 
@@ -68,6 +74,13 @@ export default function Page() {
                   title: book.title,
                   author: book.author,
                 })),
+              ...PDF_BOOKS.filter((book) => book.category === category.id).map((book) => ({
+                id: book.id,
+                href: `/library/${book.id}`,
+                cover: null,
+                title: book.title,
+                author: book.author,
+              })),
             ].map((book) => (
                 <li key={book.id}>
                   <Link

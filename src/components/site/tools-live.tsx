@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 
 import { AYAH_COUNTS, hafsForQalun, qalunForHafs } from '@/lib/ayah-numbering';
 
+import { AyahInk } from './ayah-ink';
+
 /**
  * The live part of two tools cards: real timings from our data, played back on a loop.
  * The text is in the page from the start; script only moves the light, and only while
@@ -57,8 +59,8 @@ export function AyahTimeline() {
   const pct = (ms: number) => ((ms - FROM) / (TO - FROM)) * 100;
   return (
     <div ref={ref} className="flex h-full flex-col justify-between gap-2">
-      <span dir="rtl" lang="ar" className="truncate text-[19px] font-bold text-white">
-        {current.text}
+      <span dir="rtl" lang="ar" className="block h-[34px] overflow-hidden text-white">
+        <AyahInk key={current.ayah} surah={1} ayah={current.ayah} text={current.text} line={34} wrap={false} />
       </span>
       <div className="relative h-2.5 rounded-full bg-white/[0.1]">
         {FATIHA.map((a) => (
@@ -96,15 +98,15 @@ export function WordLights() {
   const lit = WORDS.findIndex((w) => now >= w.start && now < w.end);
   return (
     <div ref={ref} className="flex h-full flex-col justify-between gap-2">
-      <div dir="rtl" lang="ar" className="flex flex-wrap gap-x-2.5 gap-y-1 text-[21px] font-bold">
+      <div dir="rtl" lang="ar" className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
         {WORDS.map((w, index) => (
           <span
             key={w.text}
-            className={`rounded-lg px-1.5 transition-colors duration-150 ${
-              index === lit ? 'bg-gold-light/20 text-gold-light' : 'text-white/45'
+            className={`rounded-lg px-1 transition-colors duration-150 ${
+              index === lit ? 'bg-gold-light/15 text-gold-light' : 'text-white/45'
             }`}
           >
-            {w.text}
+            <AyahInk surah={1} ayah={4} word={index + 1} text={w.text} line={38} />
           </span>
         ))}
       </div>

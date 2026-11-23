@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { IoBookOutline, IoChevronBack } from 'react-icons/io5';
+import { IoBookOutline, IoChevronBack, IoCloudDownloadOutline, IoDocumentOutline } from 'react-icons/io5';
 
 import { CardMark } from '@/components/site/logo-mark';
 import { libraryIndex, loadBook, sectionsOf } from '@/lib/library';
+import { PDF_BOOKS, PDF_OF, pdfSize,type PdfSource } from '@/lib/library-pdfs';
 import { buildPageMetadata } from '@/lib/seo/metadata';
 
 export const revalidate = 3600;
@@ -13,7 +14,7 @@ type Props = { params: Promise<{ book: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { book: id } = await params;
-  const book = libraryIndex().books.find((b) => b.id === id);
+  const book = libraryIndex().books.find((b) => b.id === id) ?? PDF_BOOKS.find((b) => b.id === id);
   if (!book) return {};
   return buildPageMetadata({
     locale: 'ar',
@@ -25,12 +26,71 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 const number = new Intl.NumberFormat('ar-u-nu-latn');
+const megabytes = (bytes: number) => `${number.format(Math.round((bytes / 1_048_576) * 10) / 10)} م.ب`;
+
+/** Read the printed edition in the browser, or save it. */
+function PdfButtons({ pdf }: { pdf: PdfSource }) {
+  const size = pdfSize(pdf.file);
+  if (size === null) return null;
+  const base = `/api/library/pdf/${pdf.file}`;
+  const pill = 'flex h-11 items-center gap-2 rounded-full bg-on-hero/[0.08] px-5 text-[15px] font-bold text-on-hero hover:bg-on-hero/15';
+  return (
+    <>
+      <a href={base} target="_blank" rel="noopener" className={pill}>
+        <IoDocumentOutline className="h-[18px] w-[18px]" aria-hidden="true" />
+        النسخة المطبوعة (PDF)
+      </a>
+      <a href={`${base}?download=1`} className={pill}>
+        <IoCloudDownloadOutline className="h-[18px] w-[18px]" aria-hidden="true" />
+        تنزيل · {megabytes(size)}
+      </a>
+    </>
+  );
+}
+
+/** A book we have only as its printed PDF. */
+function PdfBook({ id }: { id: string }) {
+  const book = PDF_BOOKS.find((b) => b.id === id);
+  if (!book) notFound();
+  return (
+    <div className="mx-auto flex w-full max-w-[980px] flex-col gap-8 px-4 pb-16 pt-6 text-foreground sm:px-6 sm:pt-10">
+      <section
+        data-header-tone="dark"
+        className="relative isolate flex flex-col gap-3 overflow-hidden rounded-[28px] bg-hero p-6 text-on-hero sm:rounded-[36px] sm:p-8"
+      >
+        <CardMark />
+        <Link href="/library" className="text-[14px] text-on-hero/60 hover:text-on-hero">
+          المكتبة
+        </Link>
+        <h1 className="font-display text-[28px] font-black leading-[1.3] sm:text-[40px]">{book.title}</h1>
+        <p className="text-[17px] text-on-hero/75">{book.author}</p>
+        <p className="text-[14px] text-on-hero/55">
+          النسخة المطبوعة
+          {book.pdf.url ? (
+            <>
+              {' '}
+              من{' '}
+              <a href={book.pdf.url} target="_blank" rel="noopener noreferrer" className="underline">
+                {book.pdf.from}
+              </a>
+            </>
+          ) : null}
+          . نصّه المكتوب قيد الإعداد.
+        </p>
+        <div className="flex flex-wrap gap-2 pt-1">
+          <PdfButtons pdf={book.pdf} />
+        </div>
+      </section>
+    </div>
+  );
+}
 
 /** One book: what it is, where its text comes from, and its contents. */
 export default async function Page({ params }: Props) {
   const { book: id } = await params;
   const book = loadBook(id);
-  if (!book) notFound();
+  if (!book) return <PdfBook id={id} />;
+  const pdf = PDF_OF[book.id];
   const category = libraryIndex().categories.find((c) => c.id === book.category);
   const sections = sectionsOf(book);
   // The contents: each heading where the book has them, else each titled section.
@@ -84,6 +144,7 @@ export default async function Page({ params }: Props) {
               <IoBookOutline className="h-[18px] w-[18px]" aria-hidden="true" />
               ابدأ القراءة
             </Link>
+            {pdf && <PdfButtons pdf={pdf} />}
           </div>
         </div>
       </section>

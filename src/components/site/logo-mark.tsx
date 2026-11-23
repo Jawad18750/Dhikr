@@ -38,15 +38,21 @@ export function LogoMark({
 }
 
 /**
- * The mark as a faint watermark in a card's far corner, large and cut by the card's
- * edge, so a dark card is never just a blank field. Its card needs `relative`,
- * `isolate` (it sits behind the content, over the card's own colour) and
- * `overflow-hidden`.
+ * The mark as a faint watermark in a card's far corner: the rendered 3D rosette (the
+ * same picture as the icons), large and cut by the card's edge, so a dark card is never
+ * just a blank field. Its card needs `relative`, `isolate` (it sits behind the content,
+ * over the card's own colour) and `overflow-hidden`.
  */
 export function CardMark({ className = '' }: { className?: string }) {
   return (
-    <LogoMark
-      className={`card-mark pointer-events-none absolute -z-10 -bottom-14 -end-14 h-52 w-52 text-hero-gold opacity-[0.09] sm:-bottom-20 sm:-end-20 sm:h-80 sm:w-80 ${className}`}
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src="/images/logo-384.webp"
+      alt=""
+      aria-hidden="true"
+      loading="lazy"
+      decoding="async"
+      className={`card-mark pointer-events-none absolute -bottom-14 -end-14 -z-10 h-52 w-52 rotate-12 select-none opacity-[0.14] sm:-bottom-20 sm:-end-20 sm:h-80 sm:w-80 ${className}`}
     />
   );
 }

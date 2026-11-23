@@ -56,6 +56,12 @@ export default async function Page({ params }: Props) {
         <div className="rounded-[22px] bg-surface-sunken px-5 py-4 text-ink">
           <AyahInk surah={n} ayah={a.ayah} text={a.text} line={84} />
         </div>
+        <Link
+          href={`/ayah/${n}/${a.ayah}`}
+          className="self-start rounded-full bg-surface-sunken px-4 py-2 text-[14px] font-bold text-ink hover:bg-border"
+        >
+          معاني الآية وبلاغتها وأحكامها
+        </Link>
       </header>
 
       {passages.length === 0 ? (

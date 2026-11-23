@@ -28,6 +28,9 @@ const TOC: ContentsItem[] = [
   { id: 'word-timings', title: 'توقيت الكلمات', group: 'المرجع' },
   { id: 'text', title: 'النص برواية قالون', group: 'المرجع' },
   { id: 'converter', title: 'محوّل الترقيم', group: 'المرجع' },
+  { id: 'tafsir', title: 'التفاسير', group: 'المرجع' },
+  { id: 'ayah', title: 'دراسة الآية', group: 'المرجع' },
+  { id: 'library', title: 'المكتبة', group: 'المرجع' },
   { id: 'errors', title: 'الأخطاء', group: 'المرجع' },
   { id: 'guide-ayah', title: 'تظليل الآية مع التلاوة', group: 'دروس' },
   { id: 'guide-words', title: 'تظليل كلمة كلمة', group: 'دروس' },
@@ -168,6 +171,9 @@ export default function Page() {
             ['/word-timings/{slug}/{surah}', 'توقيت الكلمات', 'بداية كل كلمة ونهايتها، لأغلب القرّاء.'],
             ['/text/{surah}', 'النص', 'نص السورة آيةً آيةً، مع الجزء والحزب والثُمن.'],
             ['/numbering/{from}/{surah}/{ayah}', 'محوّل الترقيم', 'رقم الآية بين حفص وقالون في الاتجاهين.'],
+            ['/tafsir/{id}/{surah}', 'التفاسير', 'تسعة تفاسير كاملة على آيات قالون.'],
+            ['/ayah/{surah}/{ayah}', 'دراسة الآية', 'المعاني والأسباب والبلاغة والأحكام والإعراب والتدبّر، من موسوعة quranpedia.'],
+            ['/library/{book}/{section}', 'المكتبة', 'كتب التجويد والرسم والضبط والمتون، نصًّا مقسّمًا.'],
           ]}
         />
       </Section>
@@ -408,6 +414,67 @@ GET /numbering/qalun/1/1
         </p>
       </Section>
 
+      <Section id="tafsir" title="التفاسير">
+        <Endpoint path="/tafsir" />
+        <p className={p}>
+          التفاسير التسعة التي في تطبيقاتنا: <C>{'[{ id, title, author, page }]'}</C>.
+        </p>
+        <Endpoint path="/tafsir/{id}/{surah}" />
+        <p className={p}>
+          سورة كاملة في تفسير واحد، مرتبة على آيات قالون. المصدر مرقّم بحفص، فكل مقطع يحمل <C>hafs</C>: أول آية
+          وآخرها مما فُسِّر فيه في ترقيم حفص. وقد يتكرر المقطع في آيتين متجاورتين إذا جمعهما.
+        </p>
+        <Code>{`GET /tafsir/saadi/1
+{ "tafsir": "saadi", "title": "تفسير السعدي", "author": "…", "surah": 1,
+  "ayahs": [{ "ayah": 1, "passages": [{ "hafs": [1, 2], "text": "…" }] }] }`}</Code>
+      </Section>
+
+      <Section id="ayah" title="دراسة الآية">
+        <Endpoint path="/ayah/{surah}/{ayah}" />
+        <p className={p}>
+          كل ما في الموسوعة القرآنية (quranpedia.net) عن آية من آياتنا، بإذن أصحابها. الأقسام الحاضرة وحدها تظهر في{' '}
+          <C>study</C>، و<C>hafs</C> أرقام الآية في ترقيم حفص التي جُمعت منها.
+        </p>
+        <Fields
+          rows={[
+            ['meanings', '{ word, meaning, book }[]', 'معاني الكلمات.'],
+            ['asbab', '{ text, book, author, from, to }[]', 'أسباب النزول.'],
+            ['topics', 'string[]', 'الموضوعات.'],
+            ['balagha', '{ text, source }[]', 'البلاغة.'],
+            ['rulings', '{ text, by, book }[]', 'الأحكام.'],
+            ['similar', '{ text, ayahs }[]', 'المتشابهات.'],
+            ['grammar', '{ text, book, author }[]', 'الإعراب.'],
+            ['abrogation', '{ text, book, author, died }[]', 'الناسخ والمنسوخ.'],
+            ['reflections, topicNotes', '{ text, by }[]', 'وقفات تدبّرية وخواطر.'],
+            ['fatwas', '{ title, question, answer, mufti, url }[]', 'فتاوى.'],
+            ['questions', '{ set, question, answer }[]', 'سؤال وجواب.'],
+          ]}
+        />
+        <Code>{`GET /ayah/2/255
+{ "surah": 2, "ayah": 255, "hafs": [257],
+  "study": { "topics": ["…"], "balagha": [{ "text": "…", "source": "…" }] },
+  "source": "quranpedia.net", "credits": { … } }`}</Code>
+        <p className={p}>
+          اذكر «الموسوعة القرآنية quranpedia.net» بجوار ما تعرضه منها، مع أصحاب الكتب المذكورين في كل عنصر.
+        </p>
+      </Section>
+
+      <Section id="library" title="المكتبة">
+        <Endpoint path="/library" />
+        <p className={p}>
+          الأقسام والكتب: <C>{'{ categories: [{ id, title, subtitle }], books: [{ id, category, title, author, items, cover, page }] }'}</C>.
+        </p>
+        <Endpoint path="/library/{book}" />
+        <p className={p}>
+          كتاب واحد ومحتوياته: <C>{'{ id, category, title, author, source, sections: [{ section, chapter, title, headings }] }'}</C>.
+        </p>
+        <Endpoint path="/library/{book}/{section}" />
+        <p className={p}>
+          قسم واحد نصًّا: <C>{'{ book, section, of, chapter, title, blocks: [{ type, text, page?, level? }] }'}</C>. والنسخ
+          المطبوعة (PDF) على صفحة كل كتاب في الموقع.
+        </p>
+      </Section>
+
       <Section id="errors" title="الأخطاء">
         <p className={p}>كل خطأ يجيب بهذا الشكل، مع رمز ثابت تبني عليه:</p>
         <Code>{`{ "error": { "code": "not_found",
@@ -511,7 +578,8 @@ for s in reciter["surahs"]:
             المشاع الإبداعي، نسب المصنَّف، غير تجاري 4.0
           </a>
           : استعملها وانقلها وابنِ عليها في غير التجارة، مع ذكر «ذكر · dhikr.ly» بجوار ما تعرضه منها. وللاستعمال
-          التجاري راسلنا. أصوات التلاوات لأصحابها.
+          التجاري راسلنا. أصوات التلاوات لأصحابها، ونصوص التفاسير والكتب والموسوعة القرآنية لأصحابها ومصادرها
+          المذكورة معها.
         </p>
       </Section>
 
@@ -529,6 +597,7 @@ for s in reciter["surahs"]:
       <Section id="changelog" title="سجل التغييرات">
         <ul className="flex flex-col gap-2.5">
           {[
+            ['2026-11-24', 'التفاسير (/tafsir)، ودراسة الآية (/ayah)، والمكتبة (/library).'],
             ['2026-11-23', 'نص القرآن برواية قالون (/text) ومحوّل الترقيم (/numbering).'],
             ['2026-11-23', 'الإصدار 1: القرّاء، وتوقيت الآيات والكلمات، بمفتاح شخصي.'],
           ].map(([date, what]) => (

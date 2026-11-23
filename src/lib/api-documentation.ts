@@ -19,7 +19,8 @@ Arabic documentation: https://dhikr.ly/developers
 3. Keys and authentication
 4. Response shape
 5. Concepts and numbering
-6. Endpoints: /reciters, /reciters/{slug}, /timings, /word-timings, /text, /numbering
+6. Endpoints: /reciters, /reciters/{slug}, /timings, /word-timings, /text, /numbering,
+   /tafsir, /ayah, /library
 7. Errors
 8. Guides: highlight the recited ayah; word by word; Hafs tafsir beside a Qalun ayah;
    download a whole recitation
@@ -165,6 +166,32 @@ round-trips.
 - \`GET /numbering/hafs/2/286\` → \`{ "from": "hafs", "to": "qalun", "surah": 2, "ayah": 286, "ayahs": [285] }\`
 - \`GET /numbering/qalun/1/1\` → \`{ "from": "qalun", "to": "hafs", "surah": 1, "ayah": 1, "ayahs": [2] }\`
 
+### GET /tafsir
+The nine tafsirs the Dhikr apps carry: \`[{ id, title, author, page }]\`.
+
+### GET /tafsir/{id}/{surah}
+A whole surah in one tafsir, by our (Qalun) ayahs. The source is numbered by Hafs, so each
+passage carries \`hafs\`: the first and last Hafs ayah it explains. A passage covering two
+of our ayahs appears under both.
+\`{ "tafsir", "title", "author", "surah", "ayahs": [{ "ayah", "passages": [{ "hafs": [from, to], "text" }] }] }\`
+
+### GET /ayah/{surah}/{ayah}
+Everything the Quranic encyclopedia (quranpedia.net) holds about one of our ayahs, published
+with its permission: \`{ surah, ayah, hafs, study, source, credits }\`. \`hafs\` lists the Hafs
+ayahs gathered. \`study\` holds only the sections present:
+\`meanings\` (\`{ word, meaning, book }\`), \`asbab\` (\`{ text, book, author, from, to }\`),
+\`topics\` (strings), \`balagha\` (\`{ text, source }\`), \`rulings\` (\`{ text, by, book }\`),
+\`similar\` (\`{ text, ayahs }\`), \`grammar\` (\`{ text, book, author }\`),
+\`abrogation\` (\`{ text, book, author, died }\`), \`reflections\` and \`topicNotes\`
+(\`{ text, by }\`), \`fatwas\` (\`{ title, question, answer, mufti, url }\`) and \`questions\`
+(\`{ set, question, answer }\`). Credit «quranpedia.net» next to what you show.
+
+### GET /library, /library/{book}, /library/{book}/{section}
+The books on tajwid, orthography, ayah counting and the mutun, as text.
+- \`/library\` → \`{ categories: [{ id, title, subtitle }], books: [{ id, category, title, author, items, cover, page }] }\`
+- \`/library/{book}\` → \`{ id, category, title, author, source, sections: [{ section, chapter, title, headings }] }\`
+- \`/library/{book}/{section}\` → \`{ book, section, of, chapter, title, blocks: [{ type, text, page?, level? }] }\`
+
 ## 7. Errors
 
 \`{ "error": { "code": "...", "message": "...", "docs": "https://dhikr.ly/developers" } }\`
@@ -235,7 +262,8 @@ the rest when first needed.
 The data is licensed CC BY-NC 4.0 (https://creativecommons.org/licenses/by-nc/4.0/): use,
 share and build on it for non-commercial purposes, crediting «ذكر · dhikr.ly» next to what
 you show. For commercial use, contact us (https://dhikr.ly/contact). The recitations'
-audio belongs to its reciters.
+audio belongs to its reciters; the tafsirs, books and encyclopedia entries to their authors
+and the sources named with them.
 
 ## 11. What is logged
 
@@ -245,6 +273,7 @@ used; you see your own use on your account page. https://dhikr.ly/privacy
 
 ## 12. Changelog
 
+- 2026-11-24: tafsirs (/tafsir), the ayah study (/ayah) and the library (/library).
 - 2026-11-23: the Qalun text (/text) and the numbering converter (/numbering).
 - 2026-11-23: v1: reciters, ayah and word timings, with personal keys.
 

@@ -142,6 +142,13 @@ function ToolCard({
       <div className={cn('mt-auto min-h-[104px] overflow-hidden rounded-2xl px-4 py-3.5 md:h-[104px]', look.preview)}>
         {preview}
       </div>
+      {/* A card with no coverage keeps the bar's room, so its preview lines up with its row's. */}
+      {!meter && (
+        <div aria-hidden="true" className="invisible flex flex-col gap-1.5">
+          <div className="h-1.5" />
+          <span className="text-[13px]">&nbsp;</span>
+        </div>
+      )}
       {meter && (
         <div className="flex flex-col gap-1.5">
           <div

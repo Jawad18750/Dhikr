@@ -72,3 +72,4 @@ data/sources/
 # capture-flow output: regenerated, not source
 scripts/posters/captures/
 scripts/posters/store-assets/
+.content/

@@ -132,6 +132,16 @@ export const ROUTES: readonly SeoRoute[] = [
     dynamic: true,
   },
   {
+    name: 'ayah',
+    path: '/ayah/[surah]/[ayah]',
+    arabicOnly: true,
+    index: true,
+    sitemap: false,
+    changeFrequency: 'monthly',
+    priority: 0.5,
+    dynamic: true,
+  },
+  {
     name: 'library-book',
     path: '/library/[book]',
     arabicOnly: true,

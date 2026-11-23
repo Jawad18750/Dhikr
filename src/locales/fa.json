@@ -441,5 +441,10 @@
   "apps.adhan": "اذان و اذکار",
   "apps.masahif": "مصاحف لیبی",
   "apps.web": "وب‌سایت",
-  "riwaya.qalunNafi": "قالون از نافع"
+  "riwaya.qalunNafi": "قالون از نافع",
+  "tools.available": "در دسترس",
+  "tools.convertSurah": "سوره",
+  "tools.convertAyah": "آیه",
+  "tools.convertSwap": "جهت را برگردان",
+  "tools.convertNone": "بسمله در قالون شماره ندارد"
 }

@@ -441,5 +441,10 @@
   "apps.adhan": "Ezan ve Ezkâr",
   "apps.masahif": "Libya Mushafları",
   "apps.web": "Web sitesi",
-  "riwaya.qalunNafi": "Nâfi'den Kalun"
+  "riwaya.qalunNafi": "Nâfi'den Kalun",
+  "tools.available": "Kullanımda",
+  "tools.convertSurah": "Sure",
+  "tools.convertAyah": "Ayet",
+  "tools.convertSwap": "Yönü değiştir",
+  "tools.convertNone": "Besmelenin Kalun’da numarası yok"
 }

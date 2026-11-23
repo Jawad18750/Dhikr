@@ -46,11 +46,21 @@ const ENDPOINTS = [
   "words": [{ "ayah": 1, "word": 1, "start": 13080, "end": 13880 },
             { "ayah": 1, "word": 2, "start": 13880, "end": 14200 }, …] }`,
   },
-];
-
-const COMING = [
-  { id: 'text', title: 'نص القرآن برواية قالون', what: 'النص كاملًا كما في مصحف الجماهيرية: 6214 آية في 114 سورة، بأجزائه وأحزابه وأثمانه.' },
-  { id: 'converter', title: 'محوّل الترقيم', what: 'من ترقيم حفص إلى قالون وبالعكس، آية بآية: البقرة 286 عند حفص هي 285 عند قالون.' },
+  {
+    id: 'text',
+    path: '/api/v1/text/{surah}',
+    what: 'نص السورة برواية قالون، آيةً آيةً كما يطبعها مصحف الجماهيرية (6214 آية)، مع الجزء، وبداية كل ثُمن وحزب.',
+    sample: `{ "surah": 1, "name": "الفاتحة", "riwaya": "qalun", "count": 7,
+  "ayahs": [{ "ayah": 1, "text": "اِ۬لْحَمْدُ لِلهِ رَبِّ اِ۬لْعَٰلَمِينَ",
+              "juz": 1, "thumun": 1, "hizb": 1 }, …] }`,
+  },
+  {
+    id: 'converter',
+    path: '/api/v1/numbering/{hafs|qalun}/{surah}/{ayah}',
+    what: 'رقم الآية في العدّ الآخر، في الاتجاهين: حفص (العدّ الكوفي، 6236) وقالون كما يرقّمه مصحف الجماهيرية (6214). قد تقابل الآيةُ أكثر من آية، فالجواب قائمة.',
+    sample: `GET /api/v1/numbering/hafs/2/286
+{ "from": "hafs", "to": "qalun", "surah": 2, "ayah": 286, "ayahs": [285] }`,
+  },
 ];
 
 const ERRORS = [
@@ -167,17 +177,8 @@ const { data } = await response.json();`}</pre>
       </section>
 
       <section className="flex flex-col gap-4">
-        <h2 className={h2}>قيد الإعداد</h2>
-        <ul className="flex flex-col gap-2.5">
-          {COMING.map((c) => (
-            <li key={c.id} id={c.id} className="flex scroll-mt-24 flex-col gap-1.5 rounded-[20px] border border-dashed border-border-strong p-4">
-              <span className="text-[17px] font-bold text-ink">{c.title}</span>
-              <span className="text-[15px] leading-[1.8] text-ink-muted">{c.what}</span>
-            </li>
-          ))}
-        </ul>
         <p className={p}>
-          وتنزيل الصوتيات متاح الآن من صفحة كل قارئ: سورة واحدة لأي أحد، والختمة كاملة لمن دخل إلى
+          وتنزيل الصوتيات متاح من صفحة كل قارئ: سورة واحدة لأي أحد، والختمة كاملة لمن دخل إلى
           حسابه.
         </p>
       </section>

@@ -11,12 +11,13 @@ import {
   IoTimeOutline,
 } from 'react-icons/io5';
 
+import { SURAHS } from '@/constants';
 import type { SeoLocale } from '@/lib/seo/routes';
 import { MESSAGES } from '@/locales';
-import { cn } from '@/utils';
+import { cn, getSurahDisplayName } from '@/utils';
 
 import { CardMark } from './logo-mark';
-import { AyahTimeline, WordLights } from './tools-live';
+import { AyahTimeline, NumberingConverter, WordLights } from './tools-live';
 
 const COPY = MESSAGES;
 
@@ -152,7 +153,7 @@ export function ToolsSection({
 }) {
   const t = (key: string, values?: Record<string, string | number>) =>
     values ? fill(COPY[locale][key], values) : COPY[locale][key];
-  const inProgress = (tone?: Tone) => (
+  const available = (tone?: Tone) => (
     <span
       className={cn(
         pill,
@@ -164,10 +165,10 @@ export function ToolsSection({
       )}
     >
       <span
-        className="tool-anim-blink h-1.5 w-1.5 rounded-full bg-current"
+        className="h-1.5 w-1.5 rounded-full bg-[#7fcf9e]"
         aria-hidden="true"
       />
-      {t('tools.inProgress')}
+      {t('tools.available')}
     </span>
   );
 
@@ -234,7 +235,7 @@ export function ToolsSection({
           href="/developers#word-timings"
           details={t('tools.details')}
           preview={<WordLights />}
-          footer={inProgress()}
+          footer={available()}
         />
         <ToolCard
           tone="gold"
@@ -259,7 +260,7 @@ export function ToolsSection({
               </div>
             </div>
           }
-          footer={inProgress('light')}
+          footer={available('light')}
         />
         <ToolCard
           icon={IoCodeSlashOutline}
@@ -280,7 +281,7 @@ export function ToolsSection({
               </span>
             </div>
           }
-          footer={inProgress('neutral')}
+          footer={available('neutral')}
         />
         <ToolCard
           icon={IoSwapHorizontalOutline}
@@ -291,18 +292,19 @@ export function ToolsSection({
           href="/developers#converter"
           details={t('tools.details')}
           preview={
-            <div className="flex h-full flex-col justify-between gap-2">
-              <p dir="rtl" lang="ar" className="truncate text-[18px] font-bold">
-                لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا
-              </p>
-              <div className="flex items-center gap-2.5 text-[14px] [perspective:400px]">
-                <span className="rounded-lg bg-white/10 px-2.5 py-1 text-white">{t('tools.hafs', { ref: '2:286' })}</span>
-                <IoSwapHorizontalOutline className="tool-anim-nudge h-4 w-4 text-gold-light" aria-hidden="true" />
-                <span className="tool-anim-flip rounded-lg bg-white/10 px-2.5 py-1 text-gold-light">{t('tools.qalun', { ref: '2:285' })}</span>
-              </div>
-            </div>
+            <NumberingConverter
+              surahs={SURAHS.map((surah) => getSurahDisplayName(surah, locale))}
+              labels={{
+                hafs: t('tools.hafs', { ref: '' }).trim(),
+                qalun: t('tools.qalun', { ref: '' }).trim(),
+                surah: t('tools.convertSurah'),
+                ayah: t('tools.convertAyah'),
+                swap: t('tools.convertSwap'),
+                none: t('tools.convertNone'),
+              }}
+            />
           }
-          footer={inProgress('neutral')}
+          footer={available('neutral')}
         />
         <ToolCard
           icon={IoCloudDownloadOutline}

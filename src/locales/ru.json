@@ -441,5 +441,10 @@
   "apps.adhan": "Азан и азкары",
   "apps.masahif": "Масахиф Ливии",
   "apps.web": "Сайт",
-  "riwaya.qalunNafi": "Калун от Нафи"
+  "riwaya.qalunNafi": "Калун от Нафи",
+  "tools.available": "Доступно",
+  "tools.convertSurah": "Сура",
+  "tools.convertAyah": "Аят",
+  "tools.convertSwap": "Поменять направление",
+  "tools.convertNone": "У басмалы нет номера у Калуна"
 }

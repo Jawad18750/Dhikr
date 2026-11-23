@@ -441,5 +441,10 @@
   "apps.adhan": "Azan & Zikir",
   "apps.masahif": "Masahif Libya",
   "apps.web": "Laman web",
-  "riwaya.qalunNafi": "Qalun daripada Nafi‘"
+  "riwaya.qalunNafi": "Qalun daripada Nafi‘",
+  "tools.available": "Tersedia",
+  "tools.convertSurah": "Surah",
+  "tools.convertAyah": "Ayat",
+  "tools.convertSwap": "Tukar arah",
+  "tools.convertNone": "Basmalah tidak bernombor dalam Qalun"
 }

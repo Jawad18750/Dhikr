@@ -441,5 +441,10 @@
   "apps.adhan": "اذان و اذکار",
   "apps.masahif": "مصاحفِ لیبیا",
   "apps.web": "ویب سائٹ",
-  "riwaya.qalunNafi": "قالون عن نافع"
+  "riwaya.qalunNafi": "قالون عن نافع",
+  "tools.available": "دستیاب",
+  "tools.convertSurah": "سورت",
+  "tools.convertAyah": "آیت",
+  "tools.convertSwap": "سمت بدلیں",
+  "tools.convertNone": "قالون میں بسملہ کا نمبر نہیں"
 }

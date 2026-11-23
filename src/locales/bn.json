@@ -441,5 +441,10 @@
   "apps.adhan": "আযান ও আযকার",
   "apps.masahif": "মাসাহিফ লিবিয়া",
   "apps.web": "ওয়েবসাইট",
-  "riwaya.qalunNafi": "নাফি‘ থেকে কালুন"
+  "riwaya.qalunNafi": "নাফি‘ থেকে কালুন",
+  "tools.available": "উপলব্ধ",
+  "tools.convertSurah": "সূরা",
+  "tools.convertAyah": "আয়াত",
+  "tools.convertSwap": "দিক বদলান",
+  "tools.convertNone": "কালুনে বিসমিল্লাহর কোনো নম্বর নেই"
 }

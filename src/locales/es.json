@@ -441,5 +441,10 @@
   "apps.adhan": "Adhan y Adhkar",
   "apps.masahif": "Masahif Libia",
   "apps.web": "Sitio web",
-  "riwaya.qalunNafi": "Qalun de Nafi'"
+  "riwaya.qalunNafi": "Qalun de Nafi'",
+  "tools.available": "Disponible",
+  "tools.convertSurah": "Sura",
+  "tools.convertAyah": "Aleya",
+  "tools.convertSwap": "Invertir el sentido",
+  "tools.convertNone": "La basmala no tiene número en Qalun"
 }

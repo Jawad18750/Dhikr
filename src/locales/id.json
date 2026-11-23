@@ -441,5 +441,10 @@
   "apps.adhan": "Adhan & Adhkar",
   "apps.masahif": "Masahif Libya",
   "apps.web": "Situs web",
-  "riwaya.qalunNafi": "Qalun dari Nafi'"
+  "riwaya.qalunNafi": "Qalun dari Nafi'",
+  "tools.available": "Tersedia",
+  "tools.convertSurah": "Surah",
+  "tools.convertAyah": "Ayat",
+  "tools.convertSwap": "Balik arah",
+  "tools.convertNone": "Basmalah tidak bernomor dalam Qalun"
 }

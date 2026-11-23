@@ -49,6 +49,19 @@ When each word starts and ends, in milliseconds, with words numbered as the Qalu
 counts them within each ayah.
 \`{ "slug", "surah", "words": [{ "ayah": 1, "word": 1, "start": 13080, "end": 13880 }, ...] }\`
 
+### GET /text/{surah}
+The surah's text in Qalun, ayah by ayah as the Jamahiriya mushaf prints them (6214 ayahs in
+all), with the juz of each ayah, and \`thumun\` and \`hizb\` on the ayah where one begins
+(480 thumuns, 60 hizbs).
+\`{ "surah": 1, "name": "الفاتحة", "riwaya": "qalun", "count": 7,
+  "ayahs": [{ "ayah": 1, "text": "اِ۬لْحَمْدُ لِلهِ رَبِّ اِ۬لْعَٰلَمِينَ", "juz": 1, "thumun": 1, "hizb": 1 }, ...] }\`
+
+### GET /numbering/{hafs|qalun}/{surah}/{ayah}
+One ayah's number in the other count, both ways: Hafs (Kufan, 6236) and Qalun as the
+Jamahiriya mushaf numbers it (Madinan, 6214). An ayah can hold more than one of the other
+count, so \`ayahs\` is a list. Hafs 1:1, the basmala, has no Qalun number.
+\`GET /numbering/hafs/2/286\` → \`{ "from": "hafs", "to": "qalun", "surah": 2, "ayah": 286, "ayahs": [285] }\`
+
 \`slug\` is the recitation's name as in its page URL (for example \`abdulhamid_algriw\`);
 \`surah\` is 1 to 114.
 

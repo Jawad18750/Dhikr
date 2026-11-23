@@ -442,5 +442,10 @@
   "apps.adhan": "أذان وأذكار",
   "apps.masahif": "مصاحف ليبيا",
   "apps.web": "الموقع",
-  "riwaya.qalunNafi": "قالون عن نافع"
+  "riwaya.qalunNafi": "قالون عن نافع",
+  "tools.available": "متاح",
+  "tools.convertSurah": "السورة",
+  "tools.convertAyah": "الآية",
+  "tools.convertSwap": "اعكس الاتجاه",
+  "tools.convertNone": "البسملة بلا رقم في قالون"
 }

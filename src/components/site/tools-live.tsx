@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 
+import { AYAH_COUNTS, hafsForQalun, qalunForHafs } from '@/lib/ayah-numbering';
+
 /**
  * The live part of two tools cards: real timings from our data, played back on a loop.
  * The text is in the page from the start; script only moves the light, and only while
@@ -110,6 +112,78 @@ export function WordLights() {
         1:4:{lit === -1 ? '–' : lit + 1} ·{' '}
         {lit === -1 ? '—' : `${seconds(WORDS[lit].start)}–${seconds(WORDS[lit].end)}s`}
       </span>
+    </div>
+  );
+}
+
+/**
+ * The numbering converter itself, small enough for the card: a surah, an ayah, a
+ * direction; the answer as you type. The same tables as the API (and the apps).
+ */
+export function NumberingConverter({
+  surahs,
+  labels,
+}: {
+  /** Surah names in the page's language, 1 to 114. */
+  surahs: string[];
+  labels: { hafs: string; qalun: string; surah: string; ayah: string; swap: string; none: string };
+}) {
+  const [fromHafs, setFromHafs] = useState(true);
+  const [surah, setSurah] = useState(2);
+  const [ayah, setAyah] = useState(286);
+  const max = (fromHafs ? AYAH_COUNTS.hafs : AYAH_COUNTS.qalun)[String(surah)] ?? 1;
+  const answer = fromHafs ? qalunForHafs(surah, ayah) : hafsForQalun(surah, ayah);
+  const [from, to] = fromHafs ? [labels.hafs, labels.qalun] : [labels.qalun, labels.hafs];
+  return (
+    <div className="flex h-full flex-col justify-between gap-2 text-[14px]">
+      <div className="flex items-center gap-2">
+        <select
+          aria-label={labels.surah}
+          value={surah}
+          onChange={(event) => {
+            const next = Number(event.target.value);
+            setSurah(next);
+            setAyah((value) => Math.min(value, (fromHafs ? AYAH_COUNTS.hafs : AYAH_COUNTS.qalun)[String(next)] ?? 1));
+          }}
+          className="h-9 min-w-0 flex-1 rounded-lg bg-white/10 px-2 text-white outline-none focus-visible:ring-2 focus-visible:ring-gold-light/60"
+        >
+          {surahs.map((name, index) => (
+            <option key={index} value={index + 1} className="text-black">
+              {index + 1}. {name}
+            </option>
+          ))}
+        </select>
+        <input
+          aria-label={labels.ayah}
+          type="number"
+          inputMode="numeric"
+          min={1}
+          max={max}
+          value={ayah}
+          onChange={(event) => setAyah(Math.max(1, Math.min(max, Number(event.target.value) || 1)))}
+          className="h-9 w-[72px] rounded-lg bg-white/10 px-2 text-center tabular-nums text-white outline-none focus-visible:ring-2 focus-visible:ring-gold-light/60"
+        />
+      </div>
+      <div className="flex items-center gap-2.5">
+        <span className="rounded-lg bg-white/10 px-2.5 py-1 tabular-nums text-white">
+          {from} {surah}:{ayah}
+        </span>
+        <button
+          type="button"
+          aria-label={labels.swap}
+          onClick={() => {
+            const next = answer[0];
+            setFromHafs((value) => !value);
+            if (next) setAyah(next);
+          }}
+          className="flex h-8 w-8 items-center justify-center rounded-full text-gold-light transition-colors hover:bg-white/10"
+        >
+          ⇄
+        </button>
+        <span className="rounded-lg bg-white/10 px-2.5 py-1 tabular-nums text-gold-light">
+          {answer.length ? `${to} ${surah}:${answer.join('، ')}` : labels.none}
+        </span>
+      </div>
     </div>
   );
 }

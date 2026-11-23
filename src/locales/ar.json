@@ -400,5 +400,9 @@
   "library.speed": "سرعة التلاوة",
   "library.repeat": "تكرار السورة",
   "library.downloadSurah": "تنزيل السورة",
-  "library.shareSurah": "مشاركة السورة"
+  "library.shareSurah": "مشاركة السورة",
+  "reader.open": "المصحف",
+  "reader.close": "إغلاق المصحف",
+  "reader.smaller": "تصغير الخط",
+  "reader.larger": "تكبير الخط"
 }

@@ -385,5 +385,9 @@
   "library.speed": "Tempo",
   "library.repeat": "Sure wiederholen",
   "library.downloadSurah": "Sure herunterladen",
-  "library.shareSurah": "Sure teilen"
+  "library.shareSurah": "Sure teilen",
+  "reader.open": "Mushaf",
+  "reader.close": "Mushaf schließen",
+  "reader.smaller": "Kleinere Schrift",
+  "reader.larger": "Größere Schrift"
 }

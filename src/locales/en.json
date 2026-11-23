@@ -399,5 +399,9 @@
   "library.speed": "Speed",
   "library.repeat": "Repeat the surah",
   "library.downloadSurah": "Download the surah",
-  "library.shareSurah": "Share the surah"
+  "library.shareSurah": "Share the surah",
+  "reader.open": "Mushaf",
+  "reader.close": "Close the mushaf",
+  "reader.smaller": "Smaller text",
+  "reader.larger": "Larger text"
 }

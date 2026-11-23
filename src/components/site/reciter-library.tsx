@@ -3,6 +3,7 @@
 import { useSetAtom } from 'jotai';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
+  IoBookOutline,
   IoCheckmark,
   IoCloudDownloadOutline,
   IoPause,
@@ -23,6 +24,8 @@ import { currentTimeAtom, selectedReciterAtom } from '@/jotai/atom';
 import type { SurahFacts } from '@/lib/dhikr-surah-facts';
 import type { Reciter } from '@/types';
 import { cn, getSurahDisplayName, normalizeArabicText } from '@/utils';
+
+import { ReaderSheet } from './reader-sheet';
 
 /** Where a listener was in this recitation, kept on this device only. */
 type Resume = { index: number; time: number };
@@ -91,6 +94,7 @@ export function ReciterLibrary({
   const [speed, setSpeed] = useState(1);
   const [repeat, setRepeat] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const [reading, setReading] = useState(false);
 
   // The reciter is the "last played" one for the home's surah search.
   useEffect(() => {
@@ -564,7 +568,7 @@ export function ReciterLibrary({
       />
 
       {current && (
-        <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 px-3 pb-3 sm:px-6 sm:pb-5">
+        <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[70] px-3 pb-3 sm:px-6 sm:pb-5">
           <div className="player-bar pointer-events-auto mx-auto flex max-w-[920px] flex-col gap-2 rounded-[24px] bg-hero px-4 pb-3 pt-3 text-on-hero shadow-[0_18px_50px_rgb(0_0_0/0.25)] sm:px-5">
             <div className="flex items-center gap-3">
               <button
@@ -584,6 +588,20 @@ export function ReciterLibrary({
                 <span className="truncate text-[13px] text-on-hero/60">{reciter.name}</span>
               </span>
               <span className="flex items-center gap-0.5">
+                <button
+                  type="button"
+                  onClick={() => setReading((open) => !open)}
+                  aria-pressed={reading}
+                  className={cn(
+                    'flex h-10 items-center gap-1.5 rounded-full px-3 text-[14px] font-bold transition-colors',
+                    reading
+                      ? 'bg-on-hero text-hero'
+                      : 'bg-on-hero/10 text-on-hero hover:bg-on-hero/20'
+                  )}
+                >
+                  <IoBookOutline className="h-[17px] w-[17px]" aria-hidden="true" />
+                  {formatMessage({ id: 'reader.open' })}
+                </button>
                 <button
                   type="button"
                   onClick={cycleSpeed}
@@ -671,6 +689,21 @@ export function ReciterLibrary({
             </div>
           </div>
         </div>
+      )}
+      {reading && current && (
+        <ReaderSheet
+          slug={slug}
+          surah={current.id}
+          title={current.name}
+          audio={audioRef}
+          onSeek={(seconds) => {
+            const audio = audioRef.current;
+            if (!audio) return;
+            audio.currentTime = seconds;
+            if (audio.paused) void audio.play();
+          }}
+          onClose={() => setReading(false)}
+        />
       )}
       {toast && (
         <div

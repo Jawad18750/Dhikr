@@ -401,5 +401,8 @@
   "library.repeat": "تكرار السورة",
   "library.downloadSurah": "تنزيل السورة",
   "library.shareSurah": "مشاركة السورة",
-  "reader.open": "المصحف"
+  "reader.open": "المصحف",
+  "player.fold": "تصغير المشغّل",
+  "player.unfold": "فتح المشغّل",
+  "player.close": "إغلاق المشغّل"
 }

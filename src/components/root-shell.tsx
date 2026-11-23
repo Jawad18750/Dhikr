@@ -11,6 +11,7 @@ import ReciterRouteCookie from '@/components/reciter-route-cookie';
 import { ServiceWorkerRefresh } from '@/components/service-worker-refresh';
 import { SiteFooter } from '@/components/site/site-footer';
 import { SiteHeader } from '@/components/site/site-header';
+import { PlayerProvider } from '@/components/site/site-player';
 import StoragePersist from '@/components/storage-persist';
 import { websiteGraph } from '@/lib/seo/json-ld';
 import type { SeoLocale } from '@/lib/seo/routes';
@@ -81,12 +82,14 @@ export function RootShell({
               ) : (
                 <PwaUpdater />
               )}
-              <FullscreenController
-                header={<SiteHeader locale={locale} />}
-                footer={<SiteFooter locale={locale} />}
-              >
-                {children}
-              </FullscreenController>
+              <PlayerProvider>
+                <FullscreenController
+                  header={<SiteHeader locale={locale} />}
+                  footer={<SiteFooter locale={locale} />}
+                >
+                  {children}
+                </FullscreenController>
+              </PlayerProvider>
             </main>
           </body>
         </HtmlWrapper>

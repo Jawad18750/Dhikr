@@ -400,5 +400,8 @@
   "library.repeat": "Repeat the surah",
   "library.downloadSurah": "Download the surah",
   "library.shareSurah": "Share the surah",
-  "reader.open": "Mushaf"
+  "reader.open": "Mushaf",
+  "player.fold": "Minimise the player",
+  "player.unfold": "Open the player",
+  "player.close": "Close the player"
 }

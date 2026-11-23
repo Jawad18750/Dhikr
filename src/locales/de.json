@@ -386,5 +386,8 @@
   "library.repeat": "Sure wiederholen",
   "library.downloadSurah": "Sure herunterladen",
   "library.shareSurah": "Sure teilen",
-  "reader.open": "Mushaf"
+  "reader.open": "Mushaf",
+  "player.fold": "Player verkleinern",
+  "player.unfold": "Player öffnen",
+  "player.close": "Player schließen"
 }

@@ -1,58 +1,25 @@
 'use client';
 
 import { useSetAtom } from 'jotai';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  IoBookOutline,
   IoCheckmark,
   IoCloudDownloadOutline,
   IoPause,
   IoPlay,
-  IoPlayBackOutline,
-  IoPlayForwardOutline,
-  IoPlaySkipBack,
-  IoPlaySkipForward,
-  IoRepeat,
   IoSearchOutline,
   IoShareSocialOutline,
 } from 'react-icons/io5';
 import { useIntl } from 'react-intl';
 
 import { SURAHS } from '@/constants';
-import { useMediaSession } from '@/hooks/use-media-session';
-import { currentTimeAtom, selectedReciterAtom } from '@/jotai/atom';
+import { selectedReciterAtom } from '@/jotai/atom';
 import type { SurahFacts } from '@/lib/dhikr-surah-facts';
+import { type SeoLocale, withLocale } from '@/lib/seo/routes';
 import type { Reciter } from '@/types';
 import { cn, getSurahDisplayName, normalizeArabicText } from '@/utils';
 
-import { ReaderLine } from './reader-line';
-
-/** Where a listener was in this recitation, kept on this device only. */
-type Resume = { index: number; time: number };
-const resumeKey = (slug: string) => `dhikr:resume:${slug}`;
-const readResume = (slug: string): Resume | null => {
-  try {
-    const raw = localStorage.getItem(resumeKey(slug));
-    return raw ? (JSON.parse(raw) as Resume) : null;
-  } catch {
-    return null;
-  }
-};
-const writeResume = (slug: string, value: Resume) => {
-  try {
-    localStorage.setItem(resumeKey(slug), JSON.stringify(value));
-  } catch {
-    /* private mode or full: resuming is a convenience */
-  }
-};
-
-const clock = (seconds: number) => {
-  const s = Math.max(0, Math.floor(seconds));
-  const h = Math.floor(s / 3600);
-  const m = Math.floor((s % 3600) / 60);
-  const r = String(s % 60).padStart(2, '0');
-  return h ? `${h}:${String(m).padStart(2, '0')}:${r}` : `${m}:${r}`;
-};
+import { clock, type PlayerAlbum, readResume, type Resume, usePlayer } from './site-player';
 
 /**
  * A reciter's whole library: every surah he has, searchable, each with its
@@ -63,38 +30,29 @@ export function ReciterLibrary({
   reciter,
   facts,
   sizes,
-  rank = null,
   initialSurah,
 }: {
   reciter: Reciter;
   facts: Record<number, SurahFacts>;
   /** Surah → bytes of its MP3, for the download sizes. */
   sizes: Record<number, number>;
-  /** His place in the «most listened» ranking, or null. */
-  rank?: number | null;
   initialSurah?: number;
 }) {
   const { formatMessage, locale } = useIntl();
   const setSelectedReciter = useSetAtom(selectedReciterAtom);
-  const setCurrentTime = useSetAtom(currentTimeAtom);
   const playlist = reciter.moshaf.playlist;
   const slug = reciter.moshaf.id;
 
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const [index, setIndex] = useState<number | null>(null);
-  const [playing, setPlaying] = useState(false);
-  const [time, setTime] = useState(0);
-  const [duration, setDuration] = useState(0);
+  const player = usePlayer();
+  const mine = player.album?.slug === slug;
+  const index = mine ? player.index : null;
+  const playing = mine && player.playing;
   const [query, setQuery] = useState('');
   const [resume, setResume] = useState<Resume | null>(null);
-  const pendingSeek = useRef<number | null>(null);
   // Download mode: surahs ticked for one archive.
   const [picking, setPicking] = useState(false);
   const [picked, setPicked] = useState<Set<number>>(new Set());
-  const [speed, setSpeed] = useState(1);
-  const [repeat, setRepeat] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
-  const [reading, setReading] = useState(false);
 
   // The reciter is the "last played" one for the home's surah search.
   useEffect(() => {
@@ -104,11 +62,7 @@ export function ReciterLibrary({
   useEffect(() => {
     const saved = readResume(slug);
     if (saved && saved.index < playlist.length) setResume(saved);
-    if (initialSurah) {
-      const at = playlist.findIndex((item) => Number(item.surahId) === initialSurah);
-      if (at >= 0) setIndex(at);
-    }
-  }, [slug, playlist, initialSurah]);
+  }, [slug, playlist]);
 
   const rows = useMemo(
     () =>
@@ -136,68 +90,31 @@ export function ReciterLibrary({
     );
   }, [rows, query]);
 
-  const play = useCallback(
-    (at: number, from = 0) => {
-      const audio = audioRef.current;
-      if (!audio || !playlist[at]) return;
-      if (at !== index) {
-        pendingSeek.current = from;
-        setIndex(at);
-        setTime(from);
-        return; // the src effect plays it
-      }
-      void audio.play();
-    },
-    [index, playlist]
+  // The queue the site's player takes: this recitation's surahs, in order.
+  const album = useMemo<PlayerAlbum>(
+    () => ({
+      slug,
+      reciter: reciter.name,
+      href: withLocale(locale as SeoLocale, `/reciter/${reciter.id}?moshafId=${slug}`),
+      tracks: rows.map((row) => ({ id: row.id, name: row.name, link: row.link })),
+    }),
+    [slug, reciter.name, reciter.id, rows, locale]
   );
-
-  // A new surah: load it and play from where it was asked for.
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio || index === null || !playlist[index]) return;
-    if (audio.src !== playlist[index].link) {
-      audio.src = playlist[index].link;
-      const from = pendingSeek.current;
-      pendingSeek.current = null;
-      const start = () => {
-        if (from) audio.currentTime = from;
-        void audio.play().catch(() => setPlaying(false));
-      };
-      audio.addEventListener('loadedmetadata', start, { once: true });
-      audio.load();
-    }
-  }, [index, playlist]);
-
+  const play = (at: number, from = 0) => player.start(album, at, from);
   const toggle = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    if (index === null) {
-      if (resume) play(resume.index, resume.time);
-      else play(0);
-      return;
-    }
-    if (audio.paused) void audio.play();
-    else audio.pause();
-  };
-  const next = () => index !== null && index + 1 < playlist.length && play(index + 1);
-  const previous = () => {
-    const audio = audioRef.current;
-    if (audio && audio.currentTime > 3) {
-      audio.currentTime = 0;
-      return;
-    }
-    if (index !== null && index > 0) play(index - 1);
+    if (mine) player.toggle();
+    else if (resume) play(resume.index, resume.time);
+    else play(0);
   };
 
-  const seekBy = (delta: number) => {
-    const audio = audioRef.current;
-    if (audio) audio.currentTime = Math.max(0, audio.currentTime + delta);
-  };
-  const SPEEDS = [1, 1.25, 1.5, 0.75];
-  const cycleSpeed = () => setSpeed((held) => SPEEDS[(SPEEDS.indexOf(held) + 1) % SPEEDS.length]);
+  // A shared link to one surah opens on it, unless something is already playing.
+  const opened = useRef(false);
   useEffect(() => {
-    if (audioRef.current) audioRef.current.playbackRate = speed;
-  }, [speed, index]);
+    if (opened.current || !initialSurah || player.playing) return;
+    opened.current = true;
+    const at = rows.findIndex((row) => row.id === initialSurah);
+    if (at >= 0) player.start(album, at);
+  }, [initialSurah, rows, album, player]);
 
   const share = async (url: string, title: string) => {
     const full = new URL(url, window.location.origin).toString();
@@ -211,30 +128,6 @@ export function ReciterLibrary({
       window.setTimeout(() => setToast(null), 2200);
     } catch {
       /* dismissed */
-    }
-  };
-
-  useMediaSession({
-    audioRef,
-    playlist,
-    currentTrackId: index ?? 0,
-    isPlaying: playing,
-    onPlay: () => void audioRef.current?.play(),
-    onPause: () => audioRef.current?.pause(),
-    onNext: next,
-    onPrev: previous,
-  });
-
-  // Keep the place, now and then and on pause.
-  const saved = useRef(0);
-  const onTime = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    setTime(audio.currentTime);
-    setCurrentTime(audio.currentTime);
-    if (index !== null && Date.now() - saved.current > 5000) {
-      saved.current = Date.now();
-      writeResume(slug, { index, time: audio.currentTime });
     }
   };
 
@@ -267,59 +160,15 @@ export function ReciterLibrary({
       return next;
     });
 
-  const current = index === null ? null : rows[index];
   const resumeRow = resume ? rows[resume.index] : null;
 
   return (
     <>
-      {(() => {
-        const seconds = Object.values(facts).reduce((sum, f) => sum + f.seconds, 0);
-        const bytes = bytesOf(allIds);
-        const tiles = [
-          {
-            label: formatMessage({ id: 'stats.surahs' }),
-            value: String(playlist.length),
-            note: reciter.moshaf.name.split(/\s+-\s+/)[0],
-          },
-          seconds > 0 && {
-            label: formatMessage({ id: 'stats.length' }),
-            value: `${Math.floor(seconds / 3600)}:${String(Math.floor((seconds % 3600) / 60)).padStart(2, '0')}`,
-            note: formatMessage({ id: 'stats.lengthUnit' }),
-          },
-          bytes > 0 && {
-            label: formatMessage({ id: 'stats.size' }),
-            value: sizeLabel(bytes),
-            note: 'MP3',
-          },
-          rank !== null && {
-            label: formatMessage({ id: 'stats.rank' }),
-            value: `#${rank}`,
-            note: formatMessage({ id: 'stats.rankValue' }),
-          },
-        ].filter(Boolean) as { label: string; value: string; note: string }[];
-        return (
-          <div className="grid w-full grid-cols-2 gap-2.5 sm:grid-cols-4">
-            {tiles.map((tile) => (
-              <div
-                key={tile.label}
-                className="flex flex-col gap-1 rounded-[20px] border border-border bg-surface px-4 py-3.5"
-              >
-                <span className="text-[13px] text-ink-subtle">{tile.label}</span>
-                <span className="text-[22px] font-bold leading-tight text-ink tabular-nums">
-                  {tile.value}
-                </span>
-                <span className="truncate text-[13px] text-ink-muted">{tile.note}</span>
-              </div>
-            ))}
-          </div>
-        );
-      })()}
-
-      <div className="flex w-full flex-wrap items-center gap-2.5">
+      <div className="flex w-full items-center gap-2">
         <button
           type="button"
           onClick={toggle}
-          className="flex h-[52px] items-center gap-2.5 rounded-full bg-gradient-to-b from-gold-light to-gold px-7 text-[17px] font-bold text-[#1b1712] transition-transform active:scale-95"
+          className="flex h-12 min-w-0 flex-1 items-center justify-center gap-2.5 truncate whitespace-nowrap rounded-full bg-gradient-to-b from-gold-light to-gold px-6 text-[16px] font-bold text-[#1b1712] transition-transform active:scale-95 sm:h-[52px] sm:flex-none sm:px-7 sm:text-[17px]"
         >
           {playing ? (
             <IoPause className="h-[18px] w-[18px]" aria-hidden="true" />
@@ -335,12 +184,15 @@ export function ReciterLibrary({
         {allIds.length > 1 && (
           <a
             href={`/api/download/${slug}?s=all`}
-            className="flex h-[52px] items-center gap-2 rounded-full border-[1.5px] border-border px-5 text-[15px] font-bold text-ink transition-colors hover:border-border-strong"
+            aria-label={`${formatMessage({ id: 'library.khatma' })} · ${sizeLabel(bytesOf(allIds))}`}
+            className="flex h-12 w-12 shrink-0 items-center justify-center gap-2 rounded-full border-[1.5px] border-border text-[15px] font-bold text-ink transition-colors hover:border-border-strong sm:h-[52px] sm:w-auto sm:px-5"
           >
             <IoCloudDownloadOutline className="h-[18px] w-[18px]" aria-hidden="true" />
-            {formatMessage({ id: 'library.khatma' })}
+            <span className="hidden sm:inline">{formatMessage({ id: 'library.khatma' })}</span>
             {bytesOf(allIds) > 0 && (
-              <span className="font-medium text-ink-subtle">{sizeLabel(bytesOf(allIds))}</span>
+              <span className="hidden font-medium text-ink-subtle sm:inline">
+                {sizeLabel(bytesOf(allIds))}
+              </span>
             )}
           </a>
         )}
@@ -348,7 +200,7 @@ export function ReciterLibrary({
           type="button"
           onClick={() => void share(window.location.pathname + window.location.search, reciter.name)}
           aria-label={formatMessage({ id: 'library.share' })}
-          className="flex h-[52px] w-[52px] items-center justify-center rounded-full border-[1.5px] border-border text-ink transition-colors hover:border-border-strong"
+          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-[1.5px] border-border text-ink transition-colors hover:border-border-strong sm:h-[52px] sm:w-[52px]"
         >
           <IoShareSocialOutline className="h-5 w-5" aria-hidden="true" />
         </button>
@@ -545,172 +397,6 @@ export function ReciterLibrary({
         )}
       </section>
 
-      <audio
-        ref={audioRef}
-        preload="none"
-        onPlay={() => setPlaying(true)}
-        onPause={() => {
-          setPlaying(false);
-          if (index !== null && audioRef.current) {
-            writeResume(slug, { index, time: audioRef.current.currentTime });
-          }
-        }}
-        onTimeUpdate={onTime}
-        onDurationChange={() => setDuration(audioRef.current?.duration ?? 0)}
-        onEnded={() => {
-          const audio = audioRef.current;
-          if (repeat && audio) {
-            audio.currentTime = 0;
-            void audio.play();
-          } else if (index !== null && index + 1 < playlist.length) play(index + 1);
-          else setPlaying(false);
-        }}
-      />
-
-      {/* Room under the list for the player (taller with the line on it). */}
-      {current && <div aria-hidden="true" className={cn('w-full', reading ? 'h-24' : 'h-0')} />}
-      {current && (
-        <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[70] px-3 pb-3 sm:px-6 sm:pb-5">
-          <div className="player-bar pointer-events-auto mx-auto flex max-w-[920px] flex-col gap-2 overflow-hidden rounded-[24px] bg-hero px-4 pb-3 pt-3 text-on-hero shadow-[0_18px_50px_rgb(0_0_0/0.25)] sm:px-5">
-            {reading && (
-              <div className="reader-in -mx-4 -mt-3 border-b border-on-hero/10 pb-1 pt-2 sm:-mx-5">
-                <ReaderLine
-                  slug={slug}
-                  surah={current.id}
-                  audio={audioRef}
-                  onSeek={(seconds) => {
-                    const audio = audioRef.current;
-                    if (!audio) return;
-                    audio.currentTime = seconds;
-                    if (audio.paused) void audio.play();
-                  }}
-                />
-              </div>
-            )}
-            {/* One row: the names, the controls with play in the middle, the mushaf. */}
-            <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">
-              <span className="flex min-w-0 flex-col">
-                <span className="truncate text-[15px] font-bold sm:text-[16px]">{current.name}</span>
-                <span className="truncate text-[12px] text-on-hero/60 sm:text-[13px]">{reciter.name}</span>
-              </span>
-              <div className="flex items-center justify-center gap-0.5 sm:gap-1">
-                <button
-                  type="button"
-                  onClick={() => setRepeat((on) => !on)}
-                  aria-pressed={repeat}
-                  aria-label={formatMessage({ id: 'library.repeat' })}
-                  className={cn(
-                    'hidden h-10 w-10 items-center justify-center rounded-full transition-colors hover:bg-on-hero/10 sm:flex',
-                    repeat ? 'text-hero-gold' : 'text-on-hero/75 hover:text-on-hero'
-                  )}
-                >
-                  <IoRepeat className="h-[19px] w-[19px]" aria-hidden="true" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => seekBy(-10)}
-                  aria-label={formatMessage({ id: 'library.back10' })}
-                  className="hidden h-9 w-9 items-center justify-center rounded-full text-on-hero/75 transition-colors hover:bg-on-hero/10 hover:text-on-hero sm:flex sm:h-10 sm:w-10"
-                >
-                  <IoPlayForwardOutline className="h-[18px] w-[18px] ltr:rotate-180" aria-hidden="true" />
-                </button>
-                <button
-                  type="button"
-                  onClick={previous}
-                  aria-label={formatMessage({ id: 'library.prev' })}
-                  className="flex h-9 w-9 items-center justify-center rounded-full text-on-hero/75 transition-colors hover:bg-on-hero/10 hover:text-on-hero sm:h-10 sm:w-10"
-                >
-                  <IoPlaySkipForward className="h-[18px] w-[18px] ltr:rotate-180" aria-hidden="true" />
-                </button>
-                <button
-                  type="button"
-                  onClick={toggle}
-                  aria-label={formatMessage({ id: playing ? 'library.pause' : 'library.play' })}
-                  className="mx-0.5 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-b from-gold-light to-gold text-[#1b1712] transition-transform active:scale-90 sm:mx-1.5"
-                >
-                  {playing ? (
-                    <IoPause className="h-5 w-5" aria-hidden="true" />
-                  ) : (
-                    <IoPlay className="h-5 w-5 translate-x-[-1px] rtl:translate-x-[1px]" aria-hidden="true" />
-                  )}
-                </button>
-                <button
-                  type="button"
-                  onClick={next}
-                  disabled={index === null || index + 1 >= playlist.length}
-                  aria-label={formatMessage({ id: 'library.next' })}
-                  className="flex h-9 w-9 items-center justify-center rounded-full text-on-hero/75 transition-colors hover:bg-on-hero/10 hover:text-on-hero sm:h-10 sm:w-10 disabled:opacity-30"
-                >
-                  <IoPlaySkipBack className="h-[18px] w-[18px] ltr:rotate-180" aria-hidden="true" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => seekBy(10)}
-                  aria-label={formatMessage({ id: 'library.fwd10' })}
-                  className="hidden h-9 w-9 items-center justify-center rounded-full text-on-hero/75 transition-colors hover:bg-on-hero/10 hover:text-on-hero sm:flex sm:h-10 sm:w-10"
-                >
-                  <IoPlayBackOutline className="h-[18px] w-[18px] ltr:rotate-180" aria-hidden="true" />
-                </button>
-                <button
-                  type="button"
-                  onClick={cycleSpeed}
-                  aria-label={formatMessage({ id: 'library.speed' })}
-                  className="hidden h-10 w-10 items-center justify-center rounded-full text-[13px] font-bold tabular-nums text-on-hero/75 transition-colors hover:bg-on-hero/10 hover:text-on-hero sm:flex"
-                >
-                  {speed}×
-                </button>
-              </div>
-              <span className="flex items-center justify-end gap-1">
-                <a
-                  href={current.link}
-                  download
-                  aria-label={formatMessage({ id: 'library.download' })}
-                  className="hidden h-9 w-9 items-center justify-center rounded-full text-on-hero/75 transition-colors hover:bg-on-hero/10 hover:text-on-hero sm:flex sm:h-10 sm:w-10"
-                >
-                  <IoCloudDownloadOutline className="h-[18px] w-[18px]" aria-hidden="true" />
-                </a>
-                <button
-                  type="button"
-                  onClick={() => setReading((open) => !open)}
-                  aria-pressed={reading}
-                  aria-label={formatMessage({ id: 'reader.open' })}
-                  className={cn(
-                    'flex h-9 w-9 items-center justify-center gap-1.5 rounded-full text-[14px] font-bold transition-colors sm:h-10 sm:w-auto sm:px-3',
-                    reading
-                      ? 'bg-on-hero text-hero'
-                      : 'bg-on-hero/10 text-on-hero hover:bg-on-hero/20'
-                  )}
-                >
-                  <IoBookOutline className="h-[17px] w-[17px]" aria-hidden="true" />
-                  <span className="hidden sm:inline">{formatMessage({ id: 'reader.open' })}</span>
-                </button>
-              </span>
-            </div>
-            <div className="flex items-center gap-3 text-[12px] tabular-nums text-on-hero/60">
-              <span className="w-12 text-start">{clock(time)}</span>
-              <input
-                type="range"
-                min={0}
-                max={duration || current.facts?.seconds || 0}
-                step={1}
-                value={Math.min(time, duration || time)}
-                onChange={(event) => {
-                  const audio = audioRef.current;
-                  if (audio) audio.currentTime = Number(event.target.value);
-                }}
-                aria-label={formatMessage({ id: 'library.seek' })}
-                className="player-seek h-1 flex-1"
-                style={
-                  {
-                    '--progress': `${duration ? (time / duration) * 100 : 0}%`,
-                  } as React.CSSProperties
-                }
-              />
-              <span className="w-12 text-end">{clock(duration || current.facts?.seconds || 0)}</span>
-            </div>
-          </div>
-        </div>
-      )}
       {toast && (
         <div
           role="status"

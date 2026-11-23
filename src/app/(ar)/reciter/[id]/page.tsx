@@ -146,6 +146,16 @@ export default async function Page({ params, searchParams }: Props) {
       ? (await getDhikrCatalogue()).find((item) => item.slug === reciter.moshaf.id)
       : undefined;
 
+  // A Dhikr recitation's surah facts and file sizes: the hero's figures and the library.
+  const facts =
+    reciter.source === LinkSource.DHIKR ? await getSurahFacts(reciter.moshaf.id) : null;
+  const sizes =
+    reciter.source === LinkSource.DHIKR
+      ? (Object.fromEntries(
+          (await getRecitationFiles(reciter.moshaf.id))?.sizes ?? []
+        ) as Record<number, number>)
+      : null;
+
   const canonicalPath = `/reciter/${id}`;
   const breadcrumb = breadcrumbTrail([
     {
@@ -158,7 +168,7 @@ export default async function Page({ params, searchParams }: Props) {
     },
   ]);
   return (
-    <div className="mx-auto flex w-full max-w-[1360px] flex-col items-start gap-8 px-4 pb-40 text-foreground sm:px-6">
+    <div className="mx-auto flex w-full max-w-[1360px] flex-col items-start gap-5 px-4 pb-12 text-foreground sm:gap-8 sm:px-6">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -170,15 +180,21 @@ export default async function Page({ params, searchParams }: Props) {
         portrait={portrait}
         locale={locale}
         country={catalogued?.country ?? null}
+        figures={
+          facts && sizes
+            ? {
+                seconds: Object.values(facts).reduce((sum, f) => sum + f.seconds, 0),
+                bytes: Object.values(sizes).reduce((sum, b) => sum + b, 0),
+                rank: catalogued?.rank ?? null,
+              }
+            : null
+        }
       />
-      {reciter.source === LinkSource.DHIKR ? (
+      {reciter.source === LinkSource.DHIKR && facts && sizes ? (
         <ReciterLibrary
           reciter={reciter}
-          rank={catalogued?.rank ?? null}
-          facts={await getSurahFacts(reciter.moshaf.id)}
-          sizes={Object.fromEntries(
-            (await getRecitationFiles(reciter.moshaf.id))?.sizes ?? []
-          )}
+          facts={facts}
+          sizes={sizes}
           initialSurah={initialSurah}
         />
       ) : (

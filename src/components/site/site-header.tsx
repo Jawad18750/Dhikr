@@ -38,7 +38,7 @@ export function SiteHeader({ locale }: { locale: SeoLocale }) {
       icon: <IoBookOutline className={icon} aria-hidden="true" />,
     },
     {
-      href: '/developers',
+      href: withLocale(locale, '/developers'),
       label: t['nav.developers'],
       icon: <IoCodeSlashOutline className={icon} aria-hidden="true" />,
     },
@@ -49,7 +49,7 @@ export function SiteHeader({ locale }: { locale: SeoLocale }) {
     },
   ];
   const account: MenuLink = {
-    href: '/account',
+    href: withLocale(locale, '/account'),
     label: t['nav.account'],
     icon: <IoPersonCircleOutline className={icon} aria-hidden="true" />,
   };

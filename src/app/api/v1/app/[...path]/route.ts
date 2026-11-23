@@ -5,9 +5,10 @@ import { DHIKR_AUDIO_BASE } from '@/services/reciters/dhikr.adapter';
  * The apps' API: what the three apps read, at one versioned address.
  *
  * Decided with the owner (2026-11-23):
- * - Open, like the files it mirrors. `?app=adhan|quran|masahif` names the caller so
- *   Cloudflare's analytics count requests per app; a missing or unknown `app` still gets a
- *   200. Never gated: a shipped app cannot be fixed after a 401.
+ * - Open, like the files it mirrors. The app names itself in the path
+ *   (/api/v1/app/{adhan|quran|masahif}/…) so Cloudflare's analytics count requests per app
+ *   (they cannot read query strings); a missing or unknown name still gets a 200. Never
+ *   gated: a shipped app cannot be fixed after a 401.
  * - Cacheable: one URL per resource, `Cache-Control: public`, no per-request work on a hit.
  *   No logging here; counts are totals per app from the CDN, nothing per device.
  * - Same meaning as the old files, which stay up forever for old installs. Everything but
@@ -62,7 +63,7 @@ const slugOf = (moshaf: Moshaf) =>
   moshaf.slug ?? String(moshaf.server ?? '').replace(/\/+$/, '').split('/').pop() ?? '';
 
 /** The v3 envelope, unchanged, plus the additions. */
-async function catalogue(body: string): Promise<string> {
+async function catalogue(body: string, base: string): Promise<string> {
   const data = JSON.parse(body) as Catalogue;
   let revisions: Record<string, { revision?: string }> = {};
   try {
@@ -85,15 +86,23 @@ async function catalogue(body: string): Promise<string> {
       const own = slugOf(moshaf);
       if (!own) continue;
       moshaf.timing_revision = revisions[own]?.revision ?? null;
-      moshaf.timings_url = `${SITE}/timings/${own}/`;
-      moshaf.word_timings_url = `${SITE}/word-timings/${own}/`;
+      moshaf.timings_url = `${base}/timings/${own}/`;
+      moshaf.word_timings_url = `${base}/word-timings/${own}/`;
     }
   }
   return JSON.stringify(data);
 }
 
+/** The resources' first segments; anything else in that place names the app. */
+const RESOURCES = new Set(['catalogue', 'tafsir', 'timings', 'word-timings']);
+const APP_NAME = /^[a-z][a-z0-9-]{0,31}$/;
+
 export async function GET(_request: Request, { params }: { params: Promise<{ path: string[] }> }) {
-  const { path } = await params;
+  const { path: raw } = await params;
+  // The app may name itself in the path (/api/v1/app/adhan/catalogue), which is what
+  // Cloudflare's analytics can count; ?app= is accepted too. Any name, or none, works.
+  const named = raw.length > 1 && !RESOURCES.has(raw[0]) && APP_NAME.test(raw[0]) ? raw[0] : null;
+  const path = named ? raw.slice(1) : raw;
   const upstream = upstreamFor(path);
   const headers = {
     'Content-Type': 'application/json; charset=utf-8',
@@ -121,8 +130,8 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pat
       headers: { ...headers, 'Cache-Control': response.status === 404 ? 'public, max-age=300' : 'no-store' },
     });
   }
-  const raw = await response.text();
-  const body = upstream.transform === 'catalogue' ? await catalogue(raw) : raw;
+  const text = await response.text();
+  const body = upstream.transform === 'catalogue' ? await catalogue(text, named ? `${SITE}/${named}` : SITE) : text;
   return new Response(body, {
     headers: {
       ...headers,

@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 
 import { auth } from '@/auth';
+import { type AppTraffic, appTraffic } from '@/lib/app-traffic';
 import { pool } from '@/lib/database';
 
 export const dynamic = 'force-dynamic';
@@ -15,11 +16,61 @@ const n = new Intl.NumberFormat('ar-u-nu-latn');
  * The real numbers, for the owner only (ADMIN_EMAILS): accounts, keys, API calls and bulk
  * downloads over 30 days, and who and what is behind them. Anyone else gets a 404.
  */
+const APP_NAMES: Record<string, string> = {
+  adhan: 'أذان وأذكار',
+  quran: 'مصحف الجماهيرية',
+  masahif: 'مصاحف ليبيا',
+  other: 'دون اسم تطبيق في الرابط',
+};
+
+/** The apps' API, per app and per resource, 30 days, from Cloudflare (totals only). */
+function AppsSection({
+  traffic,
+  box,
+  row,
+  n,
+}: {
+  traffic: AppTraffic | null;
+  box: string;
+  row: string;
+  n: Intl.NumberFormat;
+}) {
+  return (
+    <section className={box}>
+      <h2 className="text-[17px] font-bold text-ink">واجهة التطبيقات (30 يومًا)</h2>
+      {traffic === null ? (
+        <p className="text-[14px] text-ink-subtle">تعذّرت قراءة الأرقام من Cloudflare.</p>
+      ) : traffic.total === 0 ? (
+        <p className="text-[14px] text-ink-subtle">
+          لا طلبات بعد: تبدأ الأرقام حين تصدر التطبيقات المبنية على /api/v1/app.
+        </p>
+      ) : (
+        <>
+          {traffic.apps.map((a) => (
+            <div key={a.app} className={row}>
+              <span>{APP_NAMES[a.app] ?? a.app}</span>
+              <span className="tabular-nums">{n.format(a.count)}</span>
+            </div>
+          ))}
+          <h2 className="mt-3 text-[17px] font-bold text-ink">الموارد</h2>
+          {traffic.resources.map((r) => (
+            <div key={r.resource} className={row}>
+              <span dir="ltr" className="truncate font-mono">{r.resource}</span>
+              <span className="tabular-nums">{n.format(r.count)}</span>
+            </div>
+          ))}
+        </>
+      )}
+    </section>
+  );
+}
+
 export default async function Page() {
   const session = await auth();
   const email = session?.user?.email?.toLowerCase();
   if (!email || !admins().has(email)) notFound();
 
+  const traffic = appTraffic();
   const q = async <T extends Record<string, unknown>>(sql: string) => (await pool.query<T>(sql)).rows;
   const [totals, perDay, paths, accounts, downloads, countries] = await Promise.all([
     q<{ users: string; new7: string; keys: string; calls: string; dls: string }>(`
@@ -107,6 +158,7 @@ export default async function Page() {
             </div>
           ))}
         </section>
+        <AppsSection traffic={await traffic} box={box} row={row} n={n} />
         <section className={box}>
           <h2 className="text-[17px] font-bold text-ink">الختمات الأكثر تنزيلًا</h2>
           {downloads.map((d) => (

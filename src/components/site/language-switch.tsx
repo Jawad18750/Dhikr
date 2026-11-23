@@ -50,7 +50,7 @@ export function LanguageSwitch({
   const bare = stripLocale(pathname);
   // Reciter and surah pages are Arabic documents (their twins lead back here), so
   // another language opens on its home.
-  const arabicOnly = /^\/(?:reciter\/|surah\/|(?:surahs|developers|account|admin)$)/.test(bare);
+  const arabicOnly = /^\/(?:reciter\/|surah\/|(?:surahs|admin)$)/.test(bare);
   const hrefFor = (target: SeoLocale) =>
     arabicOnly && target !== 'ar'
       ? withLocale(target, '/')

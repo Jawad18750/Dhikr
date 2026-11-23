@@ -1,16 +1,18 @@
-# The apps' API (v1, frozen 2026-11-23)
+# The apps' API (v1, frozen 2026-11-23; app name in the path, 2026-11-23)
 
 What the three apps (أذان وأذكار, مصحف الجماهيرية, مصاحف ليبيا) read, at one versioned
 address. Agreed between the site and the apps (`dhikr-app/packages/quran_audio`) and
 approved by the owner on 2026-11-23.
 
-Base: `https://dhikr.ly/api/v1/app/`
+Base: `https://dhikr.ly/api/v1/app/{app}/` (`{app}` = `adhan`, `quran` or `masahif`; optional)
 
 ## Rules
 
-1. **Open.** No key and no account. Add `?app=adhan`, `?app=quran` or `?app=masahif` so
-   Cloudflare's analytics count each app. A missing or unknown `app` still gets a 200.
-   Nothing is ever gated: a shipped app can't be fixed after a 401.
+1. **Open.** No key and no account. The app names itself as the first path segment:
+   `/api/v1/app/adhan/…`, `/api/v1/app/quran/…` or `/api/v1/app/masahif/…`, so
+   Cloudflare's analytics count each app (they cannot read query strings, so `?app=` is
+   accepted but not counted). Without a name, or with an unknown one, every resource still
+   answers 200. Nothing is ever gated: a shipped app can't be fixed after a 401.
 2. **Cached.** One URL per resource, `Cache-Control: public` with a max age, served from
    Cloudflare's edge (a cache rule on `/api/v1/app/*`). Nothing is logged per request.
    Counts are totals per app and path from the CDN, nothing per device, so the apps'
@@ -66,8 +68,9 @@ Additions (optional; absent or null means unknown):
 - On each moshaf:
   - `timing_revision`: the revision string from `timings/index`, e.g.
     `"1/2026-10-19T11:47:13Z"`. Refetch that recitation's timings when it changes.
-  - `timings_url`: `https://dhikr.ly/api/v1/app/timings/{slug}/`. Add `NNN` or `ayahs`.
-  - `word_timings_url`: `https://dhikr.ly/api/v1/app/word-timings/{slug}/`. Add `NNN`.
+  - `timings_url`: `https://dhikr.ly/api/v1/app/{app}/timings/{slug}/`. Add `NNN` or
+    `ayahs`. It carries the app name the catalogue was fetched with.
+  - `word_timings_url`: `https://dhikr.ly/api/v1/app/{app}/word-timings/{slug}/`. Add `NNN`.
 
 Audio files stay where `server` points.
 

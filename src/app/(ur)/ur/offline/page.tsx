@@ -1,11 +1,12 @@
 import OfflinePage from '@/app/(ar)/offline/page';
+import { MESSAGES } from '@/locales';
 
 /**
  * The service worker's fallback page. Same reason as settings: its own route so
  * the document and its copy are the right language before hydration.
  */
 export const metadata = {
-  title: 'Offline | Dhikr',
+  title: `${MESSAGES['ur']['offline.title']} | Dhikr`,
   alternates: { canonical: '/ur/offline' },
   robots: { index: false, follow: false },
 };

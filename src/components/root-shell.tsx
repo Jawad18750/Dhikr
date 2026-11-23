@@ -84,7 +84,7 @@ export function RootShell({
               href="#main-content"
               className="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-[60] focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-gray-900 focus:shadow-lg dark:focus:bg-gray-800 dark:focus:text-gray-100"
             >
-              Skip to content / تخطَّ إلى المحتوى
+              {MESSAGES[locale]['a11y.skip']}
             </a>
             <script
               type="application/ld+json"

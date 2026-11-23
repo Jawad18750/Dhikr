@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useRef } from 'react';
 import { IoMailOutline } from 'react-icons/io5';
+import { useIntl } from 'react-intl';
 
 import { type EmailState, sendEmailLink, signInWithGoogle } from '@/app/(ar)/account/actions';
 
@@ -14,17 +15,11 @@ declare global {
   }
 }
 
-const MESSAGES: Record<EmailState['status'], string> = {
-  idle: '',
-  sent: 'أرسلنا رابط الدخول إلى بريدك. يعمل مرة واحدة خلال عشر دقائق.',
-  invalid: 'اكتب بريدًا إلكترونيًا صحيحًا.',
-  human: 'تعذّر التحقق. انتظر لحظة ثم أعد المحاولة.',
-  limited: 'طلبت روابط كثيرة. حاول بعد ساعة.',
-  failed: 'تعذّر إرسال الرابط الآن. حاول بعد قليل.',
-};
 
 /** Signing in: Google in one tap, or a one-time link by email (behind Turnstile). */
 export function AccountSignIn({ next, siteKey }: { next: string; siteKey: string }) {
+  const { formatMessage, locale } = useIntl();
+  const t = (id: string) => formatMessage({ id });
   const [state, action, pending] = useActionState<EmailState, FormData>(sendEmailLink, { status: 'idle' });
   const box = useRef<HTMLDivElement>(null);
   const widget = useRef<string | undefined>(undefined);
@@ -34,7 +29,7 @@ export function AccountSignIn({ next, siteKey }: { next: string; siteKey: string
       if (!box.current || !window.turnstile || widget.current) return;
       widget.current = window.turnstile.render(box.current, {
         sitekey: siteKey,
-        language: 'ar',
+        language: locale,
         theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light',
         size: 'flexible',
       });
@@ -47,7 +42,7 @@ export function AccountSignIn({ next, siteKey }: { next: string; siteKey: string
       script.onload = render;
       document.head.append(script);
     }
-  }, [siteKey]);
+  }, [siteKey, locale]);
 
   useEffect(() => {
     if (state.status !== 'idle' && state.status !== 'sent') window.turnstile?.reset(widget.current);
@@ -67,26 +62,26 @@ export function AccountSignIn({ next, siteKey }: { next: string; siteKey: string
             <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z" />
             <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 38.2 44 33 44 24c0-1.3-.1-2.6-.4-3.5z" />
           </svg>
-          المتابعة بحساب Google
+          {t('account.google')}
         </button>
       </form>
 
       <div className="flex items-center gap-3 text-[13px] text-ink-subtle">
         <span className="h-px flex-1 bg-border" />
-        أو برابط على البريد
+        {t('account.orEmail')}
         <span className="h-px flex-1 bg-border" />
       </div>
 
       {state.status === 'sent' ? (
         <p role="status" className="rounded-[18px] bg-gold/10 px-4 py-3.5 text-[15px] leading-[1.8] text-ink">
-          {MESSAGES.sent}
+          {t('account.sent')}
         </p>
       ) : (
         <form action={action} className="flex flex-col gap-3">
           <input type="hidden" name="next" value={next} />
           <label className="flex h-[52px] items-center gap-2.5 rounded-full border border-border bg-surface px-4 focus-within:border-border-strong">
             <IoMailOutline className="h-5 w-5 shrink-0 text-ink-muted" aria-hidden="true" />
-            <span className="sr-only">البريد الإلكتروني</span>
+            <span className="sr-only">{t('account.emailLabel')}</span>
             <input
               type="email"
               name="email"
@@ -103,11 +98,11 @@ export function AccountSignIn({ next, siteKey }: { next: string; siteKey: string
             disabled={pending}
             className="h-[52px] rounded-full bg-gradient-to-b from-gold-light to-gold text-[16px] font-bold text-[#1b1712] transition-opacity disabled:opacity-60"
           >
-            أرسل رابط الدخول
+            {t('account.sendLink')}
           </button>
           {state.status !== 'idle' && (
             <p role="alert" className="text-[14px] text-danger">
-              {MESSAGES[state.status]}
+              {t(`account.${state.status}`)}
             </p>
           )}
         </form>

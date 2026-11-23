@@ -2,6 +2,9 @@
 // into an AI assistant. English, since that is what code and assistants read best. It
 // says what the Arabic page (src/app/(ar)/developers/page.tsx) says; change both together.
 
+/** The language the documentation Markdown is written in. */
+export const API_DOCS_LANG = 'en' as const;
+
 export const API_DOCS_MARKDOWN = `# Dhikr API v1 (dhikr.ly)
 
 Quran recitations in the Qalun narration (قالون عن نافع): reciters and their surahs, the

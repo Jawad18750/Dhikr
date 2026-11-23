@@ -32,12 +32,15 @@ export function ReciterLibrary({
   facts,
   sizes,
   initialSurah,
+  portrait = null,
 }: {
   reciter: Reciter;
   facts: Record<number, SurahFacts>;
   /** Surah → bytes of its MP3, for the download sizes. */
   sizes: Record<number, number>;
   initialSurah?: number;
+  /** His portrait, for the lock screen while he plays. */
+  portrait?: string | null;
 }) {
   const { formatMessage, locale } = useIntl();
   const setSelectedReciter = useSetAtom(selectedReciterAtom);
@@ -126,9 +129,10 @@ export function ReciterLibrary({
       slug,
       reciter: reciter.name,
       href: withLocale(locale as SeoLocale, `/reciter/${reciter.id}?moshafId=${slug}`),
+      portrait,
       tracks: rows.map((row) => ({ id: row.id, name: row.name, link: row.link })),
     }),
-    [slug, reciter.name, reciter.id, rows, locale]
+    [slug, reciter.name, reciter.id, rows, locale, portrait]
   );
   const play = (at: number, from = 0) => player.start(album, at, from);
   const toggle = () => {

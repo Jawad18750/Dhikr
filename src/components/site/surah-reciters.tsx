@@ -47,6 +47,7 @@ export function SurahReciters({ surah, reciters }: { surah: number; reciters: Su
     slug: reciter.slug,
     reciter: reciter.name,
     href: reciter.href,
+    portrait: reciter.portrait,
     tracks: reciter.surahs.map((id) => ({
       id,
       name: names.get(id) ?? String(id),

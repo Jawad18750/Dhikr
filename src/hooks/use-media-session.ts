@@ -42,7 +42,7 @@ export function useMediaSession({
       album: selectedReciter.moshaf.name,
       artwork: [
         {
-          src: '/images/512x512.png',
+          src: '/images/now-playing-512.png',
           sizes: '512x512',
           type: 'image/png',
         },

@@ -33,6 +33,8 @@ export type PlayerAlbum = {
   reciter: string;
   /** His page, to go back to from anywhere. */
   href: string;
+  /** His portrait, for the lock screen's now-playing card. */
+  portrait?: string | null;
   tracks: PlayerTrack[];
 };
 
@@ -228,7 +230,13 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     navigator.mediaSession.metadata = new MediaMetadata({
       title: track.name,
       artist: album.reciter,
-      artwork: [{ src: '/images/512x512.png', sizes: '512x512', type: 'image/png' }],
+      // The reciter's portrait, else the «ذكر» rosette (an address of its own, so no copy of
+      // an older icon cached under another name can stand in for it).
+      artwork: [
+        ...(album.portrait ? [{ src: album.portrait, sizes: '512x512' }] : []),
+        { src: '/images/now-playing-512.png', sizes: '512x512', type: 'image/png' },
+        { src: '/images/now-playing-256.png', sizes: '256x256', type: 'image/png' },
+      ],
     });
     navigator.mediaSession.setActionHandler('play', () => void audioRef.current?.play());
     navigator.mediaSession.setActionHandler('pause', () => audioRef.current?.pause());

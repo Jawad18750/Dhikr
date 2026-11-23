@@ -16,7 +16,7 @@ export const privacyMetadata = (locale: SeoLocale) => {
     locale,
     path: '/privacy',
     title: copy['privacy.title'],
-    description: copy['privacy.section1.body'],
+    description: copy['privacy.s1.body'],
   });
 };
 

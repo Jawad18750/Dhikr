@@ -12,7 +12,7 @@ export const metadata = buildPageMetadata({
   path: '/hadith',
   title: 'كتب الحديث | ذكر',
   description:
-    'اللؤلؤ والمرجان، ورياض الصالحين، وبلوغ المرام، والأدب المفرد، والشمائل المحمدية، والأربعون النووية والقدسية: نصوصها كاملة، مبوّبة، كما في تطبيقات ذكر.',
+    'اللؤلؤ والمرجان، ورياض الصالحين، وبلوغ المرام، والأدب المفرد، والشمائل المحمدية، والأربعون النووية والقدسية: نصوصها كاملة، مبوّبة، كما في تطبيقاتنا.',
   omitLanguages: true,
 });
 
@@ -36,7 +36,7 @@ export default function Page() {
         </Link>
         <h1 className="font-display text-[32px] font-black leading-[1.25] sm:text-[48px]">كتب الحديث</h1>
         <p className="max-w-[660px] text-[17px] leading-[1.85] text-on-hero/70">
-          كتب الحديث التي في تطبيقات ذكر، بنصوصها كاملة ومبوّبة كما رتّبها أصحابها، لكل حديث صفحته ورقمه.
+          كتب الحديث التي في تطبيقاتنا، بنصوصها كاملة ومبوّبة كما رتّبها أصحابها، لكل حديث صفحته ورقمه.
         </p>
         <span className="text-[14px] text-on-hero/55">
           {number.format(list.length)} كتب · {number.format(total)} حديثًا

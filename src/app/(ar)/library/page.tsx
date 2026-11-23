@@ -15,7 +15,7 @@ export const metadata = buildPageMetadata({
   path: '/library',
   title: 'المكتبة | ذكر',
   description:
-    'كتب في التجويد والرسم والغريب برواية قالون، والأذكار والعقيدة والفقه والسيرة: نصوص كاملة للقراءة والبحث، كما في تطبيقات ذكر.',
+    'كتب في التجويد والرسم والغريب برواية قالون، والأذكار والعقيدة والفقه والسيرة: نصوص كاملة للقراءة والبحث، كما في تطبيقاتنا.',
   omitLanguages: true,
 });
 
@@ -41,7 +41,7 @@ export default function Page() {
         <h1 className="font-display text-[32px] font-black leading-[1.25] sm:text-[48px]">المكتبة</h1>
         <p className="max-w-[660px] text-[17px] leading-[1.85] text-on-hero/70">
           كتب في أحكام التجويد ورسم المصحف وغريب القرآن برواية قالون، ومعها كتب في الأذكار والعقيدة والفقه
-          والسيرة. نصوص كاملة تُقرأ هنا، وهي نفسها التي في تطبيقات ذكر.
+          والسيرة. نصوص كاملة تُقرأ هنا، وهي نفسها التي في تطبيقاتنا.
         </p>
         <span className="text-[14px] text-on-hero/55">
           {number.format(books.length + PDF_BOOKS.length + collections().length)} كتابًا و{number.format(tafsirs().length)} تفاسير كاملة

@@ -1,7 +1,7 @@
-import { IoCheckmarkDoneOutline, IoSparkles } from 'react-icons/io5';
 import { useIntl } from 'react-intl';
 
 import type { CatalogueReciter } from '@/lib/dhikr-catalogue';
+import { cn } from '@/utils';
 
 /** «قالون عن نافع» → «قالون». */
 const shortRiwaya = (riwaya: string) => riwaya.split(/\s+/)[0] ?? riwaya;
@@ -13,36 +13,34 @@ const SURAHS = 114;
 
 /**
  * One recitation as a near-square box: the portrait on top, left clear of any
- * label, then the name and what it offers. The ranking sits in the photo's
- * corner, away from the face. The whole box opens the reciter.
+ * label, then the name and one line of what sets it apart. The ranking sits
+ * in the photo's start corner (the right in Arabic), the first three in gold.
+ * The whole box opens the reciter.
  */
 export function ReciterCard({ reciter }: { reciter: CatalogueReciter }) {
   const { formatMessage } = useIntl();
   const initials = reciter.name.split(/\s+/)[0]?.charAt(0) ?? '';
   const riwaya = shortRiwaya(reciter.riwaya);
-  const complete = reciter.surahTotal >= SURAHS;
-  // One line, only what tells this recitation apart from the next. A full
-  // khatma is the double check its filter chip uses, so the words fit three
-  // to a row on a phone.
+  // One line, only what tells this recitation apart from the next. Word by
+  // word is on every recitation, so it is said once for the site, not here.
   const facts = [
     riwaya === HOME_RIWAYA ? '' : riwaya,
     reciter.style,
-    complete
-      ? ''
+    reciter.surahTotal >= SURAHS
+      ? formatMessage({ id: 'browse.chipComplete' })
       : formatMessage(
           { id: 'browse.surahCount' },
           { count: reciter.surahTotal }
         ),
   ].filter(Boolean);
-  const khatma = formatMessage({ id: 'browse.chipComplete' });
-  const wordByWord = formatMessage({ id: 'browse.wordByWord' });
+  const podium = reciter.rank !== null && reciter.rank <= 3;
 
   return (
     <a
       href={reciter.href}
-      className="group flex flex-col gap-2 rounded-[16px] border border-border bg-surface p-1.5 transition-colors hover:border-border-strong sm:gap-3 sm:rounded-[28px] sm:p-2.5"
+      className="group flex flex-col gap-3 rounded-[22px] border border-border bg-surface p-2 transition-colors hover:border-border-strong sm:rounded-[28px] sm:p-2.5"
     >
-      <span className="relative block aspect-square overflow-hidden rounded-[11px] bg-surface-sunken sm:rounded-[20px]">
+      <span className="relative block aspect-square overflow-hidden rounded-[16px] bg-surface-sunken sm:rounded-[20px]">
         {reciter.portrait ? (
           // Portraits come from our audio server at their own size; next/image
           // would proxy them through the app for no gain.
@@ -64,7 +62,12 @@ export function ReciterCard({ reciter }: { reciter: CatalogueReciter }) {
         )}
         {reciter.rank !== null && (
           <span
-            className="absolute end-1.5 top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-black/60 px-1.5 text-[11px] font-bold text-gold-light backdrop-blur-sm sm:end-2.5 sm:top-2.5 sm:h-7 sm:min-w-7 sm:px-2 sm:text-[13px]"
+            className={cn(
+              'absolute start-2 top-2 flex h-7 min-w-7 items-center justify-center rounded-full px-2 font-display text-[15px] font-black leading-none shadow-[0_2px_10px_rgb(0_0_0/0.25)] sm:start-2.5 sm:top-2.5 sm:h-8 sm:min-w-8 sm:text-base',
+              podium
+                ? 'bg-gradient-to-b from-gold-light to-gold text-[#1b1712]'
+                : 'bg-white/90 text-[#0b0b0c] backdrop-blur-sm'
+            )}
             aria-label={formatMessage(
               { id: 'browse.rank' },
               { rank: reciter.rank }
@@ -74,32 +77,18 @@ export function ReciterCard({ reciter }: { reciter: CatalogueReciter }) {
           </span>
         )}
         {reciter.isNew && (
-          <span className="absolute start-1.5 top-1.5 rounded-full bg-gold-light px-1.5 py-0.5 text-[10px] font-bold text-[#1b1712] sm:start-2.5 sm:top-2.5 sm:px-2.5 sm:py-1 sm:text-xs">
+          <span className="absolute end-2 top-2 rounded-full bg-gold-light px-2.5 py-1 text-xs font-bold text-[#1b1712] sm:end-2.5 sm:top-2.5">
             {formatMessage({ id: 'browse.new' })}
           </span>
         )}
       </span>
 
-      <span className="flex flex-1 flex-col gap-0.5 px-1 pb-1 sm:gap-1 sm:px-2 sm:pb-2">
-        <span className="line-clamp-2 text-[13px] font-bold leading-[1.4] text-ink sm:text-lg">
+      <span className="flex flex-1 flex-col gap-1 px-1.5 pb-1.5 sm:px-2 sm:pb-2">
+        <span className="line-clamp-2 text-[15px] font-bold leading-[1.4] text-ink sm:text-lg">
           {reciter.name}
         </span>
-        <span className="mt-auto flex min-w-0 items-center gap-1 text-[11px] text-ink-muted sm:gap-1.5 sm:text-sm">
-          <span className="truncate">{facts.join(' · ')}</span>
-          {complete && (
-            <IoCheckmarkDoneOutline
-              className="h-3.5 w-3.5 shrink-0 sm:h-4 sm:w-4"
-              role="img"
-              aria-label={khatma}
-              title={khatma}
-            />
-          )}
-          <IoSparkles
-            className="h-3 w-3 shrink-0 text-gold sm:h-3.5 sm:w-3.5"
-            role="img"
-            aria-label={wordByWord}
-            title={wordByWord}
-          />
+        <span className="mt-auto truncate text-[13px] text-ink-muted sm:text-sm">
+          {facts.join(' · ')}
         </span>
       </span>
     </a>

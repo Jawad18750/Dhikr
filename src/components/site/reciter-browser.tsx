@@ -237,7 +237,7 @@ export function ReciterBrowser({ reciters }: { reciters: CatalogueReciter[] }) {
             })}
           </h2>
           {shown.length > 0 ? (
-            <div className="grid grid-cols-3 gap-2 sm:gap-5 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 lg:grid-cols-4">
               {shown.map((reciter) => (
                 <ReciterCard key={reciter.slug} reciter={reciter} />
               ))}

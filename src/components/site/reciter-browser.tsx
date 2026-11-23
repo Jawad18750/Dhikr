@@ -2,18 +2,11 @@
 
 import { useAtomValue } from 'jotai';
 import { useMemo, useState } from 'react';
-import type { IconType } from 'react-icons';
 import {
-  IoAppsOutline,
-  IoBookOutline,
-  IoCheckmarkDoneOutline,
   IoChevronDown,
   IoChevronUp,
-  IoMicOutline,
-  IoPersonOutline,
   IoPlayOutline,
   IoSearchOutline,
-  IoSpeedometerOutline,
 } from 'react-icons/io5';
 import { useIntl } from 'react-intl';
 
@@ -37,7 +30,7 @@ const matches = (text: string, query: string) =>
   );
 
 /**
- * Search with a reciter/surah toggle, filter chips with counts, and the
+ * One search field with a reciter/surah switch, a line of filters with counts, and the
  * reciter grid. Searching by surah opens it with the reciter last played,
  * or the most listened one.
  */
@@ -55,31 +48,26 @@ export function ReciterBrowser({ reciters }: { reciters: CatalogueReciter[] }) {
         {
           id: 'all',
           label: 'browse.chipAll',
-          icon: IoAppsOutline,
           count: reciters.length,
         },
         {
           id: 'murattal',
           label: 'browse.chipMurattal',
-          icon: IoMicOutline,
           count: reciters.filter((r) => r.style === 'مرتل').length,
         },
         {
           id: 'hadr',
           label: 'browse.chipHadr',
-          icon: IoSpeedometerOutline,
           count: reciters.filter((r) => r.style === 'حدر').length,
         },
         {
           id: 'complete',
           label: 'browse.chipComplete',
-          icon: IoCheckmarkDoneOutline,
           count: reciters.filter((r) => r.surahTotal === 114).length,
         },
       ].filter((item) => item.count > 0) as {
         id: Chip;
         label: string;
-        icon: IconType;
         count: number;
       }[],
     [reciters]
@@ -126,9 +114,10 @@ export function ReciterBrowser({ reciters }: { reciters: CatalogueReciter[] }) {
       aria-labelledby="reciters-title"
       className="flex scroll-mt-6 flex-col gap-7"
     >
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-wrap items-center gap-2 rounded-[28px] bg-surface-sunken p-2 sm:rounded-full">
-          <label className="flex min-w-0 flex-1 basis-[240px] items-center gap-3 px-4">
+      <div className="flex flex-col gap-3">
+        {/* One field; what it searches is a small switch at its end. */}
+        <div className="flex h-14 items-center gap-2 rounded-full border border-border bg-surface pe-1.5 ps-5 transition-colors focus-within:border-border-strong">
+          <label className="flex min-w-0 flex-1 items-center gap-3">
             <IoSearchOutline
               className="h-5 w-5 shrink-0 text-ink-muted"
               aria-hidden="true"
@@ -146,13 +135,13 @@ export function ReciterBrowser({ reciters }: { reciters: CatalogueReciter[] }) {
                     ? 'browse.placeholderReciter'
                     : 'browse.placeholderSurah',
               })}
-              className="h-12 min-w-0 flex-1 border-0 bg-transparent p-0 text-lg text-ink placeholder:text-ink-subtle focus:outline-none focus:ring-0"
+              className="h-full min-w-0 flex-1 border-0 bg-transparent p-0 text-[17px] text-ink placeholder:text-ink-subtle focus:outline-none focus:ring-0"
             />
           </label>
           <div
             role="group"
             aria-label={formatMessage({ id: 'browse.mode' })}
-            className="flex rounded-full bg-surface p-1"
+            className="flex shrink-0 rounded-full bg-surface-sunken p-1"
           >
             {(['reciter', 'surah'] as const).map((item) => (
               <button
@@ -161,23 +150,12 @@ export function ReciterBrowser({ reciters }: { reciters: CatalogueReciter[] }) {
                 aria-pressed={mode === item}
                 onClick={() => setMode(item)}
                 className={cn(
-                  'flex h-11 items-center gap-2 rounded-full px-5 text-base transition-colors',
+                  'h-9 rounded-full px-3.5 text-sm transition-colors',
                   mode === item
                     ? 'bg-ink font-bold text-background'
                     : 'text-ink-muted hover:text-ink'
                 )}
               >
-                {item === 'reciter' ? (
-                  <IoPersonOutline
-                    className="h-[18px] w-[18px]"
-                    aria-hidden="true"
-                  />
-                ) : (
-                  <IoBookOutline
-                    className="h-[18px] w-[18px]"
-                    aria-hidden="true"
-                  />
-                )}
                 {formatMessage({
                   id:
                     item === 'reciter'
@@ -193,7 +171,7 @@ export function ReciterBrowser({ reciters }: { reciters: CatalogueReciter[] }) {
           <div
             role="group"
             aria-label={formatMessage({ id: 'browse.filters' })}
-            className="flex flex-wrap gap-2"
+            className="-mx-4 flex gap-1.5 overflow-x-auto px-4 [scrollbar-width:none] sm:mx-0 sm:px-0"
           >
             {chips.map((item) => (
               <button
@@ -202,20 +180,17 @@ export function ReciterBrowser({ reciters }: { reciters: CatalogueReciter[] }) {
                 aria-pressed={chip === item.id}
                 onClick={() => setChip(item.id)}
                 className={cn(
-                  'flex h-11 items-center gap-2 rounded-full px-4 text-[15px] transition-colors',
+                  'flex h-9 shrink-0 items-center gap-1.5 rounded-full px-3 text-sm transition-colors sm:px-3.5',
                   chip === item.id
                     ? 'bg-ink font-bold text-background'
-                    : 'border border-border font-medium text-ink hover:border-border-strong'
+                    : 'border border-border text-ink hover:border-border-strong'
                 )}
               >
-                <item.icon className="h-[18px] w-[18px]" aria-hidden="true" />
                 {formatMessage({ id: item.label })}
                 <span
                   className={cn(
-                    'rounded-full px-2 text-[13px]',
-                    chip === item.id
-                      ? 'bg-background/20'
-                      : 'bg-surface-sunken text-ink-muted'
+                    'tabular-nums',
+                    chip === item.id ? 'opacity-70' : 'text-ink-subtle'
                   )}
                 >
                   {item.count}

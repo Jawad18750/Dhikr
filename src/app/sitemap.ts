@@ -48,6 +48,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   for (const route of ROUTES) {
     if (!route.index || !route.sitemap || route.dynamic) continue;
+    if (route.arabicOnly) {
+      entries.push({
+        url: absolute(appUrl, withLocale('ar', route.path)),
+        lastModified: CONTENT_LAST_MODIFIED,
+        changeFrequency: route.changeFrequency,
+        priority: route.priority,
+      });
+      continue;
+    }
     for (const locale of LOCALES as readonly SeoLocale[]) {
       entries.push({
         url: absolute(appUrl, withLocale(locale, route.path)),

@@ -32,7 +32,6 @@ export async function HomeRoute({ locale }: { locale: SeoLocale }) {
         <HomeClient reciters={reciters} />
         <ToolsSection
           locale={locale}
-          sampleSlug={reciters[0]?.slug}
           reciterCount={reciters.length}
         />
       </div>

@@ -55,11 +55,22 @@ export function ReciterLibrary({
   const [toast, setToast] = useState<string | null>(null);
   // Separate files being saved, one after another: how many of how many.
   const [saving, setSaving] = useState<{ done: number; total: number } | null>(null);
+  // Bulk downloads need an account: off to sign in first, and back here after.
+  const signedIn = async () => {
+    const me = await fetch('/api/account/me', { credentials: 'same-origin' })
+      .then((r) => (r.ok ? (r.json() as Promise<{ signedIn: boolean }>) : { signedIn: false }))
+      .catch(() => ({ signedIn: false }));
+    if (!me.signedIn) {
+      window.location.href = `/account?next=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+    }
+    return me.signedIn;
+  };
   const saveSeparately = async (ids: number[]) => {
+    if (!(await signedIn())) return;
     setSaving({ done: 0, total: ids.length });
     for (const [at, id] of ids.entries()) {
       const link = document.createElement('a');
-      link.href = `/api/download/${slug}/${id}`;
+      link.href = `/api/download/${slug}/${id}?bulk=1`;
       link.download = '';
       document.body.append(link);
       link.click();

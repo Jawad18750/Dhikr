@@ -1,9 +1,10 @@
 import Link from 'next/link';
 import { Suspense } from 'react';
 import {
+  IoBookOutline,
   IoCodeSlashOutline,
   IoInformationCircleOutline,
-  IoPeopleOutline,
+  IoPersonCircleOutline,
 } from 'react-icons/io5';
 
 import { type SeoLocale, withLocale } from '@/lib/seo/routes';
@@ -31,15 +32,16 @@ export function SiteHeader({ locale }: { locale: SeoLocale }) {
   const t = COPY[locale];
   const home = withLocale(locale, '/');
   const icon = 'h-[18px] w-[18px]';
+  // Pages of their own, not jumps to the home's sections.
   const links: MenuLink[] = [
     {
-      href: `${home}#reciters`,
-      label: t['nav.reciters'],
-      icon: <IoPeopleOutline className={icon} aria-hidden="true" />,
+      href: '/surahs',
+      label: t['nav.surahs'],
+      icon: <IoBookOutline className={icon} aria-hidden="true" />,
     },
     {
-      href: `${home}#tools`,
-      label: t['nav.tools'],
+      href: '/developers',
+      label: t['nav.developers'],
       icon: <IoCodeSlashOutline className={icon} aria-hidden="true" />,
     },
     {
@@ -48,6 +50,11 @@ export function SiteHeader({ locale }: { locale: SeoLocale }) {
       icon: <IoInformationCircleOutline className={icon} aria-hidden="true" />,
     },
   ];
+  const account: MenuLink = {
+    href: '/account',
+    label: t['nav.account'],
+    icon: <IoPersonCircleOutline className={icon} aria-hidden="true" />,
+  };
 
   return (
     <HeaderShell>
@@ -83,6 +90,14 @@ export function SiteHeader({ locale }: { locale: SeoLocale }) {
           className="bar-in hidden items-center gap-2 sm:flex sm:justify-self-end"
           style={{ animationDelay: '160ms' }}
         >
+          <Link
+            href={account.href}
+            aria-label={account.label}
+            className="flex h-11 items-center gap-1.5 rounded-full border border-border px-3.5 text-[14px] font-bold text-ink transition-colors hover:border-border-strong"
+          >
+            <IoPersonCircleOutline className="h-[19px] w-[19px]" aria-hidden="true" />
+            {account.label}
+          </Link>
           <Suspense fallback={null}>
             <LanguageSwitch locale={locale} />
           </Suspense>
@@ -91,7 +106,7 @@ export function SiteHeader({ locale }: { locale: SeoLocale }) {
 
         {/* Phones: one row, everything else behind the menu button. */}
         <div className="bar-in sm:hidden" style={{ animationDelay: '120ms' }}>
-          <SiteMenu links={links} locale={locale} />
+          <SiteMenu links={[...links, account]} locale={locale} />
         </div>
       </header>
     </HeaderShell>

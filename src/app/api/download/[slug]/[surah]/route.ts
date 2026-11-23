@@ -4,8 +4,10 @@ import path from 'node:path';
 
 import { NextResponse } from 'next/server';
 
+import { auth } from '@/auth';
 import { SURAHS } from '@/constants';
 import { getRecitationFiles } from '@/lib/dhikr-surah-facts';
+import { logDownload } from '@/lib/downloads-log';
 import { DHIKR_AUDIO_BASE } from '@/services/reciters/dhikr.adapter';
 import { removeTashkeel } from '@/utils';
 
@@ -33,6 +35,14 @@ export async function GET(
   }
   const files = await getRecitationFiles(slug);
   if (!files?.sizes.has(s)) return new NextResponse('Not found', { status: 404 });
+
+  // As part of a khatma saved surah by surah (`?bulk=1`), it needs an account like the ZIP.
+  if (new URL(request.url).searchParams.get('bulk') === '1') {
+    const session = await auth();
+    const userId = Number(session?.user?.id);
+    if (!userId) return new NextResponse('Sign in to download in bulk', { status: 401 });
+    logDownload(request, { userId, slug, kind: 'separate', surahs: 1, bytes: files.sizes.get(s) ?? null });
+  }
 
   const address =
     request.headers.get('cf-connecting-ip') ??

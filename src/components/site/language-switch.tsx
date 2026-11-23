@@ -18,7 +18,7 @@ export function LanguageSwitch({ locale }: { locale: SeoLocale }) {
   const bare = stripLocale(pathname);
   // Reciter and surah pages are Arabic documents (their twins lead back here), so the
   // other language opens on its home.
-  const arabicOnly = /^\/(reciter|surah)\//.test(bare);
+  const arabicOnly = /^\/(?:reciter\/|surah\/|(?:surahs|developers|account|admin)$)/.test(bare);
   const href = arabicOnly
     ? withLocale(other, '/')
     : `${withLocale(other, bare)}${search ? `?${search}` : ''}`;

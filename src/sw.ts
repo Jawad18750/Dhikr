@@ -206,7 +206,21 @@ const connectivityProbe = {
   handler: new NetworkOnly(),
 };
 
+/**
+ * Accounts, keys and usage never go into a cache on the device: the account and
+ * admin pages, sign-in, the keyed API, and the downloads that log who took them.
+ */
+const privateNetworkOnly = {
+  matcher: ({ url, sameOrigin }: { url: URL; sameOrigin: boolean }) =>
+    sameOrigin &&
+    /^\/(?:(?:en|de)\/)?(?:account|admin)(?:\/|$)|^\/api\/(?:auth|account|admin|v1|download)(?:\/|$)/.test(
+      url.pathname
+    ),
+  handler: new NetworkOnly(),
+};
+
 const runtimeCaching = [
+  privateNetworkOnly,
   connectivityProbe,
   pageNavigationCache,
   quranAudioCache,

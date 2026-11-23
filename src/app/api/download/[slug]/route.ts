@@ -4,8 +4,10 @@ import path from 'node:path';
 
 import { NextResponse } from 'next/server';
 
+import { auth } from '@/auth';
 import { SURAHS } from '@/constants';
 import { getRecitationFiles } from '@/lib/dhikr-surah-facts';
+import { logDownload } from '@/lib/downloads-log';
 import { ZIP_LIMIT, zipLength, zipStream } from '@/lib/zip-stream';
 import { DHIKR_AUDIO_BASE } from '@/services/reciters/dhikr.adapter';
 import { removeTashkeel } from '@/utils';
@@ -27,6 +29,14 @@ const pad = (n: number) => String(n).padStart(3, '0');
 
 export async function GET(request: Request, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+  // A whole khatma or picked surahs in one archive needs an account (single surahs do not).
+  const session = await auth();
+  const userId = Number(session?.user?.id);
+  if (!userId) {
+    const back = request.headers.get('referer');
+    const next = back && new URL(back).origin === new URL(request.url).origin ? new URL(back).pathname + new URL(back).search : '/';
+    return NextResponse.redirect(new URL(`/account?next=${encodeURIComponent(next)}`, request.url), 303);
+  }
   if (!SLUG.test(slug)) return new NextResponse('Not found', { status: 404 });
   const files = await getRecitationFiles(slug);
   if (!files || files.sizes.size === 0) return new NextResponse('Not found', { status: 404 });
@@ -88,6 +98,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
   );
   const length = zipLength(entries);
   if (length > ZIP_LIMIT) return new NextResponse('Too large', { status: 413 });
+  logDownload(request, { userId, slug, kind: 'zip', surahs: surahs.length, bytes: length });
 
   active.set(address, (active.get(address) ?? 0) + 1);
   const release = () => {

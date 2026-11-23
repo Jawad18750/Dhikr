@@ -1,8 +1,11 @@
+import Link from 'next/link';
 import type { IconType } from 'react-icons';
 import {
+  IoArrowBack,
   IoCloudDownloadOutline,
   IoCodeSlashOutline,
   IoDocumentTextOutline,
+  IoKeyOutline,
   IoSwapHorizontalOutline,
   IoTextOutline,
   IoTimeOutline,
@@ -12,7 +15,6 @@ import type { SeoLocale } from '@/lib/seo/routes';
 import ar from '@/locales/ar.json';
 import de from '@/locales/de.json';
 import en from '@/locales/en.json';
-import { DHIKR_AUDIO_BASE } from '@/services/reciters/dhikr.adapter';
 import { cn } from '@/utils';
 
 import { CardMark } from './logo-mark';
@@ -21,6 +23,16 @@ const COPY: Record<SeoLocale, Record<string, string>> = { ar, en, de };
 
 const fill = (text: string, values: Record<string, string | number>) =>
   text.replace(/\{(\w+)\}/g, (_, name: string) => String(values[name] ?? ''));
+
+/** Each card's «details» link to its section in the documentation. */
+const DETAILS_TONE = {
+  ayahTimings: 'bg-white/[0.14] text-white hover:bg-white/25',
+  wordTimings: 'bg-white/[0.14] text-white hover:bg-white/25',
+  text: 'bg-[#1b1712]/[0.12] text-[#1b1712] hover:bg-[#1b1712]/20',
+  api: 'bg-on-hero/[0.08] text-on-hero hover:bg-on-hero/15',
+  converter: 'bg-on-hero/[0.08] text-on-hero hover:bg-on-hero/15',
+  audio: 'bg-on-hero/[0.08] text-on-hero hover:bg-on-hero/15',
+} as const;
 
 const pill =
   'inline-flex h-9 items-center gap-1.5 rounded-full px-4 text-sm font-bold transition-colors';
@@ -57,12 +69,9 @@ function CardIcon({ icon: Icon, tone }: { icon: IconType; tone?: Tone }) {
  */
 export function ToolsSection({
   locale,
-  sampleSlug,
   reciterCount,
 }: {
   locale: SeoLocale;
-  /** A recitation whose surah 1 timings serve as the JSON sample. */
-  sampleSlug?: string;
   reciterCount: number;
 }) {
   const t = (key: string, values?: Record<string, string | number>) =>
@@ -105,6 +114,22 @@ export function ToolsSection({
         <p className="max-w-[680px] text-[17px] leading-[1.75] text-on-hero/65 sm:text-lg">
           {t('tools.body')}
         </p>
+        <div className="flex flex-wrap gap-2 pt-2">
+          <Link
+            href="/account?next=/developers"
+            className="flex h-11 items-center gap-2 rounded-full bg-gradient-to-b from-gold-light to-gold px-5 text-[15px] font-bold text-[#1b1712]"
+          >
+            <IoKeyOutline className="h-[17px] w-[17px]" aria-hidden="true" />
+            {t('cta.key')}
+          </Link>
+          <Link
+            href="/developers"
+            className="flex h-11 items-center gap-2 rounded-full bg-on-hero/[0.08] px-5 text-[15px] font-bold text-on-hero hover:bg-on-hero/15"
+          >
+            <IoCodeSlashOutline className="h-[17px] w-[17px]" aria-hidden="true" />
+            {t('cta.docs')}
+          </Link>
+        </div>
       </div>
 
       <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,340px),1fr))] gap-4">
@@ -126,6 +151,13 @@ export function ToolsSection({
             <span className="font-bold">{t('tools.ideaLabel')}: </span>
             {t('tools.ayahTimingsIdea')}
           </p>
+          <Link
+            href={`/developers#timings`}
+            className={cn(pill, 'mt-auto self-start', DETAILS_TONE.ayahTimings)}
+          >
+            {t('tools.details')}
+            <IoArrowBack className="h-4 w-4 ltr:rotate-180" aria-hidden="true" />
+          </Link>
           <div
             className="mt-auto flex flex-col gap-2 rounded-2xl bg-white/[0.07] px-4 py-3.5"
             aria-hidden="true"
@@ -159,20 +191,6 @@ export function ToolsSection({
               timings/&lt;reciter&gt;/001.json
             </span>
           </div>
-          {sampleSlug ? (
-            <a
-              href={`${DHIKR_AUDIO_BASE}/timings/${encodeURIComponent(sampleSlug)}/001.json`}
-              className={cn(
-                pill,
-                'self-start bg-white/[0.14] text-white hover:bg-white/25'
-              )}
-            >
-              <IoDocumentTextOutline aria-hidden="true" />
-              JSON
-            </a>
-          ) : (
-            inProgress()
-          )}
         </article>
 
         {/* Word timings: words lighting one after another, as a reciter reads them. */}
@@ -193,6 +211,13 @@ export function ToolsSection({
             <span className="font-bold">{t('tools.ideaLabel')}: </span>
             {t('tools.wordTimingsIdea')}
           </p>
+          <Link
+            href={`/developers#word-timings`}
+            className={cn(pill, 'mt-auto self-start', DETAILS_TONE.wordTimings)}
+          >
+            {t('tools.details')}
+            <IoArrowBack className="h-4 w-4 ltr:rotate-180" aria-hidden="true" />
+          </Link>
           <div
             className="mt-auto flex flex-wrap gap-1.5 rounded-2xl bg-white/[0.07] px-4 py-3.5"
             aria-hidden="true"
@@ -229,6 +254,13 @@ export function ToolsSection({
             <span className="font-bold">{t('tools.ideaLabel')}: </span>
             {t('tools.textIdea')}
           </p>
+          <Link
+            href={`/developers#text`}
+            className={cn(pill, 'mt-auto self-start', DETAILS_TONE.text)}
+          >
+            {t('tools.details')}
+            <IoArrowBack className="h-4 w-4 ltr:rotate-180" aria-hidden="true" />
+          </Link>
           <div
             className="mt-auto flex flex-col gap-2 rounded-2xl bg-white/40 px-4 py-3.5"
             aria-hidden="true"
@@ -273,6 +305,13 @@ export function ToolsSection({
             <span className="font-bold">{t('tools.ideaLabel')}: </span>
             {t('tools.apiIdea')}
           </p>
+          <Link
+            href={`/developers#reciters`}
+            className={cn(pill, 'mt-auto self-start', DETAILS_TONE.api)}
+          >
+            {t('tools.details')}
+            <IoArrowBack className="h-4 w-4 ltr:rotate-180" aria-hidden="true" />
+          </Link>
           <div
             dir="ltr"
             className="mt-auto flex flex-col gap-1.5 rounded-2xl bg-[#0b0b0c] px-4 py-3.5 text-left font-mono text-sm text-white"
@@ -307,6 +346,13 @@ export function ToolsSection({
             <span className="font-bold">{t('tools.ideaLabel')}: </span>
             {t('tools.converterIdea')}
           </p>
+          <Link
+            href={`/developers#converter`}
+            className={cn(pill, 'mt-auto self-start', DETAILS_TONE.converter)}
+          >
+            {t('tools.details')}
+            <IoArrowBack className="h-4 w-4 ltr:rotate-180" aria-hidden="true" />
+          </Link>
           <div
             className="mt-auto flex flex-wrap items-center gap-2.5 text-[15px] [perspective:400px]"
             aria-hidden="true"
@@ -340,6 +386,13 @@ export function ToolsSection({
             <span className="font-bold">{t('tools.ideaLabel')}: </span>
             {t('tools.audioIdea')}
           </p>
+          <Link
+            href={`/developers#audio`}
+            className={cn(pill, 'mt-auto self-start', DETAILS_TONE.audio)}
+          >
+            {t('tools.details')}
+            <IoArrowBack className="h-4 w-4 ltr:rotate-180" aria-hidden="true" />
+          </Link>
           <div
             className="mt-auto flex items-center gap-4 rounded-2xl bg-[#0b0b0c] px-4 py-3.5 text-white"
             aria-hidden="true"

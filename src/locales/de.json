@@ -409,5 +409,13 @@
   "tools.textIdea": "Die meisten digitalen Korantexte folgen Hafs und der kufischen Zählung. Dies ist der Qalun-Text mit der späteren medinensischen Zählung, für alle, die Leser in Libyen und im Maghreb begleiten.",
   "tools.apiIdea": "Worauf Dhikr selbst läuft, steht auch anderen offen: Eine Moschee-Website oder eine Lern-App baut auf denselben Daten auf, statt sie neu zu sammeln.",
   "tools.converterIdea": "Die meisten Tafsire und Übersetzungen sind nach Hafs nummeriert; der Umrechner verbindet sie ohne Verschiebung mit dem richtigen Vers im Qalun-Mushaf.",
-  "tools.audioIdea": "Zum Hören ohne Verbindung, und für Radiosender und Moscheen, die Rezitation senden: dieselben Dateien, die man hier hört."
+  "tools.audioIdea": "Zum Hören ohne Verbindung, und für Radiosender und Moscheen, die Rezitation senden: dieselben Dateien, die man hier hört.",
+  "nav.surahs": "Suren",
+  "nav.developers": "API",
+  "nav.account": "Konto",
+  "cta.title": "Auf Dhikr aufbauen",
+  "cta.body": "Ein kostenloser persönlicher Schlüssel für die API: Rezitatoren, Suren und die Zeiten jedes Verses und jedes Wortes, nach Qalun.",
+  "cta.key": "Schlüssel holen",
+  "cta.docs": "Dokumentation",
+  "tools.details": "Details"
 }

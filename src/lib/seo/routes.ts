@@ -12,6 +12,8 @@ export type SeoRoute = {
   changeFrequency: 'daily' | 'weekly' | 'monthly' | 'yearly';
   priority: number;
   dynamic?: boolean;
+  /** An Arabic document only: its /en and /de addresses redirect to it. */
+  arabicOnly?: boolean;
 };
 
 /**
@@ -61,6 +63,40 @@ export const ROUTES: readonly SeoRoute[] = [
     changeFrequency: 'weekly',
     priority: 0.7,
     dynamic: true,
+  },
+  {
+    name: 'surahs',
+    path: '/surahs',
+    arabicOnly: true,
+    index: true,
+    sitemap: true,
+    changeFrequency: 'monthly',
+    priority: 0.6,
+  },
+  {
+    name: 'developers',
+    path: '/developers',
+    arabicOnly: true,
+    index: true,
+    sitemap: true,
+    changeFrequency: 'monthly',
+    priority: 0.5,
+  },
+  {
+    name: 'account',
+    path: '/account',
+    index: false,
+    sitemap: false,
+    changeFrequency: 'yearly',
+    priority: 0,
+  },
+  {
+    name: 'admin',
+    path: '/admin',
+    index: false,
+    sitemap: false,
+    changeFrequency: 'yearly',
+    priority: 0,
   },
   {
     name: 'surah',

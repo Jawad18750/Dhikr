@@ -138,13 +138,12 @@ export function LogoMark3D({
 
       const scene = new THREE.Scene();
       const pmrem = new THREE.PMREMGenerator(renderer);
-      // The light the glass reflects, our own studio: a white softbox above,
-      // a warm white strip on one side and a gold one on the other, a gold bounce
-      // from below and a bright panel behind for the rims. Reflections of it
-      // give the blades their coloured gradients.
+      // The room the blades mirror, after QUL's: black, lit only by a few
+      // narrow bright strips. Polished surfaces then read as black mirrors
+      // with sharp highlights and bright rims, not as satin.
       const studio = new THREE.Scene();
       // A warm grey room, not black: gold seen edge-on still reads as gold.
-      studio.background = new THREE.Color(0x6a5d48);
+      studio.background = new THREE.Color(0x000000);
       const panel = (
         color: number,
         power: number,
@@ -162,13 +161,13 @@ export function LogoMark3D({
         mesh.lookAt(0, 0, 0);
         studio.add(mesh);
       };
-      panel(0xffffff, 3.2, [0, 7, 4], [9, 3]);
-      panel(0xfff1d6, 2.6, [-7, 0, 2], [6, 12]);
-      panel(0xf0d290, 2.4, [7, 1, 2], [6, 12]);
-      panel(0xe6c47a, 2.2, [0, -7, 3], [11, 3]);
-      panel(0xffffff, 4.5, [0, 0, -8], [7, 7]);
-      // A soft warm panel behind the viewer: face-on gold reflects light, not dark.
-      panel(0xffe9bf, 1.6, [0, 1, 10], [12, 8]);
+      panel(0xffffff, 7, [0, 7, 3], [10, 1.1]);
+      panel(0xffffff, 5, [-7, 1, 1], [1.1, 10]);
+      panel(0xf2cf86, 4.5, [7, 0, 1], [1.1, 10]);
+      panel(0xffffff, 7, [0, 0, -8], [8, 8]);
+      // A faint gold glow behind the viewer, so gold facing you is a dark
+      // gold mirror, not black.
+      panel(0xf2cf86, 1, [0, 1, 10], [12, 8]);
       const environment = pmrem.fromScene(studio, 0.02).texture;
       studio.traverse((object) => {
         const mesh = object as {
@@ -179,7 +178,9 @@ export function LogoMark3D({
         mesh.material?.dispose();
       });
       scene.environment = environment;
-      const key = new THREE.DirectionalLight(0xffffff, 1.4);
+      // Soft fill so the lacquer bodies show their colour on every side.
+      scene.add(new THREE.HemisphereLight(0xffffff, 0x2a2418, 1.1));
+      const key = new THREE.DirectionalLight(0xffffff, 1.8);
       key.position.set(3, 5, 6);
       scene.add(key);
       // Light from behind gives the glass blades their bright rims.
@@ -211,11 +212,12 @@ export function LogoMark3D({
       });
       geometry.center();
 
-      // The pale blades shade from pale gold at the hub to white to cream.
+      // The white blades shade from soft grey at the hub to white at the tip:
+      // depth under the glossy coat, and never a paler gold.
       const tones = [
-        new THREE.Color(0xe8cf98),
+        new THREE.Color(0xb7babe),
+        new THREE.Color(0xeeeeee),
         new THREE.Color(0xffffff),
-        new THREE.Color(0xfff3da),
       ];
       geometry.computeBoundingBox();
       const box = geometry.boundingBox;
@@ -232,28 +234,31 @@ export function LogoMark3D({
       geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
       const gold = new THREE.MeshPhysicalMaterial({
-        color: 0xeacb84,
-        metalness: 1,
-        roughness: 0.3,
+        // Gold lacquer under a mirror-clear coat, like QUL's coloured blades:
+        // the body carries the colour (lit by the lights, shading deep at the
+        // hub to bright at the tip), the coat mirrors the black room.
+        color: 0xe2ad48,
+        vertexColors: true,
+        metalness: 0.35,
+        roughness: 0.32,
         clearcoat: 1,
-        clearcoatRoughness: 0.05,
-        envMapIntensity: 1.7,
+        clearcoatRoughness: 0,
+        envMapIntensity: 1.6,
       });
-      // Pearl: white with a faint film and a gold sheen.
+      // White: a white body under a mirror-clear coat. The body stays white
+      // (lit by the lights, not tinted by the room); the coat mirrors the
+      // black room, so it reads as glossy black glass over white.
       const mint = new THREE.MeshPhysicalMaterial({
         color: 0xffffff,
         vertexColors: true,
-        metalness: 0.25,
-        roughness: 0.1,
+        metalness: 0,
+        roughness: 0.35,
         clearcoat: 1,
-        clearcoatRoughness: 0.03,
-        iridescence: 0.35,
+        clearcoatRoughness: 0,
+        iridescence: 0.12,
         iridescenceIOR: 1.6,
         iridescenceThicknessRange: [100, 400],
-        sheen: 1,
-        sheenRoughness: 0.35,
-        sheenColor: new THREE.Color(0xf3dca4),
-        envMapIntensity: 1.3,
+        envMapIntensity: 1.6,
       });
 
       // The stage leans toward the pointer; the ring inside it turns.
@@ -413,7 +418,7 @@ export function LogoMark3D({
       let drawnLanded = false;
       let gilt = 0;
       const white = new THREE.Color(0xffffff);
-      const goldTone = new THREE.Color(0xeacb84);
+      const goldTone = new THREE.Color(0xe2ad48);
       const draw = (time: number) => {
         const dt = last ? Math.min(0.05, (time - last) / 1000) : 0;
         last = time;
@@ -438,9 +443,8 @@ export function LogoMark3D({
         // In the header the pale blades turn gold as well: one gold mark.
         gilt += ((landed ? 1 : 0) - gilt) * Math.min(1, dt * 4);
         mint.color.lerpColors(white, goldTone, gilt);
-        mint.metalness = 0.25 + 0.75 * gilt;
-        mint.roughness = 0.1 + 0.2 * gilt;
-        mint.sheen = 1 - gilt;
+        mint.metalness = 0.35 * gilt;
+        mint.roughness = 0.35 - 0.03 * gilt;
         clock += dt * speed;
         const ease = 1 - Math.pow(1 - 0.06, (dt * 1000) / (1000 / 60));
         tilt.x += (tilt.targetX - tilt.x) * ease;

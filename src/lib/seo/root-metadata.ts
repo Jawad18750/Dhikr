@@ -32,7 +32,7 @@ export const rootMetadata = (locale: SeoLocale): Metadata => {
     },
     icons: {
       icon: [
-        { url: '/icon.svg', type: 'image/svg+xml' },
+        { url: '/favicon.ico', sizes: '16x16 32x32 48x48' },
         { url: '/images/icon-192.png', sizes: '192x192', type: 'image/png' },
       ],
       apple: '/images/apple-touch-icon.png',

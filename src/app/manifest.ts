@@ -21,7 +21,7 @@ export default function manifest(): MetadataRoute.Manifest {
     start_url: '/',
     name: 'ذكر',
     short_name: 'ذكر',
-    description: 'تلاوات القرآن مع المصحف',
+    description: 'مجموعة من تلاوات القرآن الكريم ومصادره الرقمية، للاستماع والقراءة والبحث.',
 
     dir: 'auto',
     lang: 'auto',
@@ -76,7 +76,7 @@ export default function manifest(): MetadataRoute.Manifest {
     screenshots: [
       {
         src: '/screenshots/desktop.png',
-        sizes: '1919x917',
+        sizes: '1920x1080',
         type: 'image/png',
         // @ts-expect-error
         platform: 'wide',
@@ -85,7 +85,7 @@ export default function manifest(): MetadataRoute.Manifest {
       },
       {
         src: '/screenshots/mobile.png',
-        sizes: '1442x3202',
+        sizes: '1000x2160',
         type: 'image/png',
         // @ts-expect-error
         platform: 'narrow',
@@ -96,9 +96,9 @@ export default function manifest(): MetadataRoute.Manifest {
 
     shortcuts: [
       {
-        name: 'Contact us',
+        name: 'اتصل بنا',
         url: '/contact',
-        description: 'Contact us page',
+        description: 'اتصل بنا',
         icons: [
           {
             src: '/images/shortcuts/contact.png',
@@ -108,9 +108,9 @@ export default function manifest(): MetadataRoute.Manifest {
         ],
       },
       {
-        name: 'About us',
+        name: 'عن الموقع',
         url: '/about',
-        description: 'About us page',
+        description: 'عن الموقع',
         icons: [
           {
             src: '/images/shortcuts/about.png',

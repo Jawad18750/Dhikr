@@ -33,9 +33,21 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
   const session = await auth();
   const userId = Number(session?.user?.id);
   if (!userId) {
+    // Back to the page it came from (this site's only); a relative address, since behind
+    // the proxy this server's own URL is not the site's.
     const back = request.headers.get('referer');
-    const next = back && new URL(back).origin === new URL(request.url).origin ? new URL(back).pathname + new URL(back).search : '/';
-    return NextResponse.redirect(new URL(`/account?next=${encodeURIComponent(next)}`, request.url), 303);
+    const host = request.headers.get('x-forwarded-host') ?? request.headers.get('host');
+    let next = '/';
+    try {
+      const from = back ? new URL(back) : null;
+      if (from && from.host === host) next = from.pathname + from.search;
+    } catch {
+      /* no usable referer */
+    }
+    return new NextResponse(null, {
+      status: 303,
+      headers: { Location: `/account?next=${encodeURIComponent(next)}`, 'Cache-Control': 'no-store' },
+    });
   }
   if (!SLUG.test(slug)) return new NextResponse('Not found', { status: 404 });
   const files = await getRecitationFiles(slug);

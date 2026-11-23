@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 
 import { ReciterHero } from '@/components/site/reciter-hero';
 import { ReciterLibrary } from '@/components/site/reciter-library';
-import { getDhikrPortrait } from '@/lib/dhikr-catalogue';
+import { getDhikrCatalogue, getDhikrPortrait } from '@/lib/dhikr-catalogue';
 import { getRecitationFiles, getSurahFacts } from '@/lib/dhikr-surah-facts';
 import { breadcrumbTrail } from '@/lib/seo/json-ld';
 import { buildPageMetadata } from '@/lib/seo/metadata';
@@ -141,6 +141,11 @@ export default async function Page({ params, searchParams }: Props) {
       ? await getDhikrPortrait(reciter.moshaf.id)
       : null;
 
+  const catalogued =
+    reciter.source === LinkSource.DHIKR
+      ? (await getDhikrCatalogue()).find((item) => item.slug === reciter.moshaf.id)
+      : undefined;
+
   const canonicalPath = `/reciter/${id}`;
   const breadcrumb = breadcrumbTrail([
     {
@@ -160,10 +165,16 @@ export default async function Page({ params, searchParams }: Props) {
           __html: JSON.stringify(breadcrumb).replace(/</g, '\\u003c'),
         }}
       />
-      <ReciterHero reciter={reciter} portrait={portrait} locale={locale} />
+      <ReciterHero
+        reciter={reciter}
+        portrait={portrait}
+        locale={locale}
+        country={catalogued?.country ?? null}
+      />
       {reciter.source === LinkSource.DHIKR ? (
         <ReciterLibrary
           reciter={reciter}
+          rank={catalogued?.rank ?? null}
           facts={await getSurahFacts(reciter.moshaf.id)}
           sizes={Object.fromEntries(
             (await getRecitationFiles(reciter.moshaf.id))?.sizes ?? []

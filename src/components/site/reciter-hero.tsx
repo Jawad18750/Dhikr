@@ -16,10 +16,13 @@ export function ReciterHero({
   reciter,
   portrait,
   locale,
+  country = null,
 }: {
   reciter: Reciter;
   portrait: string | null;
   locale: SeoLocale;
+  /** ISO code of the reciter's country, where it has been checked. */
+  country?: string | null;
 }) {
   const t = COPY[locale];
   const { riwaya, style } = splitMoshafName(reciter.moshaf.name);
@@ -49,8 +52,15 @@ export function ReciterHero({
         )}
       </div>
       <div className="flex min-w-0 flex-1 basis-[260px] flex-col gap-3">
-        <span className="self-start rounded-full border border-hero-gold/35 px-3.5 py-1 text-[15px] text-hero-gold">
-          {style ? `${riwaya} · ${style}` : riwaya}
+        <span className="flex flex-wrap gap-2">
+          <span className="rounded-full border border-hero-gold/35 px-3.5 py-1 text-[15px] text-hero-gold">
+            {style ? `${riwaya} · ${style}` : riwaya}
+          </span>
+          {country && (
+            <span className="rounded-full border border-on-hero/20 px-3.5 py-1 text-[15px] text-on-hero/80">
+              {new Intl.DisplayNames([locale], { type: 'region' }).of(country)}
+            </span>
+          )}
         </span>
         <h1
           id="reciter-title"

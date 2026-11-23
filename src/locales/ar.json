@@ -383,5 +383,22 @@
   "download.hint": "اختر السور التي تريد تنزيلها.",
   "download.summary": "{count, plural, zero {لا سور} one {سورة واحدة} two {سورتان} few {# سور} many {# سورة} other {# سورة}} · {size}",
   "download.go": "تنزيل",
-  "download.khatma": "الختمة كاملة"
+  "download.khatma": "الختمة كاملة",
+  "stats.surahs": "السور",
+  "stats.length": "مدة التلاوة",
+  "stats.lengthUnit": "ساعة",
+  "stats.size": "الحجم",
+  "stats.rank": "الاستماع",
+  "stats.rankValue": "الأكثر استماعًا",
+  "library.khatma": "تنزيل الختمة",
+  "library.share": "مشاركة",
+  "library.copied": "نُسخ الرابط",
+  "library.meccan": "مكية",
+  "library.medinan": "مدنية",
+  "library.back10": "رجوع 10 ثوانٍ",
+  "library.fwd10": "تقديم 10 ثوانٍ",
+  "library.speed": "سرعة التلاوة",
+  "library.repeat": "تكرار السورة",
+  "library.downloadSurah": "تنزيل السورة",
+  "library.shareSurah": "مشاركة السورة"
 }

@@ -382,5 +382,22 @@
   "download.hint": "Choose the surahs to download.",
   "download.summary": "{count, plural, one {# surah} other {# surahs}} · {size}",
   "download.go": "Download",
-  "download.khatma": "Whole khatma"
+  "download.khatma": "Whole khatma",
+  "stats.surahs": "Surahs",
+  "stats.length": "Length",
+  "stats.lengthUnit": "hours",
+  "stats.size": "Size",
+  "stats.rank": "Listening",
+  "stats.rankValue": "most listened",
+  "library.khatma": "Download the khatma",
+  "library.share": "Share",
+  "library.copied": "Link copied",
+  "library.meccan": "Meccan",
+  "library.medinan": "Medinan",
+  "library.back10": "Back 10 seconds",
+  "library.fwd10": "Forward 10 seconds",
+  "library.speed": "Speed",
+  "library.repeat": "Repeat the surah",
+  "library.downloadSurah": "Download the surah",
+  "library.shareSurah": "Share the surah"
 }

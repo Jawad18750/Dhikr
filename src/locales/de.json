@@ -368,5 +368,22 @@
   "download.hint": "Wähle die Suren zum Herunterladen.",
   "download.summary": "{count, plural, one {# Sure} other {# Suren}} · {size}",
   "download.go": "Herunterladen",
-  "download.khatma": "Ganze Khatma"
+  "download.khatma": "Ganze Khatma",
+  "stats.surahs": "Suren",
+  "stats.length": "Dauer",
+  "stats.lengthUnit": "Stunden",
+  "stats.size": "Größe",
+  "stats.rank": "Gehört",
+  "stats.rankValue": "meistgehört",
+  "library.khatma": "Khatma herunterladen",
+  "library.share": "Teilen",
+  "library.copied": "Link kopiert",
+  "library.meccan": "mekkanisch",
+  "library.medinan": "medinensisch",
+  "library.back10": "10 Sekunden zurück",
+  "library.fwd10": "10 Sekunden vor",
+  "library.speed": "Tempo",
+  "library.repeat": "Sure wiederholen",
+  "library.downloadSurah": "Sure herunterladen",
+  "library.shareSurah": "Sure teilen"
 }

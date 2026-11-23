@@ -7,9 +7,13 @@ import {
   IoCloudDownloadOutline,
   IoPause,
   IoPlay,
+  IoPlayBackOutline,
+  IoPlayForwardOutline,
   IoPlaySkipBack,
   IoPlaySkipForward,
+  IoRepeat,
   IoSearchOutline,
+  IoShareSocialOutline,
 } from 'react-icons/io5';
 import { useIntl } from 'react-intl';
 
@@ -56,12 +60,15 @@ export function ReciterLibrary({
   reciter,
   facts,
   sizes,
+  rank = null,
   initialSurah,
 }: {
   reciter: Reciter;
   facts: Record<number, SurahFacts>;
   /** Surah → bytes of its MP3, for the download sizes. */
   sizes: Record<number, number>;
+  /** His place in the «most listened» ranking, or null. */
+  rank?: number | null;
   initialSurah?: number;
 }) {
   const { formatMessage, locale } = useIntl();
@@ -81,6 +88,9 @@ export function ReciterLibrary({
   // Download mode: surahs ticked for one archive.
   const [picking, setPicking] = useState(false);
   const [picked, setPicked] = useState<Set<number>>(new Set());
+  const [speed, setSpeed] = useState(1);
+  const [repeat, setRepeat] = useState(false);
+  const [toast, setToast] = useState<string | null>(null);
 
   // The reciter is the "last played" one for the home's surah search.
   useEffect(() => {
@@ -108,6 +118,7 @@ export function ReciterLibrary({
           searchable: surah ? `${surah.name} ${surah.englishName} ${id}` : String(id),
           link: item.link,
           facts: facts[id],
+          meccan: surah ? surah.revelationType === 'Meccan' : null,
         };
       }),
     [playlist, facts, locale]
@@ -174,6 +185,31 @@ export function ReciterLibrary({
     if (index !== null && index > 0) play(index - 1);
   };
 
+  const seekBy = (delta: number) => {
+    const audio = audioRef.current;
+    if (audio) audio.currentTime = Math.max(0, audio.currentTime + delta);
+  };
+  const SPEEDS = [1, 1.25, 1.5, 0.75];
+  const cycleSpeed = () => setSpeed((held) => SPEEDS[(SPEEDS.indexOf(held) + 1) % SPEEDS.length]);
+  useEffect(() => {
+    if (audioRef.current) audioRef.current.playbackRate = speed;
+  }, [speed, index]);
+
+  const share = async (url: string, title: string) => {
+    const full = new URL(url, window.location.origin).toString();
+    try {
+      if (navigator.share) {
+        await navigator.share({ title, url: full });
+        return;
+      }
+      await navigator.clipboard.writeText(full);
+      setToast(formatMessage({ id: 'library.copied' }));
+      window.setTimeout(() => setToast(null), 2200);
+    } catch {
+      /* dismissed */
+    }
+  };
+
   useMediaSession({
     audioRef,
     playlist,
@@ -232,7 +268,50 @@ export function ReciterLibrary({
 
   return (
     <>
-      <div className="flex w-full flex-wrap items-center gap-3">
+      {(() => {
+        const seconds = Object.values(facts).reduce((sum, f) => sum + f.seconds, 0);
+        const bytes = bytesOf(allIds);
+        const tiles = [
+          {
+            label: formatMessage({ id: 'stats.surahs' }),
+            value: String(playlist.length),
+            note: reciter.moshaf.name.split(/\s+-\s+/)[0],
+          },
+          seconds > 0 && {
+            label: formatMessage({ id: 'stats.length' }),
+            value: `${Math.floor(seconds / 3600)}:${String(Math.floor((seconds % 3600) / 60)).padStart(2, '0')}`,
+            note: formatMessage({ id: 'stats.lengthUnit' }),
+          },
+          bytes > 0 && {
+            label: formatMessage({ id: 'stats.size' }),
+            value: sizeLabel(bytes),
+            note: 'MP3',
+          },
+          rank !== null && {
+            label: formatMessage({ id: 'stats.rank' }),
+            value: `#${rank}`,
+            note: formatMessage({ id: 'stats.rankValue' }),
+          },
+        ].filter(Boolean) as { label: string; value: string; note: string }[];
+        return (
+          <div className="grid w-full grid-cols-2 gap-2.5 sm:grid-cols-4">
+            {tiles.map((tile) => (
+              <div
+                key={tile.label}
+                className="flex flex-col gap-1 rounded-[20px] border border-border bg-surface px-4 py-3.5"
+              >
+                <span className="text-[13px] text-ink-subtle">{tile.label}</span>
+                <span className="text-[22px] font-bold leading-tight text-ink tabular-nums">
+                  {tile.value}
+                </span>
+                <span className="truncate text-[13px] text-ink-muted">{tile.note}</span>
+              </div>
+            ))}
+          </div>
+        );
+      })()}
+
+      <div className="flex w-full flex-wrap items-center gap-2.5">
         <button
           type="button"
           onClick={toggle}
@@ -248,6 +327,26 @@ export function ReciterLibrary({
             : index === null && resumeRow
               ? formatMessage({ id: 'library.resume' }, { surah: resumeRow.name })
               : formatMessage({ id: 'library.listen' })}
+        </button>
+        {allIds.length > 1 && (
+          <a
+            href={`/api/download/${slug}?s=all`}
+            className="flex h-[52px] items-center gap-2 rounded-full border-[1.5px] border-border px-5 text-[15px] font-bold text-ink transition-colors hover:border-border-strong"
+          >
+            <IoCloudDownloadOutline className="h-[18px] w-[18px]" aria-hidden="true" />
+            {formatMessage({ id: 'library.khatma' })}
+            {bytesOf(allIds) > 0 && (
+              <span className="font-medium text-ink-subtle">{sizeLabel(bytesOf(allIds))}</span>
+            )}
+          </a>
+        )}
+        <button
+          type="button"
+          onClick={() => void share(window.location.pathname + window.location.search, reciter.name)}
+          aria-label={formatMessage({ id: 'library.share' })}
+          className="flex h-[52px] w-[52px] items-center justify-center rounded-full border-[1.5px] border-border text-ink transition-colors hover:border-border-strong"
+        >
+          <IoShareSocialOutline className="h-5 w-5" aria-hidden="true" />
         </button>
       </div>
 
@@ -336,7 +435,15 @@ export function ReciterLibrary({
             {shown.map((row) => {
               const active = row.at === index;
               return (
-                <li key={row.at}>
+                <li
+                  key={row.at}
+                  className={cn(
+                    'group flex items-center rounded-[18px] border transition-colors',
+                    (picking ? picked.has(row.id) : active)
+                      ? 'border-gold/60 bg-gold/[0.08]'
+                      : 'border-border bg-surface hover:border-border-strong'
+                  )}
+                >
                   <button
                     type="button"
                     onClick={() =>
@@ -344,12 +451,7 @@ export function ReciterLibrary({
                     }
                     aria-current={active ? 'true' : undefined}
                     aria-pressed={picking ? picked.has(row.id) : undefined}
-                    className={cn(
-                      'group flex w-full items-center gap-3.5 rounded-[18px] border px-3.5 py-3 text-start transition-colors',
-                      (picking ? picked.has(row.id) : active)
-                        ? 'border-gold/60 bg-gold/[0.08]'
-                        : 'border-border bg-surface hover:border-border-strong'
-                    )}
+                    className="flex min-w-0 flex-1 items-center gap-3.5 rounded-[18px] px-3.5 py-3 text-start"
                   >
                     <span
                       className={cn(
@@ -362,17 +464,18 @@ export function ReciterLibrary({
                     <span className="flex min-w-0 flex-1 flex-col">
                       <span className="truncate text-[17px] font-bold text-ink">{row.name}</span>
                       {row.facts && (
-                        <span className="text-[13px] text-ink-subtle">
+                        <span className="truncate text-[13px] text-ink-subtle">
+                          {row.meccan !== null &&
+                            `${formatMessage({ id: row.meccan ? 'library.meccan' : 'library.medinan' })} · `}
                           {formatMessage({ id: 'library.ayahs' }, { count: row.facts.ayahs })}
-                          {' · '}
-                          <span className="tabular-nums">
-                            {picking && sizes[row.id]
-                              ? sizeLabel(sizes[row.id])
-                              : clock(row.facts.seconds)}
-                          </span>
                         </span>
                       )}
                     </span>
+                    {row.facts && (
+                      <span className="shrink-0 text-[13px] tabular-nums text-ink-subtle">
+                        {picking && sizes[row.id] ? sizeLabel(sizes[row.id]) : clock(row.facts.seconds)}
+                      </span>
+                    )}
                     <span
                       aria-hidden="true"
                       className={cn(
@@ -406,6 +509,31 @@ export function ReciterLibrary({
                       )}
                     </span>
                   </button>
+                  {!picking && (
+                    <span className="hidden shrink-0 items-center gap-0.5 pe-2 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 md:flex">
+                      <a
+                        href={row.link}
+                        download
+                        aria-label={`${formatMessage({ id: 'library.downloadSurah' })}: ${row.name}`}
+                        className="flex h-9 w-9 items-center justify-center rounded-full text-ink-subtle transition-colors hover:bg-surface-sunken hover:text-ink"
+                      >
+                        <IoCloudDownloadOutline className="h-[17px] w-[17px]" aria-hidden="true" />
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          void share(
+                            `${window.location.pathname}?moshafId=${slug}&surah=${row.id}`,
+                            `${row.name} · ${reciter.name}`
+                          )
+                        }
+                        aria-label={`${formatMessage({ id: 'library.shareSurah' })}: ${row.name}`}
+                        className="flex h-9 w-9 items-center justify-center rounded-full text-ink-subtle transition-colors hover:bg-surface-sunken hover:text-ink"
+                      >
+                        <IoShareSocialOutline className="h-[17px] w-[17px]" aria-hidden="true" />
+                      </button>
+                    </span>
+                  )}
                 </li>
               );
             })}
@@ -425,7 +553,14 @@ export function ReciterLibrary({
         }}
         onTimeUpdate={onTime}
         onDurationChange={() => setDuration(audioRef.current?.duration ?? 0)}
-        onEnded={() => (index !== null && index + 1 < playlist.length ? play(index + 1) : setPlaying(false))}
+        onEnded={() => {
+          const audio = audioRef.current;
+          if (repeat && audio) {
+            audio.currentTime = 0;
+            void audio.play();
+          } else if (index !== null && index + 1 < playlist.length) play(index + 1);
+          else setPlaying(false);
+        }}
       />
 
       {current && (
@@ -449,6 +584,42 @@ export function ReciterLibrary({
                 <span className="truncate text-[13px] text-on-hero/60">{reciter.name}</span>
               </span>
               <span className="flex items-center gap-0.5">
+                <button
+                  type="button"
+                  onClick={cycleSpeed}
+                  aria-label={formatMessage({ id: 'library.speed' })}
+                  className="hidden h-10 min-w-10 items-center justify-center rounded-full px-2 text-[13px] font-bold tabular-nums text-on-hero/80 transition-colors hover:bg-on-hero/10 hover:text-on-hero sm:flex"
+                >
+                  {speed}×
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRepeat((on) => !on)}
+                  aria-pressed={repeat}
+                  aria-label={formatMessage({ id: 'library.repeat' })}
+                  className={cn(
+                    'hidden h-10 w-10 items-center justify-center rounded-full transition-colors hover:bg-on-hero/10 sm:flex',
+                    repeat ? 'text-hero-gold' : 'text-on-hero/80 hover:text-on-hero'
+                  )}
+                >
+                  <IoRepeat className="h-[19px] w-[19px]" aria-hidden="true" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => seekBy(-10)}
+                  aria-label={formatMessage({ id: 'library.back10' })}
+                  className="hidden h-10 w-10 items-center justify-center rounded-full text-on-hero/80 transition-colors hover:bg-on-hero/10 hover:text-on-hero sm:flex"
+                >
+                  <IoPlayForwardOutline className="h-[18px] w-[18px] ltr:rotate-180" aria-hidden="true" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => seekBy(10)}
+                  aria-label={formatMessage({ id: 'library.fwd10' })}
+                  className="hidden h-10 w-10 items-center justify-center rounded-full text-on-hero/80 transition-colors hover:bg-on-hero/10 hover:text-on-hero sm:flex"
+                >
+                  <IoPlayBackOutline className="h-[18px] w-[18px] ltr:rotate-180" aria-hidden="true" />
+                </button>
                 <button
                   type="button"
                   onClick={previous}
@@ -499,6 +670,14 @@ export function ReciterLibrary({
               <span className="w-12 text-end">{clock(duration || current.facts?.seconds || 0)}</span>
             </div>
           </div>
+        </div>
+      )}
+      {toast && (
+        <div
+          role="status"
+          className="fixed inset-x-0 bottom-32 z-50 mx-auto w-fit rounded-full bg-ink px-4 py-2 text-sm font-bold text-background shadow-lg"
+        >
+          {toast}
         </div>
       )}
     </>

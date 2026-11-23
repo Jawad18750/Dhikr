@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { IoKeyOutline } from 'react-icons/io5';
 
+import { DocumentationForAi } from '@/components/site/documentation-for-ai';
 import { CardMark } from '@/components/site/logo-mark';
 import { buildPageMetadata } from '@/lib/seo/metadata';
 
@@ -56,7 +56,6 @@ const COMING = [
 const ERRORS = [
   ['401', 'missing_key / invalid_key', 'لا مفتاح، أو مفتاح غير صحيح أو محذوف.'],
   ['404', 'not_found', 'لا قارئ بهذا الاسم أو لا سورة له بهذا الرقم.'],
-  ['429', 'rate_limited', 'تجاوزت حدّ المفتاح؛ انتظر قليلًا.'],
   ['502', 'upstream', 'مصدر البيانات لم يجب؛ أعد المحاولة بعد قليل.'],
 ];
 
@@ -78,19 +77,19 @@ export default function Page() {
           القرّاء والسور وتوقيت كل آية وكل كلمة برواية قالون، بصيغة JSON. لكل مطوّر مفتاح شخصي مجاني،
           ليبني عليها موقعه أو تطبيقه.
         </p>
-        <Link
-          href="/account?next=/developers"
-          className="flex h-12 w-fit items-center gap-2 rounded-full bg-gradient-to-b from-gold-light to-gold px-6 text-[16px] font-bold text-[#1b1712]"
-        >
-          <IoKeyOutline className="h-[18px] w-[18px]" aria-hidden="true" />
-          احصل على مفتاح
-        </Link>
+        <DocumentationForAi />
       </section>
 
       <section className="flex flex-col gap-4">
         <h2 className={h2}>البدء</h2>
         <ol className="flex list-decimal flex-col gap-2 ps-6 text-[16px] leading-[1.9] text-ink-muted">
-          <li>ادخل إلى حسابك بحساب Google أو برابط على البريد.</li>
+          <li>
+            ادخل إلى{' '}
+            <Link href="/account?next=/developers" className="font-bold text-ink underline">
+              حسابك
+            </Link>{' '}
+            بحساب Google أو برابط على البريد.
+          </li>
           <li>أنشئ مفتاحًا من صفحة حسابك وانسخه؛ لا يظهر إلا مرة واحدة.</li>
           <li>
             أرسله في رأس كل طلب: <code dir="ltr" className="font-mono text-ink">Authorization: Bearer dk_…</code>
@@ -104,7 +103,7 @@ export default function Page() {
 const { data } = await response.json();`}</pre>
         <p className={p}>
           احفظ المفتاح في الخادم لا في كود يصل إلى المتصفح، فمن رآه استطاع استعماله باسمك. إن ظهر فاحذفه
-          من حسابك وأنشئ غيره.
+          من حسابك وأنشئ غيره. وخزّن ما تجلبه عندك، فأكثر هذه البيانات لا يتغير.
         </p>
       </section>
 
@@ -134,9 +133,9 @@ const { data } = await response.json();`}</pre>
       </section>
 
       <section className="flex flex-col gap-4">
-        <h2 className={h2}>الحدود والأخطاء</h2>
+        <h2 className={h2}>الأخطاء</h2>
         <p className={p}>
-          لكل مفتاح 120 طلبًا في الدقيقة و20000 في اليوم. والأخطاء تعود بـ{' '}
+          لا حدود لعدد الطلبات. والأخطاء تعود بـ{' '}
           <code dir="ltr" className="font-mono text-ink">{`{ "error": { "code", "message" } }`}</code>:
         </p>
         <ul className="flex flex-col gap-2">
@@ -183,19 +182,6 @@ const { data } = await response.json();`}</pre>
         </p>
       </section>
 
-      <section className="flex flex-col items-start gap-4 rounded-[28px] bg-hero p-6 text-on-hero sm:p-8">
-        <h2 className="font-display text-[26px] font-black sm:text-[32px]">ابدأ الآن</h2>
-        <p className="max-w-[560px] text-[16px] leading-[1.85] text-on-hero/70">
-          ادخل بحساب Google أو برابط على بريدك، وأنشئ مفتاحك في دقيقة. مجانًا، ولا بطاقة ولا اشتراك.
-        </p>
-        <Link
-          href="/account?next=/developers"
-          className="flex h-12 items-center gap-2 rounded-full bg-gradient-to-b from-gold-light to-gold px-6 text-[16px] font-bold text-[#1b1712]"
-        >
-          <IoKeyOutline className="h-[18px] w-[18px]" aria-hidden="true" />
-          احصل على مفتاح
-        </Link>
-      </section>
     </article>
   );
 }

@@ -1,5 +1,6 @@
-// Server only: the keyed public API (/api/v1). Every call carries a personal key; each is
-// limited per key and logged per account, so the numbers about what is used are real.
+// Server only: the keyed public API (/api/v1). Every call carries a personal key and is
+// logged per account, so the numbers about what is used are real. No quotas: it is free,
+// and an app with millions of users may call it as much as it needs.
 import { hashKey } from '@/lib/account';
 import { pool } from '@/lib/database';
 
@@ -20,20 +21,6 @@ export const preflight = () => new Response(null, { status: 204, headers: CORS }
 type Holder = { keyId: number; userId: number } | null;
 const keys = new Map<string, { at: number; holder: Holder }>();
 const lastTouched = new Map<number, number>();
-const windows = new Map<string, number[]>();
-
-function within(key: string, limit: number, windowMs: number) {
-  const now = Date.now();
-  const hits = (windows.get(key) ?? []).filter((t) => now - t < windowMs);
-  if (hits.length >= limit) {
-    windows.set(key, hits);
-    return false;
-  }
-  hits.push(now);
-  windows.set(key, hits);
-  return true;
-}
-
 async function holderOf(key: string): Promise<Holder> {
   const hash = hashKey(key);
   const held = keys.get(hash);
@@ -65,8 +52,8 @@ const fail = (status: number, code: string, message: string) =>
   json({ error: { code, message, docs: DOCS_URL } }, status);
 
 /**
- * Runs [answer] for a caller with a valid key, within its limits (120 a minute, 20 000 a
- * day), and logs the call. [answer] returns the data, or null for «not found».
+ * Runs [answer] for a caller with a valid key and logs the call. [answer] returns the
+ * data, or null for «not found».
  */
 export async function keyed(request: Request, answer: () => Promise<unknown>) {
   const started = Date.now();
@@ -76,9 +63,6 @@ export async function keyed(request: Request, answer: () => Promise<unknown>) {
   if (!key) return fail(401, 'missing_key', 'Send your key as «Authorization: Bearer dk_…».');
   const holder = await holderOf(key);
   if (!holder) return fail(401, 'invalid_key', 'This key does not exist or was revoked.');
-  if (!within(`m:${holder.keyId}`, 120, 60_000) || !within(`d:${holder.keyId}`, 20_000, 86_400_000)) {
-    return fail(429, 'rate_limited', 'Too many requests for this key; slow down.');
-  }
 
   let status = 200;
   let response: Response;

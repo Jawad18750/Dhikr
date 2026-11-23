@@ -1,7 +1,9 @@
 import { notFound } from 'next/navigation';
 
 import { ReciterHero } from '@/components/site/reciter-hero';
+import { ReciterLibrary } from '@/components/site/reciter-library';
 import { getDhikrPortrait } from '@/lib/dhikr-catalogue';
+import { getSurahFacts } from '@/lib/dhikr-surah-facts';
 import { breadcrumbTrail } from '@/lib/seo/json-ld';
 import { buildPageMetadata } from '@/lib/seo/metadata';
 import { type SeoLocale, withLocale } from '@/lib/seo/routes';
@@ -151,7 +153,7 @@ export default async function Page({ params, searchParams }: Props) {
     },
   ]);
   return (
-    <div className="mx-auto flex w-full max-w-[1360px] flex-col items-center gap-6 px-4 pb-16 text-foreground sm:px-6">
+    <div className="mx-auto flex w-full max-w-[1360px] flex-col items-start gap-8 px-4 pb-40 text-foreground sm:px-6">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -159,11 +161,19 @@ export default async function Page({ params, searchParams }: Props) {
         }}
       />
       <ReciterHero reciter={reciter} portrait={portrait} locale={locale} />
-      <ReciterPage
-        id={id}
-        initialReciter={reciter}
-        initialSurah={initialSurah}
-      />
+      {reciter.source === LinkSource.DHIKR ? (
+        <ReciterLibrary
+          reciter={reciter}
+          facts={await getSurahFacts(reciter.moshaf.id)}
+          initialSurah={initialSurah}
+        />
+      ) : (
+        <ReciterPage
+          id={id}
+          initialReciter={reciter}
+          initialSurah={initialSurah}
+        />
+      )}
     </div>
   );
 }

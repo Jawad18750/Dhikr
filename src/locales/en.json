@@ -361,5 +361,18 @@
   "about.data.title": "Data and tools",
   "about.data.body": "The timing of every ayah of every recitation, the timing of every word for most of them, and an API for the list of reciters and recitations, all open to researchers and developers. More tools are being prepared.",
   "about.sources.title": "Where the recitations come from",
-  "about.sources.body": "The recitations were gathered from public sources, among them Zuwara Quran Radio, the Libyan Quran TV channel, the Internet Archive and Way2Quran."
+  "about.sources.body": "The recitations were gathered from public sources, among them Zuwara Quran Radio, the Libyan Quran TV channel, the Internet Archive and Way2Quran.",
+  "library.title": "Surahs",
+  "library.count": "{count} surahs",
+  "library.search": "Find a surah",
+  "library.empty": "No surah by that name.",
+  "library.ayahs": "{count, plural, one {# ayah} other {# ayahs}}",
+  "library.listen": "Listen",
+  "library.resume": "Resume {surah}",
+  "library.play": "Play",
+  "library.pause": "Pause",
+  "library.next": "Next surah",
+  "library.prev": "Previous surah",
+  "library.download": "Download the surah",
+  "library.seek": "Position"
 }

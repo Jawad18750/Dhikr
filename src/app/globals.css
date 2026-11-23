@@ -805,3 +805,41 @@ html[data-mark-dock='in'] #brand-mark-slot > :is(svg, .mark-dock) {
     animation: none;
   }
 }
+
+/* The reciter page's player bar (reciter-library.tsx): a thin seek line, gold up
+   to where the recitation is. */
+.player-seek {
+  appearance: none;
+  background: linear-gradient(
+    to left,
+    var(--gold-light) var(--progress, 0%),
+    rgb(var(--on-hero-rgb) / 0.18) var(--progress, 0%)
+  );
+  border-radius: 999px;
+  cursor: pointer;
+}
+[dir='ltr'] .player-seek {
+  background: linear-gradient(
+    to right,
+    var(--gold-light) var(--progress, 0%),
+    rgb(var(--on-hero-rgb) / 0.18) var(--progress, 0%)
+  );
+}
+.player-seek::-webkit-slider-thumb {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--gold-light);
+  box-shadow: 0 0 0 3px rgb(0 0 0 / 0.15);
+}
+.player-seek::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--gold-light);
+}
+.player-bar {
+  animation: site-menu-row 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}

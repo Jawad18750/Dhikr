@@ -347,5 +347,18 @@
   "about.data.title": "Daten und Werkzeuge",
   "about.data.body": "Die Zeiten jeder Aya jeder Rezitation, die Zeiten jedes Wortes für die meisten davon und eine API für die Liste der Rezitatoren und Rezitationen, offen für Forschende und Entwickler. Weitere Werkzeuge sind in Vorbereitung.",
   "about.sources.title": "Woher die Rezitationen stammen",
-  "about.sources.body": "Die Rezitationen stammen aus öffentlichen Quellen, darunter Radio Zuwara für den Koran, der libysche Koran-Fernsehsender, das Internet Archive und Way2Quran."
+  "about.sources.body": "Die Rezitationen stammen aus öffentlichen Quellen, darunter Radio Zuwara für den Koran, der libysche Koran-Fernsehsender, das Internet Archive und Way2Quran.",
+  "library.title": "Suren",
+  "library.count": "{count} Suren",
+  "library.search": "Sure suchen",
+  "library.empty": "Keine Sure mit diesem Namen.",
+  "library.ayahs": "{count, plural, one {# Aya} other {# Ayat}}",
+  "library.listen": "Anhören",
+  "library.resume": "Weiter: {surah}",
+  "library.play": "Abspielen",
+  "library.pause": "Pause",
+  "library.next": "Nächste Sure",
+  "library.prev": "Vorige Sure",
+  "library.download": "Sure herunterladen",
+  "library.seek": "Position"
 }

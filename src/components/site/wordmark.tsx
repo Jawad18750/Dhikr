@@ -42,3 +42,12 @@ export function Wordmark({
     </svg>
   );
 }
+
+/** «Dhikr» for the pages in Latin script: Inter, heavy and tight, beside the same mark. */
+export function LatinWordmark({ className = '' }: { className?: string }) {
+  return (
+    <span aria-hidden="true" className={`font-sans font-black leading-none tracking-[-0.04em] ${className}`}>
+      Dhikr
+    </span>
+  );
+}

@@ -36,6 +36,7 @@ export function ReciterHero({
   locale,
   country = null,
   figures = null,
+  heardIn = [],
 }: {
   reciter: Reciter;
   portrait: string | null;
@@ -44,6 +45,8 @@ export function ReciterHero({
   country?: string | null;
   /** The whole recitation: its length, its size and his place in the listening. */
   figures?: { seconds: number; bytes: number; rank: number | null; listens: number | null } | null;
+  /** Where he is most listened to (ISO codes, most first), from the last 30 days. */
+  heardIn?: string[];
 }) {
   const t = COPY[locale];
   const { riwaya, style } = splitMoshafName(reciter.moshaf.name);
@@ -130,6 +133,20 @@ export function ReciterHero({
             </div>
           ))}
         </dl>
+      )}
+      {heardIn.length > 0 && (
+        <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-on-hero/60 sm:text-[14px]">
+          {t['stats.heardIn']}
+          {heardIn.map((code) => (
+            <span
+              key={code}
+              title={new Intl.DisplayNames([locale], { type: 'region' }).of(code)}
+              className="text-[17px] leading-none"
+            >
+              {flagOf(code)}
+            </span>
+          ))}
+        </p>
       )}
     </section>
   );

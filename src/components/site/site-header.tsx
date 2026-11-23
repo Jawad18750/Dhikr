@@ -21,7 +21,7 @@ import { MARK_SLOT_ID } from './logo-mark-3d';
 import { type MenuLink, SiteMenu } from './site-menu';
 import { SiteNav } from './site-nav';
 import { ThemeToggle } from './theme-toggle';
-import { Wordmark } from './wordmark';
+import { LatinWordmark, Wordmark } from './wordmark';
 
 const COPY = { ar, en, de } as const;
 
@@ -59,8 +59,11 @@ export function SiteHeader({ locale }: { locale: SeoLocale }) {
   return (
     <HeaderShell>
       <header className="site-bar mx-auto flex w-full max-w-[1360px] items-center justify-between gap-4 px-4 sm:grid sm:grid-cols-[1fr_auto_1fr] sm:gap-8 sm:px-6">
+        {/* The lockup: the mark before the name, «ذكر» right to left in Arabic, «Dhikr» left
+            to right elsewhere. */}
         <Link
           href={home}
+          dir={locale === 'ar' ? 'rtl' : 'ltr'}
           aria-label={t['nav.home']}
           className="bar-in flex items-center text-ink transition-colors duration-300 sm:justify-self-start"
         >
@@ -73,7 +76,11 @@ export function SiteHeader({ locale }: { locale: SeoLocale }) {
             <HeaderMark label={BRAND[locale]} />
             <LogoMark className="h-full w-9 text-gold sm:w-11" />
           </span>
-          <Wordmark className="h-9 w-auto sm:h-11" />
+          {locale === 'ar' ? (
+            <Wordmark className="h-9 w-auto sm:h-11" />
+          ) : (
+            <LatinWordmark className="text-[26px] sm:text-[30px]" />
+          )}
           <span className="sr-only">{BRAND[locale]}</span>
         </Link>
 

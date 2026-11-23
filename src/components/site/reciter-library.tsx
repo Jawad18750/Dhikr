@@ -13,12 +13,14 @@ import {
 import { useIntl } from 'react-intl';
 
 import { SURAHS } from '@/constants';
+import { juzOfSurah } from '@/constants/juz';
 import { selectedReciterAtom } from '@/jotai/atom';
 import type { SurahFacts } from '@/lib/dhikr-surah-facts';
 import { type SeoLocale, withLocale } from '@/lib/seo/routes';
 import type { Reciter } from '@/types';
 import { cn, getSurahDisplayName, normalizeArabicText } from '@/utils';
 
+import { ShareRow } from './share-row';
 import { clock, type PlayerAlbum, readResume, type Resume, usePlayer } from './site-player';
 import { SurahName } from './surah-name';
 
@@ -245,6 +247,7 @@ export function ReciterLibrary({
           <IoShareSocialOutline className="h-5 w-5" aria-hidden="true" />
         </button>
       </div>
+      <ShareRow title={reciter.name} label={formatMessage({ id: 'library.shareOn' })} copied={formatMessage({ id: 'library.copied' })} />
 
       <section aria-labelledby="library-title" className="flex w-full flex-col gap-5">
         <div className="flex flex-wrap items-end justify-between gap-4">
@@ -392,6 +395,7 @@ export function ReciterLibrary({
                           row.meccan !== null &&
                             formatMessage({ id: row.meccan ? 'library.meccan' : 'library.medinan' }),
                           row.facts && formatMessage({ id: 'library.ayahs' }, { count: row.facts.ayahs }),
+                          formatMessage({ id: 'library.juz' }, { n: juzOfSurah(row.id) }),
                           picking && sizes[row.id]
                             ? sizeLabel(sizes[row.id])
                             : row.facts && clock(row.facts.seconds),

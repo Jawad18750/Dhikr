@@ -416,5 +416,10 @@
   "privacy.s7.body": "Verbindungen zur Website sind verschlüsselt, Konten liegen auf unserem eigenen Server statt bei Dritten, Schlüssel werden als Fingerabdrücke statt als Text gespeichert, und ein Anmeldelink per E-Mail funktioniert einmal, innerhalb von zehn Minuten.",
   "privacy.s8.title": "Änderungen und Kontakt",
   "privacy.s8.body": "Ändert sich hier etwas, aktualisieren wir diese Seite und ihr Datum. Für Fragen zu deinem Datenschutz schreib uns über die Kontaktseite.",
-  "privacy.contactLink": "Kontaktseite"
+  "privacy.contactLink": "Kontaktseite",
+  "stats.heardIn": "Am meisten gehört in",
+  "reciter.related": "Weitere Rezitatoren",
+  "library.juz": "Juz {n}",
+  "library.shareOn": "Teilen:",
+  "player.sleep": "Schlaf-Timer"
 }

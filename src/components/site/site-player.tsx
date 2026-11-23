@@ -7,6 +7,7 @@ import {
   IoChevronDown,
   IoClose,
   IoCloudDownloadOutline,
+  IoMoonOutline,
   IoPause,
   IoPlay,
   IoPlayBackOutline,
@@ -96,6 +97,39 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const [duration, setDuration] = useState(0);
   const [speed, setSpeed] = useState(1);
   const [repeat, setRepeat] = useState(false);
+  // The sleep timer: pause at a moment (ms since epoch), or at the end of this surah.
+  const [sleep, setSleep] = useState<number | 'end' | null>(null);
+  const [, setTick] = useState(0);
+  // Off, then 15, 30 and 60 minutes, then the end of this surah, then off again.
+  const SLEEP_STEPS: (number | 'end')[] = [15, 30, 60, 'end'];
+  const sleepStep = useRef(-1);
+  const cycleSleep = () => {
+    sleepStep.current = sleepStep.current + 1 >= SLEEP_STEPS.length ? -1 : sleepStep.current + 1;
+    const step = SLEEP_STEPS[sleepStep.current];
+    setSleep(step === undefined ? null : step === 'end' ? 'end' : Date.now() + step * 60_000);
+  };
+  useEffect(() => {
+    if (typeof sleep !== 'number') return;
+    const timer = window.setInterval(() => {
+      if (Date.now() >= sleep) {
+        audioRef.current?.pause();
+        sleepStep.current = -1;
+        setSleep(null);
+      } else setTick((n) => n + 1);
+    }, 15_000);
+    const left = sleep - Date.now();
+    const exact = window.setTimeout(() => {
+      audioRef.current?.pause();
+      sleepStep.current = -1;
+      setSleep(null);
+    }, Math.max(0, left));
+    return () => {
+      window.clearInterval(timer);
+      window.clearTimeout(exact);
+    };
+  }, [sleep]);
+  const sleepLabel =
+    sleep === null ? '' : sleep === 'end' ? '⏹' : String(Math.max(1, Math.ceil((sleep - Date.now()) / 60_000)));
   // The mushaf line is open unless this listener has closed it (remembered on the device).
   const [reading, setReading] = useState(true);
   const readingRef = useRef(reading);
@@ -134,8 +168,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const pendingPlay = useRef(true);
 
   // The handlers read the latest of these without being rebuilt each time.
-  const live = useRef({ album, index, repeat });
-  live.current = { album, index, repeat };
+  const live = useRef({ album, index, repeat, sleep });
+  live.current = { album, index, repeat, sleep };
 
   const start = useCallback((next: PlayerAlbum, at: number, from = 0) => {
     const audio = audioRef.current;
@@ -362,7 +396,14 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         onDurationChange={() => setDuration(audioRef.current?.duration ?? 0)}
         onEnded={() => {
           const audio = audioRef.current;
-          const { album: held, index: at, repeat: again } = live.current;
+          const { album: held, index: at, repeat: again, sleep: asleep } = live.current;
+          // Asleep at the end of this surah: stop here.
+          if (asleep === 'end') {
+            sleepStep.current = -1;
+            setSleep(null);
+            setPlaying(false);
+            return;
+          }
           if (again && audio) {
             audio.currentTime = 0;
             void audio.play();
@@ -444,6 +485,23 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                     <span className="truncate text-[12px] text-on-hero/60">{album.reciter}</span>
                   </span>
                 </Link>
+                <button
+                  type="button"
+                  onClick={cycleSleep}
+                  aria-label={formatMessage({ id: 'player.sleep' })}
+                  title={formatMessage({ id: 'player.sleep' })}
+                  className={cn(
+                    'relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors hover:bg-on-hero/10 sm:h-10 sm:w-10',
+                    sleep === null ? 'text-on-hero/75' : 'text-hero-gold'
+                  )}
+                >
+                  <IoMoonOutline className="h-[18px] w-[18px]" aria-hidden="true" />
+                  {sleepLabel && (
+                    <span className="absolute -bottom-0.5 end-0 rounded-full bg-hero-gold px-1 text-[10px] font-bold leading-[14px] text-[#1b1712]">
+                      {sleepLabel}
+                    </span>
+                  )}
+                </button>
                 <button
                   type="button"
                   onClick={toggleReading}
@@ -535,6 +593,23 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                   >
                     {speed}×
                   </button>
+                  <span className="hidden md:flex"><button
+                    type="button"
+                    onClick={cycleSleep}
+                    aria-label={formatMessage({ id: 'player.sleep' })}
+                    title={formatMessage({ id: 'player.sleep' })}
+                    className={cn(
+                      'relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors hover:bg-on-hero/10 sm:h-10 sm:w-10',
+                      sleep === null ? 'text-on-hero/75' : 'text-hero-gold'
+                    )}
+                  >
+                    <IoMoonOutline className="h-[18px] w-[18px]" aria-hidden="true" />
+                    {sleepLabel && (
+                      <span className="absolute -bottom-0.5 end-0 rounded-full bg-hero-gold px-1 text-[10px] font-bold leading-[14px] text-[#1b1712]">
+                        {sleepLabel}
+                      </span>
+                    )}
+                  </button></span>
                 </div>
                 <span className="flex items-center justify-end gap-0.5 sm:gap-1">
                   <a

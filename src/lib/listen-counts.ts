@@ -68,3 +68,43 @@ export async function listenCount(slug: string): Promise<number | null> {
   }
   return held?.counts.get(slug) ?? null;
 }
+
+const countryCache = new Map<string, { at: number; codes: string[] }>();
+
+/** The countries this recitation is most heard in over 30 days (ISO codes, most first). */
+export async function listenCountries(slug: string, top = 5): Promise<string[]> {
+  const held = countryCache.get(slug);
+  if (held && Date.now() - held.at < KEEP_MS) return held.codes;
+  const token = process.env.CF_ANALYTICS_TOKEN;
+  const zone = process.env.CF_ANALYTICS_ZONE;
+  if (!token || !zone || !/^[a-z0-9_]+$/.test(slug)) return [];
+  const now = new Date();
+  const since = new Date(now.getTime() - WINDOW_DAYS * 86_400_000);
+  const query = `{ viewer { zones(filter: { zoneTag: "${zone}" }) {
+    httpRequestsAdaptiveGroups(limit: ${top + 3}, orderBy: [count_DESC], filter: {
+      datetime_geq: "${since.toISOString()}", datetime_lt: "${now.toISOString()}",
+      clientRequestHTTPHost: "${HOST}", clientRequestPath_like: "/audio/${slug}/%"
+    }) { count dimensions { clientCountryName } }
+  } } }`;
+  try {
+    const response = await fetch('https://api.cloudflare.com/client/v4/graphql', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query }),
+      cache: 'no-store',
+      signal: AbortSignal.timeout(8000),
+    });
+    const data = (await response.json()) as {
+      data?: { viewer?: { zones?: { httpRequestsAdaptiveGroups?: { dimensions: { clientCountryName: string } }[] }[] } };
+    };
+    const codes = (data.data?.viewer?.zones?.[0]?.httpRequestsAdaptiveGroups ?? [])
+      .map((g) => g.dimensions.clientCountryName)
+      // Cloudflare's own codes for unknown and Tor are not countries.
+      .filter((c) => /^[A-Z]{2}$/.test(c) && c !== 'XX' && c !== 'T1')
+      .slice(0, top);
+    countryCache.set(slug, { at: Date.now(), codes });
+    return codes;
+  } catch {
+    return [];
+  }
+}

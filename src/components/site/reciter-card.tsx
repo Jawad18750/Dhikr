@@ -17,15 +17,19 @@ const SURAHS = 114;
  * in the photo's start corner (the right in Arabic), the first three in gold.
  * The whole box opens the reciter.
  */
+/** The recitation's style in the page's language: «مرتل» is «Murattal» in Latin script. */
+const STYLES: Record<string, string> = { مرتل: 'Murattal', مجود: 'Mujawwad', حدر: 'Hadr', معلم: 'Muallim' };
+const styleName = (style: string, locale: string) => (locale === 'ar' ? style : (STYLES[style] ?? style));
+
 export function ReciterCard({ reciter }: { reciter: CatalogueReciter }) {
-  const { formatMessage } = useIntl();
+  const { formatMessage, locale } = useIntl();
   const initials = reciter.name.split(/\s+/)[0]?.charAt(0) ?? '';
   const riwaya = shortRiwaya(reciter.riwaya);
   // One line, only what tells this recitation apart from the next. Word by
   // word is on every recitation, so it is said once for the site, not here.
   const facts = [
     riwaya === HOME_RIWAYA ? '' : riwaya,
-    reciter.style,
+    styleName(reciter.style, locale),
     reciter.surahTotal >= SURAHS
       ? formatMessage({ id: 'browse.chipComplete' })
       : formatMessage(

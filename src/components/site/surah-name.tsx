@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 
 import { cn } from '@/utils';
 
@@ -16,6 +16,7 @@ import { cn } from '@/utils';
  * is there at once.
  */
 type Names = { url: string; cell: number; height: number };
+const useIsomorphicLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect;
 const VERSION = 1;
 const sheets = new Map<string, Promise<Names | null>>();
 const ready = new Map<string, Names>();
@@ -66,9 +67,13 @@ export function SurahName({
   className?: string;
 }) {
   const only = alone ? surah : undefined;
-  const [names, setNames] = useState<Names | null>(() =>
-    typeof window === 'undefined' ? null : (ready.get(keyOf(heightFor(size), only)) ?? null)
-  );
+  // Empty at first, as the server drew it (so hydration matches); a picture already here
+  // is put in before the first paint, so it never shows empty either.
+  const [names, setNames] = useState<Names | null>(null);
+  useIsomorphicLayoutEffect(() => {
+    const held = ready.get(keyOf(heightFor(size), only));
+    if (held) setNames(held);
+  }, [size, only]);
   useEffect(() => {
     if (names) return;
     let gone = false;

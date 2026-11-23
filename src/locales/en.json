@@ -430,5 +430,10 @@
   "privacy.s7.body": "Connections to the site are encrypted, accounts live on our own server rather than with a third party, keys are stored as fingerprints rather than text, and an email sign-in link works once, within ten minutes.",
   "privacy.s8.title": "Changes and contact",
   "privacy.s8.body": "If anything here changes, we update this page and its date. For any question about your privacy, write to us from the contact page.",
-  "privacy.contactLink": "Contact page"
+  "privacy.contactLink": "Contact page",
+  "stats.heardIn": "Most listened in",
+  "reciter.related": "Other reciters",
+  "library.juz": "Juz {n}",
+  "library.shareOn": "Share:",
+  "player.sleep": "Sleep timer"
 }

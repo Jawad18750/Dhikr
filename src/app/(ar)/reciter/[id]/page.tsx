@@ -2,9 +2,10 @@ import { notFound } from 'next/navigation';
 
 import { ReciterHero } from '@/components/site/reciter-hero';
 import { ReciterLibrary } from '@/components/site/reciter-library';
+import { RelatedReciters } from '@/components/site/related-reciters';
 import { getDhikrCatalogue, getDhikrPortrait } from '@/lib/dhikr-catalogue';
 import { getRecitationFiles, getSurahFacts } from '@/lib/dhikr-surah-facts';
-import { listenCount } from '@/lib/listen-counts';
+import { listenCount, listenCountries } from '@/lib/listen-counts';
 import { breadcrumbTrail } from '@/lib/seo/json-ld';
 import { buildPageMetadata } from '@/lib/seo/metadata';
 import { type SeoLocale, withLocale } from '@/lib/seo/routes';
@@ -191,6 +192,7 @@ export default async function Page({ params, searchParams }: Props) {
               }
             : null
         }
+        heardIn={reciter.source === LinkSource.DHIKR ? await listenCountries(reciter.moshaf.id) : []}
       />
       {reciter.source === LinkSource.DHIKR && facts && sizes ? (
         <ReciterLibrary
@@ -205,6 +207,19 @@ export default async function Page({ params, searchParams }: Props) {
           id={id}
           initialReciter={reciter}
           initialSurah={initialSurah}
+        />
+      )}
+      {catalogued && (
+        <RelatedReciters
+          reciters={(await getDhikrCatalogue())
+            .filter((r) => r.slug !== catalogued.slug && r.riwaya === catalogued.riwaya)
+            // The same country first, then as listened to.
+            .sort(
+              (a, b) =>
+                Number(b.country === catalogued.country) - Number(a.country === catalogued.country) ||
+                (a.rank ?? 999) - (b.rank ?? 999)
+            )
+            .slice(0, 8)}
         />
       )}
     </div>

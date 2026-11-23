@@ -29,7 +29,7 @@ type Mode = 'reciter' | 'surah';
 type Chip = 'all' | 'murattal' | 'hadr' | 'complete';
 
 /** How many cards show before «show all»: the most listened. */
-const FIRST_ROW = 8;
+const FIRST_ROW = 12;
 
 const matches = (text: string, query: string) =>
   normalizeArabicText(text.toLowerCase()).includes(
@@ -237,7 +237,7 @@ export function ReciterBrowser({ reciters }: { reciters: CatalogueReciter[] }) {
             })}
           </h2>
           {shown.length > 0 ? (
-            <div className="grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 lg:grid-cols-4">
+            <div className="grid grid-cols-3 gap-2 sm:gap-5 lg:grid-cols-4">
               {shown.map((reciter) => (
                 <ReciterCard key={reciter.slug} reciter={reciter} />
               ))}

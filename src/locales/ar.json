@@ -370,5 +370,6 @@
   "sort.shortViews": "المشاهدات",
   "nav.darkMode": "الوضع الداكن",
   "nav.lightMode": "الوضع الفاتح",
-  "tools.apiAnswer": "200 · {count} قارئًا"
+  "tools.apiAnswer": "200 · {count} قارئًا",
+  "nav.appearance": "المظهر"
 }

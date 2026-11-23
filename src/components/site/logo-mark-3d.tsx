@@ -10,8 +10,8 @@ export const MARK_SLOT_ID = 'brand-mark-slot';
 
 // three.js starts downloading as soon as this module runs in the browser,
 // not after hydration, so the 3D mark is not the last thing on the page.
-let threeModule: Promise<typeof import('three')> | null = null;
-const loadThree = () => (threeModule ??= import('three'));
+let threeModule: Promise<typeof import('./three-parts')> | null = null;
+const loadThree = () => (threeModule ??= import('./three-parts'));
 if (typeof window !== 'undefined') void loadThree();
 
 const smooth = (x: number) => x * x * (3 - 2 * x);
@@ -24,7 +24,7 @@ const clamp = (x: number) => Math.min(1, Math.max(-1, x));
  * as the page scrolls it flies up and settles beside the wordmark in the
  * header, where it stays, in 3D, still turning. On a desktop it leans
  * toward the mouse and can be grabbed and spun; it springs back when let go.
- * It fades in once its first frame is drawn. With
+ * A still of its first frame shows at once; the live scene takes over. With
  * reduced motion it stays in the hero, still, and the header shows the flat
  * mark.
  */
@@ -207,8 +207,8 @@ export function LogoMark3D({
         bevelEnabled: true,
         bevelThickness: 0.14,
         bevelSize: 0.11,
-        bevelSegments: 10,
-        curveSegments: 48,
+        bevelSegments: 6,
+        curveSegments: 32,
       });
       geometry.center();
 
@@ -255,9 +255,6 @@ export function LogoMark3D({
         roughness: 0.35,
         clearcoat: 1,
         clearcoatRoughness: 0,
-        iridescence: 0.12,
-        iridescenceIOR: 1.6,
-        iridescenceThicknessRange: [100, 400],
         envMapIntensity: 1.6,
       });
 
@@ -511,14 +508,31 @@ export function LogoMark3D({
   const still =
     mounted && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // The mark fades in once its first frame is drawn.
+  // From the first paint the hero shows a still of this very scene's first
+  // frame (rendered from it, 28 KB). The live canvas fades in over it once it
+  // has drawn, the same pose, so the hand-over cannot be seen.
   const stage = (
-    <div
-      ref={hostRef}
-      className={`h-full w-full transition-opacity duration-700 ${
-        ready ? 'opacity-100' : 'opacity-0'
-      }`}
-    />
+    <div className="relative h-full w-full">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/brand/mark-hero.webp"
+        alt=""
+        aria-hidden="true"
+        width={720}
+        height={720}
+        fetchPriority="high"
+        decoding="async"
+        className={`absolute inset-0 h-full w-full transition-opacity delay-300 duration-200 ${
+          ready ? 'opacity-0' : 'opacity-100'
+        }`}
+      />
+      <div
+        ref={hostRef}
+        className={`absolute inset-0 transition-opacity duration-300 ${
+          ready ? 'opacity-100' : 'opacity-0'
+        }`}
+      />
+    </div>
   );
 
   // Reduced motion: the scene lives in the hero, nothing flies.

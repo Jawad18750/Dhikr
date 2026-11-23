@@ -351,5 +351,6 @@
   "sort.shortViews": "Aufrufe",
   "nav.darkMode": "Dunkler Modus",
   "nav.lightMode": "Heller Modus",
-  "tools.apiAnswer": "200 · {count} Rezitatoren"
+  "tools.apiAnswer": "200 · {count} Rezitatoren",
+  "nav.appearance": "Darstellung"
 }

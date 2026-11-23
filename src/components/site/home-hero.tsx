@@ -67,10 +67,10 @@ export function HomeHero({
           {t['hero.project']}
         </span>
       </div>
-      <div className="flex w-full items-center justify-center px-6 pt-10 lg:w-[46%] lg:p-8">
+      <div className="flex w-full items-center justify-start px-6 pt-10 lg:w-[46%] lg:justify-center lg:p-8">
         <LogoMark3D
           label={t['hero.art']}
-          className="aspect-square w-[260px] sm:w-[360px] lg:w-[540px]"
+          className="-ms-10 aspect-square w-[260px] sm:w-[360px] lg:ms-0 lg:w-[540px]"
         />
       </div>
     </section>

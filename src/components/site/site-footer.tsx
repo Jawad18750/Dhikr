@@ -47,6 +47,13 @@ export function SiteFooter({ locale }: { locale: SeoLocale }) {
           >
             {t['footer.contact']}
           </Link>
+          <Link
+            href={locale === 'ar' ? '/en' : '/'}
+            hrefLang={locale === 'ar' ? 'en' : 'ar'}
+            className="hover:text-ink"
+          >
+            {t['nav.otherLanguage']}
+          </Link>
         </span>
       </div>
     </footer>

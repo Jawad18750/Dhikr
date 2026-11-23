@@ -2,9 +2,7 @@ import Link from 'next/link';
 import {
   IoCodeSlashOutline,
   IoInformationCircleOutline,
-  IoLanguageOutline,
   IoPeopleOutline,
-  IoSettingsOutline,
 } from 'react-icons/io5';
 
 import { type SeoLocale, withLocale } from '@/lib/seo/routes';
@@ -24,7 +22,7 @@ const COPY = { ar, en, de } as const;
 const navLink =
   'flex items-center gap-1.5 whitespace-nowrap text-ink transition-colors hover:text-primary';
 
-/** The site's top bar: the wordmark, the sections, language, mode, settings. */
+/** The site's top bar: the wordmark, the sections, and the light/dark pill. */
 export function SiteHeader({ locale }: { locale: SeoLocale }) {
   const t = COPY[locale];
   const home = withLocale(locale, '/');
@@ -72,28 +70,7 @@ export function SiteHeader({ locale }: { locale: SeoLocale }) {
           </Link>
         </nav>
 
-        <div className="flex items-center gap-2">
-          <Link
-            href={locale === 'ar' ? '/en' : '/'}
-            hrefLang={locale === 'ar' ? 'en' : 'ar'}
-            aria-label={t['nav.otherLanguage']}
-            className="flex h-11 min-w-11 items-center justify-center gap-1.5 rounded-full border border-border px-3 text-[15px] font-medium text-ink transition-colors hover:border-border-strong sm:px-4"
-          >
-            <IoLanguageOutline
-              className="h-[18px] w-[18px]"
-              aria-hidden="true"
-            />
-            <span className="hidden sm:inline">{t['nav.otherLanguage']}</span>
-          </Link>
-          <ThemeToggle />
-          <Link
-            href={withLocale(locale, '/settings')}
-            aria-label={t['footer.settings']}
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-ink transition-colors hover:border-border-strong"
-          >
-            <IoSettingsOutline className="h-5 w-5" aria-hidden="true" />
-          </Link>
-        </div>
+        <ThemeToggle />
       </header>
     </HeaderShell>
   );

@@ -5,7 +5,7 @@ import OfflinePage from '@/app/(ar)/offline/page';
  * the document and its copy are the right language before hydration.
  */
 export const metadata = {
-  title: 'Offline | Open Tarteel',
+  title: 'Offline | Dhikr',
   alternates: { canonical: '/de/offline' },
   robots: { index: false, follow: false },
 };

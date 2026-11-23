@@ -110,12 +110,9 @@ describe('enabledSourcesAtom', () => {
     vi.resetModules();
   });
 
-  it('defaults to the two word-timing providers', async () => {
+  it('defaults to our own audio server only', async () => {
     const { enabledSourcesAtom } = await import('./atom');
 
-    expect(createStore().get(enabledSourcesAtom)).toEqual([
-      'quran.foundation',
-      'mp3quran.v4',
-    ]);
+    expect(createStore().get(enabledSourcesAtom)).toEqual(['dhikr.ly']);
   });
 });

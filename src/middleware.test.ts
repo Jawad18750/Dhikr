@@ -9,16 +9,14 @@ const run = (cookie?: string) => {
   return middleware(request);
 };
 
-describe('middleware home redirect', () => {
-  it('sends a returning listener to their player', () => {
+describe('middleware home', () => {
+  it('renders the home for a returning listener too', () => {
     const response = run(
       encodeURIComponent('/reciter/mp3quran.net-1?moshafId=1')
     );
 
-    expect(response.status).toBe(307);
-    expect(response.headers.get('location')).toBe(
-      'https://staging.test/reciter/mp3quran.net-1?moshafId=1'
-    );
+    expect(response.status).toBe(200);
+    expect(response.headers.get('location')).toBeNull();
   });
 
   it('renders the home when no route cookie exists', () => {

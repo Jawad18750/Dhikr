@@ -26,7 +26,7 @@ const appUrl =
   'http://localhost:3000';
 
 export const clientConfig = {
-  APP_NAME: process.env.NEXT_PUBLIC_APP_NAME || 'Open Tarteel',
+  APP_NAME: process.env.NEXT_PUBLIC_APP_NAME || 'ذكر',
   APP_URL: appUrl,
   APP_VERSION: process.env.NEXT_PUBLIC_APP_VERSION || packageJson.version,
   DEBUG: process.env.NEXT_PUBLIC_DEBUG === 'true',

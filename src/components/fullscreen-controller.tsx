@@ -4,14 +4,18 @@ import { useAtom } from 'jotai';
 import { useEffect } from 'react';
 
 import ExitFullscreen from '@/components/exit-fullscreen';
-import Footer from '@/components/footer';
 import NetworkStatusIndicator from '@/components/network-status-indicator';
 import { fullscreenAtom } from '@/jotai/atom';
 
 export default function FullscreenController({
   children,
+  header,
+  footer,
 }: {
   children: React.ReactNode;
+  /** Site chrome, hidden while the player is fullscreen. */
+  header?: React.ReactNode;
+  footer?: React.ReactNode;
 }) {
   const [isFullscreen, setIsFullscreen] = useAtom(fullscreenAtom);
 
@@ -41,10 +45,11 @@ export default function FullscreenController({
 
   return (
     <>
-      <div className="flex w-full flex-grow items-center justify-center">
+      {header}
+      <div className="flex w-full flex-grow flex-col items-center">
         {children}
       </div>
-      <Footer />
+      {footer}
     </>
   );
 }

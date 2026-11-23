@@ -1,6 +1,5 @@
 import { type NextRequest, NextResponse } from 'next/server';
 
-import { isReciterRoute, RECITER_ROUTE_COOKIE } from '@/lib/reciter-route';
 import { DEFAULT_LOCALE, localeFromPath, stripLocale } from '@/lib/seo/routes';
 
 const PUBLIC_FILE =
@@ -28,22 +27,8 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Returning listeners go straight to their player. The cookie only exists
-  // after a client selection, so first-time visitors and crawlers still get
-  // the server-rendered home.
-  if (pathname === '/') {
-    const cookie = request.cookies.get(RECITER_ROUTE_COOKIE)?.value;
-    if (cookie) {
-      try {
-        const target = decodeURIComponent(cookie);
-        if (isReciterRoute(target)) {
-          return NextResponse.redirect(new URL(target, request.url));
-        }
-      } catch {
-        // Malformed cookie: fall through and render the home page.
-      }
-    }
-  }
+  // The home is a destination (reciters, search, tools), so a returning
+  // listener's route cookie no longer redirects it to their player.
 
   const locale = localeFromPath(pathname);
 

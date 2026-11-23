@@ -1,8 +1,7 @@
-import { Suspense } from 'react';
-
-import Hero from '@/components/hero';
 import HomeClient from '@/components/home-client';
-import SimpleSkeleton from '@/components/simple-skeleton';
+import { HomeHero } from '@/components/site/home-hero';
+import { ToolsSection } from '@/components/site/tools-section';
+import { getDhikrCatalogue } from '@/lib/dhikr-catalogue';
 import { buildPageMetadata } from '@/lib/seo/metadata';
 import type { SeoLocale } from '@/lib/seo/routes';
 import ar from '@/locales/ar.json';
@@ -17,18 +16,20 @@ export const homeMetadata = (locale: SeoLocale) => {
   return buildPageMetadata({
     locale,
     path: '/',
-    title: `${copy.appName} | Open Tarteel`,
+    title: copy['site.title'],
     description: copy.appDescription,
   });
 };
 
-export function HomeRoute() {
+/** The home: the hero, the reciters with search and filters, the open tools. */
+export async function HomeRoute({ locale }: { locale: SeoLocale }) {
+  const reciters = await getDhikrCatalogue();
+
   return (
-    <div className="flex w-full flex-col items-center justify-center gap-y-4 text-foreground">
-      <Hero />
-      <Suspense fallback={<SimpleSkeleton />}>
-        <HomeClient />
-      </Suspense>
+    <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-12 px-4 pb-16 sm:gap-[72px] sm:px-6">
+      <HomeHero locale={locale} listenHref={reciters[0]?.href} />
+      <HomeClient reciters={reciters} />
+      <ToolsSection locale={locale} sampleSlug={reciters[0]?.slug} />
     </div>
   );
 }

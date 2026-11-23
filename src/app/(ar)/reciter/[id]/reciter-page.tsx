@@ -268,7 +268,7 @@ export default function ReciterPage({
   const isFullscreen = useAtomValue(fullscreenAtom);
 
   return (
-    <div className="flex w-full max-w-lg items-center justify-center p-1 md:p-4">
+    <div className="flex w-full max-w-2xl items-center justify-center">
       <div className="flex w-full flex-col items-center justify-center gap-4">
         {!isFullscreen && <NetworkStatusIndicator />}
         {!isFullscreen && <ReciterSelector initialReciter={initialReciter} />}

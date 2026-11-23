@@ -2,7 +2,7 @@ import ContactPage from '@/components/pages/contact-page';
 import { breadcrumbTrail } from '@/lib/seo/json-ld';
 import { buildPageMetadata } from '@/lib/seo/metadata';
 import { type SeoLocale, withLocale } from '@/lib/seo/routes';
-import { SITE } from '@/lib/seo/site';
+import { BRAND, SITE } from '@/lib/seo/site';
 import ar from '@/locales/ar.json';
 import de from '@/locales/de.json';
 import en from '@/locales/en.json';
@@ -15,7 +15,7 @@ export const contactMetadata = (locale: SeoLocale) => {
   return buildPageMetadata({
     locale,
     path: '/contact',
-    title: `${copy['contact.contact_us']} | Open Tarteel`,
+    title: `${copy['contact.contact_us']} | ${BRAND[locale]}`,
     description: copy['contact.contact_us'],
   });
 };

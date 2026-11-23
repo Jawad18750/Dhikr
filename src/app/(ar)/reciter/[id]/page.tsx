@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 
-import Hero from '@/components/hero';
+import { ReciterHero } from '@/components/site/reciter-hero';
+import { getDhikrPortrait } from '@/lib/dhikr-catalogue';
 import { breadcrumbTrail } from '@/lib/seo/json-ld';
 import { buildPageMetadata } from '@/lib/seo/metadata';
 import { type SeoLocale, withLocale } from '@/lib/seo/routes';
@@ -10,6 +11,7 @@ import de from '@/locales/de.json';
 import en from '@/locales/en.json';
 import { getReciterPlaylistCached } from '@/services/reciters/cached';
 import type { Reciter } from '@/types';
+import { LinkSource } from '@/types';
 import { getAllReciters } from '@/utils/api';
 import { buildLocalPlaylist } from '@/utils/build-local-playlist';
 
@@ -57,7 +59,7 @@ export async function generateMetadata({ params, searchParams }: Props) {
   const result = await findVariants(id, locale);
   if (result.status === 'error') {
     return {
-      title: 'Reciter temporarily unavailable | Open Tarteel',
+      title: 'Reciter temporarily unavailable | ذكر',
       robots: { index: false, follow: false },
     };
   }
@@ -68,7 +70,7 @@ export async function generateMetadata({ params, searchParams }: Props) {
 
   if (!reciter) {
     return {
-      title: 'Reciter not found | Open Tarteel',
+      title: 'Reciter not found | ذكر',
       robots: { index: false, follow: false },
     };
   }
@@ -76,7 +78,7 @@ export async function generateMetadata({ params, searchParams }: Props) {
   return buildPageMetadata({
     locale,
     path: `/reciter/${id}`,
-    title: `${reciter.name} · ${reciter.moshaf.name} | Open Tarteel`,
+    title: `${reciter.name} · ${reciter.moshaf.name} | ذكر`,
     description: descriptionFor(locale, reciter, reciter.moshaf.name),
     omitLanguages: true,
   });
@@ -132,6 +134,11 @@ export default async function Page({ params, searchParams }: Props) {
       ? rawSurah
       : undefined;
 
+  const portrait =
+    reciter.source === LinkSource.DHIKR
+      ? await getDhikrPortrait(reciter.moshaf.id)
+      : null;
+
   const canonicalPath = `/reciter/${id}`;
   const breadcrumb = breadcrumbTrail([
     {
@@ -144,14 +151,14 @@ export default async function Page({ params, searchParams }: Props) {
     },
   ]);
   return (
-    <div className="flex w-full flex-col items-center justify-center bg-background text-foreground">
+    <div className="mx-auto flex w-full max-w-[1280px] flex-col items-center gap-6 px-4 pb-16 text-foreground sm:px-6">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(breadcrumb).replace(/</g, '\\u003c'),
         }}
       />
-      <Hero />
+      <ReciterHero reciter={reciter} portrait={portrait} locale={locale} />
       <ReciterPage
         id={id}
         initialReciter={reciter}

@@ -307,7 +307,7 @@ serwist.setCatchHandler(async ({ request }) => {
     if (fallback) return fallback;
 
     return new Response(
-      '<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Open Tarteel</title><style>body{font-family:system-ui,-apple-system,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#0f172a;color:#f8fafc;text-align:center;padding:1rem}.btn{margin-top:1rem;padding:0.6rem 1.2rem;border-radius:9999px;background:#38bdf8;color:#0f172a;text-decoration:none;font-weight:bold;cursor:pointer;border:none}</style></head><body><h1>Open Tarteel</h1><p>أنت الآن في وضع عدم الاتصال.</p><button class="btn" onclick="location.replace(\'/\')">العودة للرئيسية</button></body></html>',
+      '<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ذكر</title><style>body{font-family:system-ui,-apple-system,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#0f172a;color:#f8fafc;text-align:center;padding:1rem}.btn{margin-top:1rem;padding:0.6rem 1.2rem;border-radius:9999px;background:#38bdf8;color:#0f172a;text-decoration:none;font-weight:bold;cursor:pointer;border:none}</style></head><body><h1>ذكر</h1><p>أنت الآن في وضع عدم الاتصال.</p><button class="btn" onclick="location.replace(\'/\')">العودة للرئيسية</button></body></html>',
       {
         headers: { 'Content-Type': 'text/html; charset=utf-8' },
         status: 200,

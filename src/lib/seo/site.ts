@@ -13,6 +13,13 @@ export const SITE = {
   verification: process.env.GOOGLE_SITE_VERIFICATION,
 } as const;
 
+/** The site's name in each locale: «ذكر» in Arabic, Dhikr in Latin script. */
+export const BRAND: Record<SeoLocale, string> = {
+  ar: 'ذكر',
+  en: 'Dhikr',
+  de: 'Dhikr',
+};
+
 export const OG_LOCALES: Record<SeoLocale, string> = {
   ar: 'ar_AR',
   en: 'en_US',

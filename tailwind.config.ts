@@ -35,6 +35,10 @@ const config: Config = {
         'primary-line': 'var(--accent-line)',
         'on-primary': 'var(--on-primary)',
         mark: 'var(--mark)',
+        gold: 'var(--gold)',
+        'gold-light': 'var(--gold-light)',
+        hero: 'var(--hero)',
+        'on-hero': 'var(--on-hero)',
         success: 'var(--success)',
         warning: 'var(--warning)',
         danger: 'var(--danger)',
@@ -52,6 +56,9 @@ const config: Config = {
         'brand-info': '#4D71F9',
         'brand-warning': '#FFA800',
         'brand-danger': '#FF4B4B',
+      },
+      fontFamily: {
+        sans: ['var(--font-thmanyah)', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
         control: '10px',

@@ -25,6 +25,13 @@
 :root {
   color-scheme: light;
 
+  /* Brand gold and the black hero card; every palette shares them unless it
+     sets its own. */
+  --gold: #c5a059;
+  --gold-light: #e6c47a;
+  --hero: #0b0b0c;
+  --on-hero: #ffffff;
+
   /* Backgrounds */
   --background: #f4f4f5; /* warm zinc-100 — not harsh white */
   --surface: #ffffff;
@@ -102,31 +109,38 @@
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
-/* ─── Palette: warm ─── warm paper, ink, emerald, brass */
+/* ─── Palette: warm ─── the ذكر look and the default: a white page, near-black
+   ink, the brand gold (#C5A059 family; #8A6420 is its text shade on white).
+   Dark is the apps' warm dark with a lighter gold. */
 [data-theme='warm'] {
   color-scheme: light;
 
-  --background: #f6f2e9;
-  --surface: #fffcf6;
+  --background: #ffffff;
+  --surface: #ffffff;
   --surface-raised: #ffffff;
-  --surface-sunken: #efeadd;
-  --card: #fffcf6;
+  --surface-sunken: #f4f2ee;
+  --card: #ffffff;
 
-  --foreground: #1a1813;
-  --muted: #6a6558;
-  --foreground-subtle: #8c8778;
+  --foreground: #0b0b0c;
+  --muted: #6a665e;
+  --foreground-subtle: #8c877d;
 
-  --border: #e3dccb;
-  --border-strong: #cdc4ae;
+  --border: #e2ded6;
+  --border-strong: #cfc9bd;
 
-  --accent: #0c6b53;
-  --accent-hover: #095341;
-  --accent-soft: #dcebe3;
-  --accent-line: #bcd8ca;
-  --accent-ring: rgba(12, 107, 83, 0.25);
-  --on-primary: #fffcf6;
+  --accent: #8a6420;
+  --accent-hover: #6e4f18;
+  --accent-soft: #fbf6e9;
+  --accent-line: #ead9b0;
+  --accent-ring: rgba(197, 160, 89, 0.35);
+  --on-primary: #ffffff;
 
   --mark: #8a6420;
+
+  --gold: #c5a059;
+  --gold-light: #e6c47a;
+  --hero: #0b0b0c;
+  --on-hero: #ffffff;
 
   --success: #2e7d5b;
   --warning: #a9690a;
@@ -136,27 +150,32 @@
 [data-theme='warm'].dark {
   color-scheme: dark;
 
-  --background: #0b110f;
-  --surface: #121a17;
-  --surface-raised: #18231f;
-  --surface-sunken: #0e1512;
-  --card: #121a17;
+  --background: #15130f;
+  --surface: #1e1c18;
+  --surface-raised: #26231e;
+  --surface-sunken: #110f0c;
+  --card: #1e1c18;
 
-  --foreground: #ede9df;
-  --muted: #a5a196;
-  --foreground-subtle: #7c7d72;
+  --foreground: #f0ede6;
+  --muted: #a9a397;
+  --foreground-subtle: #7d786e;
 
-  --border: #26332e;
-  --border-strong: #35443d;
+  --border: #2e2a24;
+  --border-strong: #3d3830;
 
-  --accent: #63c9a6;
-  --accent-hover: #86dabc;
-  --accent-soft: #14322a;
-  --accent-line: #2c5a4a;
-  --accent-ring: rgba(99, 201, 166, 0.24);
-  --on-primary: #06211a;
+  --accent: #d4b46a;
+  --accent-hover: #e6c47a;
+  --accent-soft: #2a2418;
+  --accent-line: #4a3e25;
+  --accent-ring: rgba(212, 180, 106, 0.3);
+  --on-primary: #15130f;
 
-  --mark: #d8b26b;
+  --mark: #d4b46a;
+
+  --gold: #d4b46a;
+  --gold-light: #e6c47a;
+  --hero: #0b0a08;
+  --on-hero: #f0ede6;
 
   --success: #63c9a6;
   --warning: #e0a34a;
@@ -366,4 +385,9 @@ dialog::backdrop {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Thmanyah's extended letters (ss01) for display titles. */
+.font-display {
+  font-feature-settings: 'ss01';
 }

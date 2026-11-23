@@ -8,6 +8,15 @@ import { LinkSource, Riwaya } from '@/types';
 // modules under test so Vitest can hoist them.
 // ─────────────────────────────────────────────────────
 
+// Our own server is a registered source too; it contributes nothing here.
+vi.mock('./dhikr.adapter', () => ({
+  DHIKR_AUDIO_BASE: 'https://quran-audio.example',
+  DhikrAdapter: {
+    source: LinkSource.DHIKR,
+    getReciters: vi.fn(async () => []),
+  },
+}));
+
 vi.mock('./mp3quran.adapter', () => ({
   Mp3QuranAdapter: { source: LinkSource.MP3QURAN, getReciters: vi.fn() },
 }));

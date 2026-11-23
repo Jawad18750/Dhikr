@@ -212,6 +212,10 @@ export const followAlongBlockReason = (
 ): FollowAlongBlock => {
   if (!online) return 'offline';
   if (!source || !moshaf) return 'provider';
+  // Our reciters read from the printed الجماهيرية mushaf, never from typeset
+  // Hafs text in a font: the line view stays closed for them whatever their
+  // timing level becomes.
+  if (source === LinkSource.DHIKR) return 'provider';
   if (getCapabilities(source).timing !== 'word') return 'provider';
   if (moshaf.riwaya !== Riwaya.Hafs) return 'not-hafs';
   if (moshaf.hasTimings === false) return 'no-timings';

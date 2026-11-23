@@ -1,4 +1,4 @@
-import { Tajawal } from 'next/font/google';
+import localFont from 'next/font/local';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 
 import { EnabledSourcesCookieSync } from '@/components/enabled-sources-cookie-sync';
@@ -9,13 +9,25 @@ import OfflineRedirect from '@/components/offline-redirect';
 import PwaUpdater from '@/components/pwa-updater';
 import ReciterRouteCookie from '@/components/reciter-route-cookie';
 import { ServiceWorkerRefresh } from '@/components/service-worker-refresh';
+import { SiteFooter } from '@/components/site/site-footer';
+import { SiteHeader } from '@/components/site/site-header';
 import StoragePersist from '@/components/storage-persist';
 import { websiteGraph } from '@/lib/seo/json-ld';
 import type { SeoLocale } from '@/lib/seo/routes';
 
-const tajawal = Tajawal({
-  weight: ['400', '700', '900'],
-  subsets: ['arabic'],
+// Thmanyah ships inside the build (hashed, unmodified files), never from a
+// public folder: its licence allows web use only as part of a packaged
+// product and forbids offering the font files for download. The licence
+// travels with the files in src/fonts/thmanyah.
+const thmanyah = localFont({
+  src: [
+    { path: '../fonts/thmanyah/thmanyahsans-Regular.woff2', weight: '400' },
+    { path: '../fonts/thmanyah/thmanyahsans-Medium.woff2', weight: '500' },
+    { path: '../fonts/thmanyah/thmanyahsans-Bold.woff2', weight: '700' },
+    { path: '../fonts/thmanyah/thmanyahsans-Black.woff2', weight: '900' },
+  ],
+  variable: '--font-thmanyah',
+  display: 'swap',
   preload: true,
 });
 
@@ -38,7 +50,7 @@ export function RootShell({
         <HtmlWrapper>
           <body
             suppressHydrationWarning
-            className={`${tajawal.className} min-h-full bg-background antialiased`}
+            className={`${thmanyah.variable} ${thmanyah.className} min-h-full bg-background antialiased`}
           >
             <a
               href="#main-content"
@@ -58,13 +70,8 @@ export function RootShell({
             <main
               id="main-content"
               tabIndex={-1}
-              className="relative flex min-h-dvh w-full flex-col items-center justify-center bg-background pb-20 text-foreground"
+              className="relative flex min-h-dvh w-full flex-col bg-background text-foreground"
             >
-              <div className="ambient-orbs pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-                <div className="absolute -left-[10%] -top-[15%] h-[520px] w-[520px] rounded-full bg-sky-500/[0.06] blur-[80px] dark:bg-sky-400/[0.07]" />
-                <div className="absolute -right-[8%] top-[25%] h-[420px] w-[420px] rounded-full bg-indigo-500/[0.05] blur-[80px] dark:bg-indigo-400/[0.07]" />
-                <div className="absolute bottom-[-10%] left-[35%] h-[340px] w-[340px] rounded-full bg-violet-500/[0.04] blur-[70px] dark:bg-violet-400/[0.06]" />
-              </div>
               <EnabledSourcesCookieSync />
               <ReciterRouteCookie />
               <StoragePersist />
@@ -74,7 +81,12 @@ export function RootShell({
               ) : (
                 <PwaUpdater />
               )}
-              <FullscreenController>{children}</FullscreenController>
+              <FullscreenController
+                header={<SiteHeader locale={locale} />}
+                footer={<SiteFooter locale={locale} />}
+              >
+                {children}
+              </FullscreenController>
             </main>
           </body>
         </HtmlWrapper>

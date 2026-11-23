@@ -13,7 +13,7 @@ export function useShareReciter() {
     const url = `${baseUrl}/reciter/${reciter.id}?moshafId=${reciter.moshaf.id}`;
     const message = formatMessage({
       id: 'share.message',
-      defaultMessage: 'Listen to this reciter on Open Tarteel',
+      defaultMessage: 'Listen to this reciter on Dhikr',
     });
     const fallbackMessage = formatMessage({
       id: 'share.fallback',

@@ -6,7 +6,7 @@ import en from '@/locales/en.json';
 import { clientConfig } from '@/utils';
 
 import { type SeoLocale, withLocale } from './routes';
-import { SITE } from './site';
+import { BRAND, SITE } from './site';
 
 const COPY = { ar, en, de } as const;
 
@@ -16,7 +16,7 @@ const COPY = { ar, en, de } as const;
  */
 export const rootMetadata = (locale: SeoLocale): Metadata => {
   const copy = COPY[locale];
-  const title = `${copy.appName} | Open Tarteel`;
+  const title = copy['site.title'];
 
   return {
     metadataBase: new URL(clientConfig.APP_URL),
@@ -44,7 +44,7 @@ export const rootMetadata = (locale: SeoLocale): Metadata => {
       title,
       description: copy.appDescription,
       type: 'website',
-      siteName: 'Open Tarteel',
+      siteName: BRAND[locale],
       images: ['/images/logo-og.png'],
     },
     twitter: {

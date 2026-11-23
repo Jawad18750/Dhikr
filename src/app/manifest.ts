@@ -14,14 +14,14 @@ export default function manifest(): MetadataRoute.Manifest {
 
   return {
     id: '9a008c3173fcca3c4def71adedd5bd3f',
-    theme_color: '#0191e2',
+    theme_color: '#0b0b0c',
     background_color: '#ffffff',
     display: 'standalone',
     scope: '/',
     start_url: '/',
-    name: 'Open Tarteel',
-    short_name: 'Open Tarteel',
-    description: 'Quran streaming application',
+    name: 'ذكر',
+    short_name: 'ذكر',
+    description: 'تلاوات القرآن مع المصحف',
 
     dir: 'auto',
     lang: 'auto',
@@ -81,7 +81,7 @@ export default function manifest(): MetadataRoute.Manifest {
         // @ts-expect-error
         platform: 'wide',
         form_factor: 'wide',
-        label: 'Open Tarteel - Desktop',
+        label: 'ذكر - Desktop',
       },
       {
         src: '/screenshots/mobile.png',
@@ -90,7 +90,7 @@ export default function manifest(): MetadataRoute.Manifest {
         // @ts-expect-error
         platform: 'narrow',
         form_factor: 'narrow',
-        label: 'Open Tarteel - Mobile',
+        label: 'ذكر - Mobile',
       },
     ],
 

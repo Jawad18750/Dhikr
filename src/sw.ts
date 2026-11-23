@@ -287,10 +287,9 @@ self.addEventListener('install', (event) => {
 
 const serwist = new Serwist({
   precacheEntries: self.__SW_MANIFEST,
-  // Wait for the user to accept the update (see PwaUpdater). This avoids
-  // swapping the caches while audio is playing or a download is in progress.
-  // Deploy previews/branch deploys auto-activate so testers see the latest
-  // cache logic immediately. Production keeps the waiting-update prompt.
+  // A new worker waits until the page tells it to take over (PwaUpdater
+  // does so quietly, with no prompt or reload). Deploy previews activate at
+  // once so testers see the latest cache logic immediately.
   skipWaiting: process.env.NEXT_PUBLIC_IS_PREVIEW === 'true',
   clientsClaim: true,
   navigationPreload: false,
@@ -328,7 +327,7 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// PwaUpdater posts this message after the user accepts the update.
+// PwaUpdater posts this when a new version is waiting.
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     void self.skipWaiting();

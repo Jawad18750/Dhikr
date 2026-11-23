@@ -52,7 +52,12 @@ export function CardMark({ className = '' }: { className?: string }) {
       aria-hidden="true"
       loading="lazy"
       decoding="async"
-      className={`card-mark pointer-events-none absolute -bottom-14 -end-14 -z-10 h-52 w-52 rotate-12 select-none opacity-[0.14] sm:-bottom-20 sm:-end-20 sm:h-80 sm:w-80 ${className}`}
+      // Its edges dissolve into the card's own colour, as if half in shadow.
+      style={{
+        maskImage: 'radial-gradient(closest-side, #000 15%, rgba(0,0,0,0.45) 60%, transparent 100%)',
+        WebkitMaskImage: 'radial-gradient(closest-side, #000 15%, rgba(0,0,0,0.45) 60%, transparent 100%)',
+      }}
+      className={`card-mark pointer-events-none absolute -bottom-14 -end-14 -z-10 h-52 w-52 rotate-12 select-none opacity-[0.07] sm:-bottom-20 sm:-end-20 sm:h-80 sm:w-80 ${className}`}
     />
   );
 }

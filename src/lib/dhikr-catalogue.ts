@@ -1,3 +1,4 @@
+import { RECITER_COUNTRY } from '@/lib/reciter-countries';
 import { reciterRouteFor } from '@/lib/reciter-route';
 import { DHIKR_AUDIO_BASE } from '@/services/reciters/dhikr.adapter';
 import { LinkSource } from '@/types';
@@ -17,6 +18,8 @@ export type CatalogueReciter = {
   riwaya: string;
   /** «مرتل», «حدر» … (empty when the moshaf name carries none). */
   style: string;
+  /** ISO 3166 code of the reciter's country, where it has been checked. */
+  country: string | null;
   surahTotal: number;
   portrait: string | null;
   /** 1-based place in the «popular» ranking, or null. */
@@ -66,6 +69,7 @@ export const toCatalogue = (data: ApiResponse): CatalogueReciter[] => {
         slug,
         name: reciter.name,
         ...splitMoshafName(moshaf.name),
+        country: RECITER_COUNTRY[slug] ?? null,
         surahTotal: moshaf.surah_total,
         portrait: data.portraits?.[slug] ?? null,
         rank: rankIndex === -1 ? null : rankIndex + 1,

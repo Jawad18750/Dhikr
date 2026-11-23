@@ -19,7 +19,6 @@ import { cn, getSurahDisplayName, normalizeArabicText } from '@/utils';
 import { ReciterCard } from './reciter-card';
 
 type Mode = 'reciter' | 'surah';
-type Chip = 'all' | 'murattal' | 'hadr' | 'complete';
 
 /** How many cards show before «show all»: the most listened. */
 const FIRST_ROW = 12;
@@ -39,52 +38,31 @@ export function ReciterBrowser({ reciters }: { reciters: CatalogueReciter[] }) {
   const lastReciter = useAtomValue(selectedReciterAtom);
   const [mode, setMode] = useState<Mode>('reciter');
   const [query, setQuery] = useState('');
-  const [chip, setChip] = useState<Chip>('all');
+  const [riwaya, setRiwaya] = useState<string | null>(null);
+  const [country, setCountry] = useState<string | null>(null);
   const [expanded, setExpanded] = useState(false);
 
-  const chips = useMemo(
-    () =>
-      [
-        {
-          id: 'all',
-          label: 'browse.chipAll',
-          count: reciters.length,
-        },
-        {
-          id: 'murattal',
-          label: 'browse.chipMurattal',
-          count: reciters.filter((r) => r.style === 'مرتل').length,
-        },
-        {
-          id: 'hadr',
-          label: 'browse.chipHadr',
-          count: reciters.filter((r) => r.style === 'حدر').length,
-        },
-        {
-          id: 'complete',
-          label: 'browse.chipComplete',
-          count: reciters.filter((r) => r.surahTotal === 114).length,
-        },
-      ].filter((item) => item.count > 0) as {
-        id: Chip;
-        label: string;
-        count: number;
-      }[],
-    [reciters]
-  );
+  // The filters: by riwaya and by country, each with its counts. A country chip
+  // appears only for reciters whose country has been checked
+  // (lib/reciter-countries.ts).
+  const riwayat = useMemo(() => countBy(reciters, (r) => r.riwaya), [reciters]);
+  const countries = useMemo(() => countBy(reciters, (r) => r.country), [reciters]);
+  const countryName = useMemo(() => {
+    const names = new Intl.DisplayNames([locale], { type: 'region' });
+    return (code: string) => names.of(code) ?? code;
+  }, [locale]);
 
   const filtered = useMemo(
     () =>
       reciters.filter((r) => {
-        if (chip === 'murattal' && r.style !== 'مرتل') return false;
-        if (chip === 'hadr' && r.style !== 'حدر') return false;
-        if (chip === 'complete' && r.surahTotal !== 114) return false;
+        if (riwaya && r.riwaya !== riwaya) return false;
+        if (country && r.country !== country) return false;
         return mode !== 'reciter' || !query.trim() || matches(r.name, query);
       }),
-    [reciters, chip, mode, query]
+    [reciters, riwaya, country, mode, query]
   );
 
-  const filtering = chip !== 'all' || (mode === 'reciter' && query.trim());
+  const filtering = riwaya || country || (mode === 'reciter' && query.trim());
   const shown = filtering || expanded ? filtered : filtered.slice(0, FIRST_ROW);
 
   // Surah search plays with the last reciter, else the most listened one.
@@ -173,29 +151,35 @@ export function ReciterBrowser({ reciters }: { reciters: CatalogueReciter[] }) {
             aria-label={formatMessage({ id: 'browse.filters' })}
             className="-mx-4 flex gap-1.5 overflow-x-auto px-4 [scrollbar-width:none] sm:mx-0 sm:px-0"
           >
-            {chips.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                aria-pressed={chip === item.id}
-                onClick={() => setChip(item.id)}
-                className={cn(
-                  'flex h-9 shrink-0 items-center gap-1.5 rounded-full px-3 text-sm transition-colors sm:px-3.5',
-                  chip === item.id
-                    ? 'bg-ink font-bold text-background'
-                    : 'border border-border text-ink hover:border-border-strong'
-                )}
-              >
-                {formatMessage({ id: item.label })}
-                <span
-                  className={cn(
-                    'tabular-nums',
-                    chip === item.id ? 'opacity-70' : 'text-ink-subtle'
-                  )}
-                >
-                  {item.count}
-                </span>
-              </button>
+            <FilterChip
+              active={!riwaya && !country}
+              onClick={() => {
+                setRiwaya(null);
+                setCountry(null);
+              }}
+              label={formatMessage({ id: 'browse.chipAll' })}
+              count={reciters.length}
+            />
+            {riwayat.map(([value, count]) => (
+              <FilterChip
+                key={value}
+                active={riwaya === value}
+                onClick={() => setRiwaya(riwaya === value ? null : value)}
+                label={value}
+                count={count}
+              />
+            ))}
+            {countries.length > 0 && (
+              <span aria-hidden="true" className="mx-1 w-px shrink-0 self-stretch bg-border" />
+            )}
+            {countries.map(([code, count]) => (
+              <FilterChip
+                key={code}
+                active={country === code}
+                onClick={() => setCountry(country === code ? null : code)}
+                label={countryName(code)}
+                count={count}
+              />
             ))}
           </div>
         )}
@@ -290,5 +274,46 @@ export function ReciterBrowser({ reciters }: { reciters: CatalogueReciter[] }) {
         </>
       )}
     </section>
+  );
+}
+
+/** Values of [pick] over [list] with how many have each, most first. */
+function countBy<T>(list: T[], pick: (item: T) => string | null): [string, number][] {
+  const counts = new Map<string, number>();
+  for (const item of list) {
+    const value = pick(item);
+    if (value) counts.set(value, (counts.get(value) ?? 0) + 1);
+  }
+  return [...counts].sort((a, b) => b[1] - a[1]);
+}
+
+function FilterChip({
+  active,
+  onClick,
+  label,
+  count,
+}: {
+  active: boolean;
+  onClick: () => void;
+  label: string;
+  count: number;
+}) {
+  return (
+    <button
+      type="button"
+      aria-pressed={active}
+      onClick={onClick}
+      className={cn(
+        'flex h-9 shrink-0 items-center gap-1.5 rounded-full px-3 text-sm transition-colors sm:px-3.5',
+        active
+          ? 'bg-ink font-bold text-background'
+          : 'border border-border text-ink hover:border-border-strong'
+      )}
+    >
+      {label}
+      <span className={cn('tabular-nums', active ? 'opacity-70' : 'text-ink-subtle')}>
+        {count}
+      </span>
+    </button>
   );
 }

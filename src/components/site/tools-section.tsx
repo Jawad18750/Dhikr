@@ -18,21 +18,12 @@ import en from '@/locales/en.json';
 import { cn } from '@/utils';
 
 import { CardMark } from './logo-mark';
+import { AyahTimeline, WordLights } from './tools-live';
 
 const COPY: Record<SeoLocale, Record<string, string>> = { ar, en, de };
 
 const fill = (text: string, values: Record<string, string | number>) =>
   text.replace(/\{(\w+)\}/g, (_, name: string) => String(values[name] ?? ''));
-
-/** Each card's «details» link to its section in the documentation. */
-const DETAILS_TONE = {
-  ayahTimings: 'bg-white/[0.14] text-white hover:bg-white/25',
-  wordTimings: 'bg-white/[0.14] text-white hover:bg-white/25',
-  text: 'bg-[#1b1712]/[0.12] text-[#1b1712] hover:bg-[#1b1712]/20',
-  api: 'bg-on-hero/[0.08] text-on-hero hover:bg-on-hero/15',
-  converter: 'bg-on-hero/[0.08] text-on-hero hover:bg-on-hero/15',
-  audio: 'bg-on-hero/[0.08] text-on-hero hover:bg-on-hero/15',
-} as const;
 
 const pill =
   'inline-flex h-9 items-center gap-1.5 rounded-full px-4 text-sm font-bold transition-colors';
@@ -62,6 +53,93 @@ function CardIcon({ icon: Icon, tone }: { icon: IconType; tone?: Tone }) {
   );
 }
 
+
+const TONES = {
+  green: {
+    card: 'bg-gradient-to-b from-[#1f5a43] via-[#0e2e22] to-[#07150f] text-white',
+    body: 'text-[#cbe4d7]',
+    idea: 'text-[#a9c9b8]',
+    preview: 'bg-white/[0.07]',
+    details: 'bg-white/[0.14] text-white hover:bg-white/25',
+    icon: undefined,
+  },
+  blue: {
+    card: 'bg-gradient-to-b from-[#2c3550] via-[#151a2a] to-[#0a0c14] text-white',
+    body: 'text-[#c9d0e4]',
+    idea: 'text-[#a7b0c8]',
+    preview: 'bg-white/[0.07]',
+    details: 'bg-white/[0.14] text-white hover:bg-white/25',
+    icon: undefined,
+  },
+  gold: {
+    card: 'bg-gradient-to-b from-[#e6c47a] via-[#b78f45] to-[#6b4e1e] text-[#1b1712]',
+    body: 'text-[#3a2c14]',
+    idea: 'text-[#4a3a1d]',
+    preview: 'bg-white/40',
+    details: 'bg-[#1b1712]/[0.12] text-[#1b1712] hover:bg-[#1b1712]/20',
+    icon: 'light',
+  },
+  plain: {
+    card: 'border border-hero-card-line bg-hero-card',
+    body: 'text-on-hero/65',
+    idea: 'text-on-hero/50',
+    preview: 'bg-[#0b0b0c] text-white',
+    details: 'bg-on-hero/[0.08] text-on-hero hover:bg-on-hero/15',
+    icon: 'neutral',
+  },
+} as const;
+
+/**
+ * One tool: what it is and the idea behind it on top; then, at the same height in
+ * every card of a row, a live preview of real data, and its links and status.
+ */
+function ToolCard({
+  tone = 'plain',
+  icon,
+  title,
+  body,
+  idea,
+  ideaLabel,
+  href,
+  details,
+  preview,
+  footer,
+}: {
+  tone?: keyof typeof TONES;
+  icon: IconType;
+  title: string;
+  body: string;
+  idea: string;
+  ideaLabel: string;
+  href: string;
+  details: string;
+  preview: React.ReactNode;
+  footer: React.ReactNode;
+}) {
+  const look = TONES[tone];
+  return (
+    <article className={cn(card, look.card)}>
+      <CardIcon icon={icon} tone={look.icon} />
+      <h3 className="text-2xl font-bold leading-[1.35]">{title}</h3>
+      <p className={cn('text-base leading-[1.7]', look.body)}>{body}</p>
+      <p className={cn('text-[15px] leading-[1.75]', look.idea)}>
+        <span className="font-bold">{ideaLabel}: </span>
+        {idea}
+      </p>
+      <div className={cn('mt-auto h-[104px] overflow-hidden rounded-2xl px-4 py-3.5', look.preview)}>
+        {preview}
+      </div>
+      <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+        <Link href={href} className={cn(pill, look.details)}>
+          {details}
+          <IoArrowBack className="h-4 w-4 ltr:rotate-180" aria-hidden="true" />
+        </Link>
+        {footer}
+      </div>
+    </article>
+  );
+}
+
 /**
  * Open data and tools for listeners, teachers and developers. Every card runs
  * its own small loop that shows what it holds; what exists links to it, what
@@ -80,7 +158,6 @@ export function ToolsSection({
     <span
       className={cn(
         pill,
-        'self-start',
         tone === 'light'
           ? 'bg-[#1b1712]/[0.14]'
           : tone === 'neutral'
@@ -133,295 +210,139 @@ export function ToolsSection({
       </div>
 
       <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,340px),1fr))] gap-4">
-        {/* Ayah timings: a recitation's ayahs on a timeline, a playhead crossing it. */}
-        <article
-          className={cn(
-            card,
-            'min-h-[320px] bg-gradient-to-b from-[#1f5a43] via-[#0e2e22] to-[#07150f] text-white'
-          )}
-        >
-          <CardIcon icon={IoTimeOutline} />
-          <h3 className="text-2xl font-bold leading-[1.35]">
-            {t('tools.ayahTimings')}
-          </h3>
-          <p className="text-base leading-[1.7] text-[#cbe4d7]">
-            {t('tools.ayahTimingsBody')}
-          </p>
-          <p className="text-[15px] leading-[1.75] text-[#a9c9b8]">
-            <span className="font-bold">{t('tools.ideaLabel')}: </span>
-            {t('tools.ayahTimingsIdea')}
-          </p>
-          <Link
-            href={`/developers#timings`}
-            className={cn(pill, 'mt-auto self-start', DETAILS_TONE.ayahTimings)}
-          >
-            {t('tools.details')}
-            <IoArrowBack className="h-4 w-4 ltr:rotate-180" aria-hidden="true" />
-          </Link>
-          <div
-            className="mt-auto flex flex-col gap-2 rounded-2xl bg-white/[0.07] px-4 py-3.5"
-            aria-hidden="true"
-          >
-            <div className="relative h-2.5 overflow-hidden rounded-full bg-white/[0.1]">
-              {[
-                ['0%', '12%', '0s'],
-                ['13%', '21%', '0.6s'],
-                ['35%', '9%', '1.6s'],
-                ['45%', '30%', '2.1s'],
-                ['76%', '23%', '3.6s'],
-              ].map(([start, width, delay]) => (
-                <span
-                  key={start}
-                  className="tool-anim-light absolute inset-y-0 rounded-full bg-[#a9ddbc]"
-                  style={{
-                    insetInlineStart: start,
-                    width,
-                    animationDelay: delay,
-                  }}
-                />
-              ))}
-              <span className="tool-anim-playhead absolute inset-0">
-                <span className="absolute inset-y-0 start-0 w-[3px] rounded-full bg-white" />
-              </span>
-            </div>
-            <span
-              dir="ltr"
-              className="text-left font-mono text-[13px] text-[#a9c9b8]"
-            >
+        <ToolCard
+          tone="green"
+          icon={IoTimeOutline}
+          title={t('tools.ayahTimings')}
+          body={t('tools.ayahTimingsBody')}
+          idea={t('tools.ayahTimingsIdea')}
+          ideaLabel={t('tools.ideaLabel')}
+          href="/developers#timings"
+          details={t('tools.details')}
+          preview={<AyahTimeline />}
+          footer={
+            <span dir="ltr" className="font-mono text-[13px] text-[#a9c9b8]">
               timings/&lt;reciter&gt;/001.json
             </span>
-          </div>
-        </article>
-
-        {/* Word timings: words lighting one after another, as a reciter reads them. */}
-        <article
-          className={cn(
-            card,
-            'min-h-[320px] bg-gradient-to-b from-[#2c3550] via-[#151a2a] to-[#0a0c14] text-white'
-          )}
-        >
-          <CardIcon icon={IoTextOutline} />
-          <h3 className="text-2xl font-bold leading-[1.35]">
-            {t('tools.wordTimings')}
-          </h3>
-          <p className="text-base leading-[1.7] text-[#c9d0e4]">
-            {t('tools.wordTimingsBody')}
-          </p>
-          <p className="text-[15px] leading-[1.75] text-[#a7b0c8]">
-            <span className="font-bold">{t('tools.ideaLabel')}: </span>
-            {t('tools.wordTimingsIdea')}
-          </p>
-          <Link
-            href={`/developers#word-timings`}
-            className={cn(pill, 'mt-auto self-start', DETAILS_TONE.wordTimings)}
-          >
-            {t('tools.details')}
-            <IoArrowBack className="h-4 w-4 ltr:rotate-180" aria-hidden="true" />
-          </Link>
-          <div
-            className="mt-auto flex flex-wrap gap-1.5 rounded-2xl bg-white/[0.07] px-4 py-3.5"
-            aria-hidden="true"
-          >
-            {[3, 2, 4, 2, 3, 5, 2].map((size, index) => (
-              <span
-                key={index}
-                className="tool-anim-word h-6 rounded-lg"
-                style={{
-                  width: `${size * 12}px`,
-                  animationDelay: `${index * 0.45}s`,
-                }}
-              />
-            ))}
-          </div>
-          {inProgress()}
-        </article>
-
-        {/* The Qalun text: lines being written in turn. */}
-        <article
-          className={cn(
-            card,
-            'min-h-[320px] bg-gradient-to-b from-[#e6c47a] via-[#b78f45] to-[#6b4e1e] text-[#1b1712]'
-          )}
-        >
-          <CardIcon icon={IoDocumentTextOutline} tone="light" />
-          <h3 className="text-2xl font-bold leading-[1.35]">
-            {t('tools.text')}
-          </h3>
-          <p className="text-base leading-[1.7] text-[#3a2c14]">
-            {t('tools.textBody')}
-          </p>
-          <p className="text-[15px] leading-[1.75] text-[#4a3a1d]">
-            <span className="font-bold">{t('tools.ideaLabel')}: </span>
-            {t('tools.textIdea')}
-          </p>
-          <Link
-            href={`/developers#text`}
-            className={cn(pill, 'mt-auto self-start', DETAILS_TONE.text)}
-          >
-            {t('tools.details')}
-            <IoArrowBack className="h-4 w-4 ltr:rotate-180" aria-hidden="true" />
-          </Link>
-          <div
-            className="mt-auto flex flex-col gap-2 rounded-2xl bg-white/40 px-4 py-3.5"
-            aria-hidden="true"
-          >
-            {['100%', '82%', '64%'].map((width, index) => (
-              <span
-                key={width}
-                className="tool-anim-grow h-2 rounded-full bg-[#1b1712]/55"
-                style={{ width, animationDelay: `${index * 0.5}s` }}
-              />
-            ))}
-          </div>
-          <div className="flex flex-wrap gap-2 text-sm font-bold">
-            <span className="rounded-xl bg-white/55 px-3 py-1.5">
-              {t('tools.ayahs', { count: 6214 })}
-            </span>
-            <span className="rounded-xl bg-white/55 px-3 py-1.5">
-              {t('tools.surahs', { count: 114 })}
-            </span>
-            <span className="rounded-xl bg-white/55 px-3 py-1.5">
-              {t('tools.textDivisions')}
-            </span>
-          </div>
-          {inProgress('light')}
-        </article>
-
-        {/* The API: a request typed, its answer arriving. */}
-        <article
-          className={cn(
-            card,
-            'min-h-[280px] border border-hero-card-line bg-hero-card'
-          )}
-        >
-          <CardIcon icon={IoCodeSlashOutline} tone="neutral" />
-          <h3 className="text-2xl font-bold leading-[1.35]">
-            {t('tools.api')}
-          </h3>
-          <p className="text-base leading-[1.7] text-on-hero/65">
-            {t('tools.apiBody')}
-          </p>
-          <p className="text-[15px] leading-[1.75] text-on-hero/50">
-            <span className="font-bold">{t('tools.ideaLabel')}: </span>
-            {t('tools.apiIdea')}
-          </p>
-          <Link
-            href={`/developers#reciters`}
-            className={cn(pill, 'mt-auto self-start', DETAILS_TONE.api)}
-          >
-            {t('tools.details')}
-            <IoArrowBack className="h-4 w-4 ltr:rotate-180" aria-hidden="true" />
-          </Link>
-          <div
-            dir="ltr"
-            className="mt-auto flex flex-col gap-1.5 rounded-2xl bg-[#0b0b0c] px-4 py-3.5 text-left font-mono text-sm text-white"
-            aria-hidden="true"
-          >
-            <span className="text-gold-light">
-              <span className="tool-anim-type">GET /api/v3/reciters</span>
-              <span className="tool-anim-blink">▍</span>
-            </span>
-            <span className="tool-anim-answer text-[#7fcf9e]">
-              {t('tools.apiAnswer', { count: reciterCount })}
-            </span>
-          </div>
-          {inProgress('neutral')}
-        </article>
-
-        {/* The numbering converter: one ayah, its two numbers, the arrow between. */}
-        <article
-          className={cn(
-            card,
-            'min-h-[280px] border border-hero-card-line bg-hero-card'
-          )}
-        >
-          <CardIcon icon={IoSwapHorizontalOutline} tone="neutral" />
-          <h3 className="text-2xl font-bold leading-[1.35]">
-            {t('tools.converter')}
-          </h3>
-          <p className="text-base leading-[1.7] text-on-hero/65">
-            {t('tools.converterBody')}
-          </p>
-          <p className="text-[15px] leading-[1.75] text-on-hero/50">
-            <span className="font-bold">{t('tools.ideaLabel')}: </span>
-            {t('tools.converterIdea')}
-          </p>
-          <Link
-            href={`/developers#converter`}
-            className={cn(pill, 'mt-auto self-start', DETAILS_TONE.converter)}
-          >
-            {t('tools.details')}
-            <IoArrowBack className="h-4 w-4 ltr:rotate-180" aria-hidden="true" />
-          </Link>
-          <div
-            className="mt-auto flex flex-wrap items-center gap-2.5 text-[15px] [perspective:400px]"
-            aria-hidden="true"
-          >
-            <span className="rounded-xl bg-[#0b0b0c] px-3.5 py-2.5 text-white">
-              {t('tools.hafs', { ref: '2:286' })}
-            </span>
-            <IoSwapHorizontalOutline className="tool-anim-nudge h-5 w-5 text-gold-light" />
-            <span className="tool-anim-flip rounded-xl bg-[#0b0b0c] px-3.5 py-2.5 text-gold-light">
-              {t('tools.qalun', { ref: '2:285' })}
-            </span>
-          </div>
-          {inProgress('neutral')}
-        </article>
-
-        {/* Audio: a recitation playing and a download filling. */}
-        <article
-          className={cn(
-            card,
-            'min-h-[280px] border border-hero-card-line bg-hero-card'
-          )}
-        >
-          <CardIcon icon={IoCloudDownloadOutline} tone="neutral" />
-          <h3 className="text-2xl font-bold leading-[1.35]">
-            {t('tools.audio')}
-          </h3>
-          <p className="text-base leading-[1.7] text-on-hero/65">
-            {t('tools.audioBody')}
-          </p>
-          <p className="text-[15px] leading-[1.75] text-on-hero/50">
-            <span className="font-bold">{t('tools.ideaLabel')}: </span>
-            {t('tools.audioIdea')}
-          </p>
-          <Link
-            href={`/developers#audio`}
-            className={cn(pill, 'mt-auto self-start', DETAILS_TONE.audio)}
-          >
-            {t('tools.details')}
-            <IoArrowBack className="h-4 w-4 ltr:rotate-180" aria-hidden="true" />
-          </Link>
-          <div
-            className="mt-auto flex items-center gap-4 rounded-2xl bg-[#0b0b0c] px-4 py-3.5 text-white"
-            aria-hidden="true"
-          >
-            <span className="flex h-6 items-end gap-[3px]">
-              {[0, 0.3, 0.15, 0.45, 0.2].map((delay) => (
-                <span
-                  key={delay}
-                  className="tool-anim-eq h-full w-[4px] rounded-full bg-gold-light"
-                  style={{ animationDelay: `${delay}s` }}
-                />
-              ))}
-            </span>
-            <span className="relative h-2 flex-1 overflow-hidden rounded-full bg-white/10">
-              <span className="tool-anim-fill absolute inset-0 rounded-full bg-gradient-to-l from-gold-light to-gold" />
-            </span>
-            <span className="text-sm text-white/70">MP3</span>
-          </div>
-          <a
-            href="#reciters"
-            className={cn(
-              pill,
-              'self-start bg-on-hero/[0.08] text-on-hero hover:bg-on-hero/15'
-            )}
-          >
-            <IoCloudDownloadOutline aria-hidden="true" />
-            {t('tools.audioHow')}
-          </a>
-        </article>
+          }
+        />
+        <ToolCard
+          tone="blue"
+          icon={IoTextOutline}
+          title={t('tools.wordTimings')}
+          body={t('tools.wordTimingsBody')}
+          idea={t('tools.wordTimingsIdea')}
+          ideaLabel={t('tools.ideaLabel')}
+          href="/developers#word-timings"
+          details={t('tools.details')}
+          preview={<WordLights />}
+          footer={inProgress()}
+        />
+        <ToolCard
+          tone="gold"
+          icon={IoDocumentTextOutline}
+          title={t('tools.text')}
+          body={t('tools.textBody')}
+          idea={t('tools.textIdea')}
+          ideaLabel={t('tools.ideaLabel')}
+          href="/developers#text"
+          details={t('tools.details')}
+          preview={
+            <div className="flex h-full flex-col justify-between gap-2">
+              <p dir="rtl" lang="ar" className="text-[19px] font-bold leading-[1.7]">
+                <span className="tool-anim-grow-text">
+                  مَلِكِ يَوْمِ الدِّينِ <span className="text-[#6b4e1e]">﴿٣﴾</span> إِيَّاكَ نَعْبُدُ
+                </span>
+              </p>
+              <div className="flex flex-wrap gap-1.5 text-[12px] font-bold">
+                <span className="rounded-lg bg-white/55 px-2 py-0.5">{t('tools.ayahs', { count: 6214 })}</span>
+                <span className="rounded-lg bg-white/55 px-2 py-0.5">{t('tools.surahs', { count: 114 })}</span>
+                <span className="rounded-lg bg-white/55 px-2 py-0.5">{t('tools.textDivisions')}</span>
+              </div>
+            </div>
+          }
+          footer={inProgress('light')}
+        />
+        <ToolCard
+          icon={IoCodeSlashOutline}
+          title={t('tools.api')}
+          body={t('tools.apiBody')}
+          idea={t('tools.apiIdea')}
+          ideaLabel={t('tools.ideaLabel')}
+          href="/developers#reciters"
+          details={t('tools.details')}
+          preview={
+            <div dir="ltr" className="flex h-full flex-col justify-center gap-1 text-left font-mono text-[13px] leading-[1.6]">
+              <span className="text-gold-light">
+                <span className="tool-anim-type">GET /api/v1/reciters</span>
+                <span className="tool-anim-blink">▍</span>
+              </span>
+              <span className="tool-anim-answer text-white/80">
+                <span className="text-[#7fcf9e]">200</span> [{'{'} &quot;slug&quot;: <span className="text-[#e6c47a]">&quot;abdulhamid_algriw&quot;</span>, &quot;surahs&quot;: <span className="text-[#9cc3ff]">114</span> {'}'}, …{reciterCount}]
+              </span>
+            </div>
+          }
+          footer={inProgress('neutral')}
+        />
+        <ToolCard
+          icon={IoSwapHorizontalOutline}
+          title={t('tools.converter')}
+          body={t('tools.converterBody')}
+          idea={t('tools.converterIdea')}
+          ideaLabel={t('tools.ideaLabel')}
+          href="/developers#converter"
+          details={t('tools.details')}
+          preview={
+            <div className="flex h-full flex-col justify-between gap-2">
+              <p dir="rtl" lang="ar" className="truncate text-[18px] font-bold">
+                لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا
+              </p>
+              <div className="flex items-center gap-2.5 text-[14px] [perspective:400px]">
+                <span className="rounded-lg bg-white/10 px-2.5 py-1 text-white">{t('tools.hafs', { ref: '2:286' })}</span>
+                <IoSwapHorizontalOutline className="tool-anim-nudge h-4 w-4 text-gold-light" aria-hidden="true" />
+                <span className="tool-anim-flip rounded-lg bg-white/10 px-2.5 py-1 text-gold-light">{t('tools.qalun', { ref: '2:285' })}</span>
+              </div>
+            </div>
+          }
+          footer={inProgress('neutral')}
+        />
+        <ToolCard
+          icon={IoCloudDownloadOutline}
+          title={t('tools.audio')}
+          body={t('tools.audioBody')}
+          idea={t('tools.audioIdea')}
+          ideaLabel={t('tools.ideaLabel')}
+          href="/developers#audio"
+          details={t('tools.details')}
+          preview={
+            <div className="flex h-full flex-col justify-between gap-2">
+              <span dir="ltr" className="flex items-center justify-between font-mono text-[13px] text-white/75">
+                <span>abdulhamid_algriw/001.mp3</span>
+                <span className="text-white/50">MP3</span>
+              </span>
+              <div className="flex items-center gap-3">
+                <span className="flex h-6 items-end gap-[3px]" aria-hidden="true">
+                  {[0, 0.3, 0.15, 0.45, 0.2].map((delay) => (
+                    <span
+                      key={delay}
+                      className="tool-anim-eq h-full w-[4px] rounded-full bg-gold-light"
+                      style={{ animationDelay: `${delay}s` }}
+                    />
+                  ))}
+                </span>
+                <span className="relative h-2 flex-1 overflow-hidden rounded-full bg-white/10">
+                  <span className="tool-anim-fill absolute inset-0 rounded-full bg-gradient-to-l from-gold-light to-gold" />
+                </span>
+              </div>
+            </div>
+          }
+          footer={
+            <a href="#reciters" className={cn(pill, 'bg-on-hero/[0.08] text-on-hero hover:bg-on-hero/15')}>
+              <IoCloudDownloadOutline aria-hidden="true" />
+              {t('tools.audioHow')}
+            </a>
+          }
+        />
       </div>
     </section>
   );

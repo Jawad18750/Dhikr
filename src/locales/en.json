@@ -435,5 +435,10 @@
   "reciter.related": "Other reciters",
   "library.juz": "Juz {n}",
   "library.shareOn": "Share:",
-  "player.sleep": "Sleep timer"
+  "player.sleep": "Sleep timer",
+  "apps.title": "Our apps",
+  "apps.jamahiriya": "Jamahiriya Mushaf",
+  "apps.adhan": "Adhan & Adhkar",
+  "apps.masahif": "Masahif Libya",
+  "apps.web": "Website"
 }

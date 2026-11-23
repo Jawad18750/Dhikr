@@ -467,7 +467,7 @@ dialog::backdrop {
   }
   45%,
   100% {
-    width: 21ch;
+    width: 20ch;
   }
 }
 
@@ -557,16 +557,36 @@ dialog::backdrop {
 .tool-anim-grow {
   animation: tool-grow 4.2s ease-out infinite;
 }
+/* Arabic text being written: revealed from its right edge, held, then faded for the next round. */
+@keyframes tool-write {
+  0% {
+    clip-path: inset(0 0 0 100%);
+    opacity: 1;
+  }
+  45%,
+  88% {
+    clip-path: inset(0 0 0 0);
+    opacity: 1;
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+    opacity: 0;
+  }
+}
+.tool-anim-grow-text {
+  display: inline-block;
+  animation: tool-write 5.2s ease-out infinite;
+}
 .tool-anim-fill {
   animation: tool-fill 3.2s ease-in-out infinite;
 }
 .tool-anim-type {
   display: inline-block;
-  width: 21ch;
+  width: 20ch;
   overflow: hidden;
   white-space: nowrap;
   vertical-align: bottom;
-  animation: tool-type 5s steps(21) infinite;
+  animation: tool-type 5s steps(20) infinite;
 }
 .tool-anim-answer {
   animation: tool-answer 5s ease-out infinite;

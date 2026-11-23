@@ -421,5 +421,10 @@
   "reciter.related": "Weitere Rezitatoren",
   "library.juz": "Juz {n}",
   "library.shareOn": "Teilen:",
-  "player.sleep": "Schlaf-Timer"
+  "player.sleep": "Schlaf-Timer",
+  "apps.title": "Unsere Apps",
+  "apps.jamahiriya": "Jamahiriya-Mushaf",
+  "apps.adhan": "Adhan & Adhkar",
+  "apps.masahif": "Masahif Libyen",
+  "apps.web": "Website"
 }

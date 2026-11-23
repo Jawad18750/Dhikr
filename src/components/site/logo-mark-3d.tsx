@@ -52,7 +52,8 @@ const clamp = (x: number) => Math.min(1, Math.max(-1, x));
  * the ring turning and each blade tilting like a fan. It sits in the hero;
  * as the page scrolls it flies up and settles beside the wordmark in the
  * header, where it stays, in 3D, still turning. On a desktop it leans
- * toward the mouse and can be grabbed and spun; it springs back when let go.
+ * toward the mouse. Anywhere, it can be grabbed and flicked: it keeps spinning, slowing
+ * like a flywheel, and drifts on from wherever it comes to rest (a small easter egg).
  * A still of its first frame shows at once; the live scene takes over. On a
  * phone (see GROUNDED) it stays in the hero, and the header's flat mark
  * slides in once it has scrolled past; with reduced motion it is also still.
@@ -371,7 +372,10 @@ export function LogoMark3D({
       const twist = { value: REST_TWIST, target: REST_TWIST };
       const reach = { value: 0, target: 0, angle: 0 };
       const onPointerMove = (event: PointerEvent) => {
-        if (event.pointerType === 'touch') return;
+        if (event.pointerType === 'touch') {
+          if (drag.active && event.pointerId === drag.pointerId) dragTo(event);
+          return;
+        }
         const nx = clamp((event.clientX / window.innerWidth) * 2 - 1);
         const ny = clamp((event.clientY / window.innerHeight) * 2 - 1);
         tilt.targetY = nx * TILT_MAX;
@@ -394,7 +398,7 @@ export function LogoMark3D({
       };
 
       // Spin: held, the ring follows the pointer's angle round its centre;
-      // let go, it springs back carrying the speed of the throw.
+      // let go, it carries on at the speed of the throw and slows by friction.
       const drag = { active: false, pointerId: -1, angle: 0, time: 0 };
       let spin = 0;
       let spinVelocity = 0;
@@ -416,9 +420,11 @@ export function LogoMark3D({
         const now = event.timeStamp || performance.now();
         const seconds = (now - drag.time) / 1000;
         // Screen angles run clockwise; the ring's z turns the other way.
-        spin = Math.max(-Math.PI * 2, Math.min(Math.PI * 2, spin - delta));
+        spin -= delta;
         if (seconds > 0.004) {
-          spinVelocity = Math.max(-16, Math.min(16, -delta / seconds));
+          // Smoothed, so the speed at release is the throw's, not one jittery sample.
+          const sample = Math.max(-40, Math.min(40, -delta / seconds));
+          spinVelocity = spinVelocity * 0.4 + sample * 0.6;
           drag.time = now;
         }
         drag.angle = angle;
@@ -442,24 +448,25 @@ export function LogoMark3D({
       const onPointerUp = (event: PointerEvent) => {
         if (!drag.active || event.pointerId !== drag.pointerId) return;
         drag.active = false;
+        // Held still before letting go: no throw.
+        if ((event.timeStamp || performance.now()) - drag.time > 120) spinVelocity = 0;
         host.style.cursor = 'grab';
       };
-      // A spring and damper back to rest, at a fixed step so a long frame
-      // cannot throw it.
+      // Friction only, no spring: a hard flick spins for many seconds, and the ring
+      // stays where it stops (the idle drift carries on from there).
       const stepSpin = (seconds: number) => {
-        const h = 1 / 120;
-        for (let left = seconds; left > 0; left -= h) {
-          spinVelocity += (-26 * spin - 7.5 * spinVelocity) * h;
-          spin += spinVelocity * h;
-        }
-        if (Math.abs(spin) < 1e-4 && Math.abs(spinVelocity) < 1e-3) {
-          spin = 0;
-          spinVelocity = 0;
-        }
+        const step = Math.min(seconds, 0.1);
+        // Air drag that bites harder at speed, and a little steady friction near rest.
+        spinVelocity *= Math.exp(-(0.45 + Math.abs(spinVelocity) * 0.02) * step);
+        spin += spinVelocity * step;
+        if (Math.abs(spinVelocity) < 0.02) spinVelocity = 0;
+        // Keep the number small; a full turn looks the same.
+        if (Math.abs(spin) > Math.PI * 20) spin %= Math.PI * 2;
       };
-      const desktop = window.matchMedia('(pointer: fine)').matches;
-      if (desktop && !still) {
+      if (!still) {
         host.style.cursor = 'grab';
+        // On a touch screen a finger on the mark turns it instead of scrolling the page.
+        host.style.touchAction = 'none';
         window.addEventListener('pointermove', onPointerMove, {
           passive: true,
         });
@@ -572,7 +579,7 @@ export function LogoMark3D({
         tilt.y += (tilt.targetY - tilt.y) * ease;
         twist.value += (twist.target - twist.value) * ease;
         reach.value += (reach.target - reach.value) * ease;
-        if (!drag.active && (spin || spinVelocity)) stepSpin(dt);
+        if (!drag.active && spinVelocity) stepSpin(dt);
         // In the header it turns to face forward, so the small mark reads.
         stage.rotation.x = BASE_PITCH * (1 - gilt) + tilt.x;
         stage.rotation.y = BASE_YAW * (1 - gilt) + tilt.y;

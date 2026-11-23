@@ -436,5 +436,10 @@
   "reciter.related": "قرّاء آخرون",
   "library.juz": "الجزء {n}",
   "library.shareOn": "شارك:",
-  "player.sleep": "مؤقت النوم"
+  "player.sleep": "مؤقت النوم",
+  "apps.title": "تطبيقاتنا",
+  "apps.jamahiriya": "مصحف الجماهيرية",
+  "apps.adhan": "أذان وأذكار",
+  "apps.masahif": "مصاحف ليبيا",
+  "apps.web": "الموقع"
 }

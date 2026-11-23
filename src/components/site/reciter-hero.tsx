@@ -119,11 +119,11 @@ export function ReciterHero({
         >
           {cells.map((cell) => (
             <div key={cell.label} className="flex min-w-0 flex-col items-center gap-0.5 px-1 text-center">
-              <dt className="order-last flex min-w-0 items-center gap-1 truncate text-[11px] text-on-hero/55 sm:text-[13px]">
+              <dt className="order-last flex min-w-0 flex-col items-center gap-0.5 text-[11px] leading-tight text-on-hero/55 sm:flex-row sm:gap-1 sm:text-[13px]">
                 <cell.icon className="h-3 w-3 shrink-0 text-hero-gold/80 sm:h-3.5 sm:w-3.5" aria-hidden="true" />
-                <span className="truncate">{cell.label}</span>
+                <span className="text-balance">{cell.label}</span>
               </dt>
-              <dd className="truncate text-[17px] font-bold tabular-nums sm:text-[22px]">{cell.value}</dd>
+              <dd className="truncate text-[16px] font-bold tabular-nums sm:text-[22px]">{cell.value}</dd>
             </div>
           ))}
         </dl>

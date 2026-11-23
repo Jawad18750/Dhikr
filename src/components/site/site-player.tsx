@@ -113,6 +113,16 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       return !open;
     });
   const [folded, setFolded] = useState(false);
+  // The bar or pill on its way out (globals.css: player-out, 220 ms), before the change.
+  const [leaving, setLeaving] = useState(false);
+  const LEAVE_MS = 220;
+  const leaveThen = (change: () => void) => {
+    setLeaving(true);
+    window.setTimeout(() => {
+      change();
+      setLeaving(false);
+    }, LEAVE_MS);
+  };
   const pendingSeek = useRef<number | null>(null);
 
   // The handlers read the latest of these without being rebuilt each time.
@@ -182,7 +192,10 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     const audio = audioRef.current;
     if (audio) audio.currentTime = Math.max(0, audio.currentTime + delta);
   };
-  const close = () => {
+  const close = () => leaveThen(stop);
+  const fold = () => leaveThen(() => setFolded(true));
+  const unfold = () => leaveThen(() => setFolded(false));
+  const stop = () => {
     const audio = audioRef.current;
     const { album: held, index: at } = live.current;
     if (audio && held && at !== null) writeResume(held.slug, { index: at, time: audio.currentTime });
@@ -288,7 +301,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
             // Folded: a small pill, play and close, a tap on it opens the bar again.
             <div
               ref={barRef}
-              className="player-pill pointer-events-auto relative mx-auto flex w-fit max-w-full items-center gap-1 overflow-hidden rounded-full bg-hero py-1.5 pe-1.5 ps-1.5 text-on-hero shadow-[0_14px_40px_rgb(0_0_0/0.25)]"
+              className={`player-pill ${leaving ? 'player-leave' : ''} pointer-events-auto relative mx-auto flex w-fit max-w-full items-center gap-1 overflow-hidden rounded-full bg-hero py-1.5 pe-1.5 ps-1.5 text-on-hero shadow-[0_14px_40px_rgb(0_0_0/0.25)]`}
             >
               <button
                 type="button"
@@ -304,7 +317,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
               </button>
               <button
                 type="button"
-                onClick={() => setFolded(false)}
+                onClick={unfold}
                 aria-label={formatMessage({ id: 'player.unfold' })}
                 className="flex min-w-0 max-w-[220px] flex-col px-2 text-start"
               >
@@ -328,7 +341,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           ) : (
             <div
               ref={barRef}
-              className="player-bar pointer-events-auto mx-auto flex max-w-[920px] flex-col gap-2 overflow-hidden rounded-[24px] bg-hero px-4 pb-3 pt-3 text-on-hero shadow-[0_18px_50px_rgb(0_0_0/0.25)] sm:px-5"
+              className={`player-bar ${leaving ? 'player-leave' : ''} pointer-events-auto mx-auto flex max-w-[920px] flex-col gap-2 overflow-hidden rounded-[24px] bg-hero px-4 pb-3 pt-3 text-on-hero shadow-[0_18px_50px_rgb(0_0_0/0.25)] sm:px-5`}
             >
               {reading && (
                 <div className="reader-in -mx-4 -mt-3 border-b border-on-hero/10 pb-1 pt-2 sm:-mx-5">
@@ -443,7 +456,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                   </button>
                   <button
                     type="button"
-                    onClick={() => setFolded(true)}
+                    onClick={fold}
                     aria-label={formatMessage({ id: 'player.fold' })}
                     className={quiet}
                   >

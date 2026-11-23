@@ -333,12 +333,13 @@ export function ReciterLibrary({
           <ol className="grid grid-cols-1 gap-2.5 md:grid-cols-2 lg:grid-cols-3">
             {shown.map((row) => {
               const active = row.at === index;
+              const ticked = picking && picked.has(row.id);
               return (
                 <li
                   key={row.at}
                   className={cn(
-                    'group flex items-center rounded-[18px] border transition-colors',
-                    (picking ? picked.has(row.id) : active)
+                    'group relative flex items-center rounded-[20px] border transition-colors',
+                    (picking ? ticked : active)
                       ? 'border-gold/60 bg-gold/[0.08]'
                       : 'border-border bg-surface hover:border-border-strong'
                   )}
@@ -349,50 +350,53 @@ export function ReciterLibrary({
                       picking ? toggleId(row.id) : active ? toggle() : play(row.at)
                     }
                     aria-current={active ? 'true' : undefined}
-                    aria-pressed={picking ? picked.has(row.id) : undefined}
-                    className="flex min-w-0 flex-1 items-center gap-3.5 rounded-[18px] px-3.5 py-3 text-start"
+                    aria-pressed={picking ? ticked : undefined}
+                    className="flex min-w-0 flex-1 items-center gap-3.5 rounded-[20px] p-3 text-start sm:p-3.5"
                   >
+                    {/* The surah's number in a small roundel, gold while it plays. */}
                     <span
                       className={cn(
-                        'flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold tabular-nums',
-                        active ? 'bg-gold text-[#1b1712]' : 'bg-surface-sunken text-ink-muted'
+                        'flex h-11 w-11 shrink-0 items-center justify-center rounded-full border text-[15px] font-bold tabular-nums transition-colors',
+                        active
+                          ? 'border-gold bg-gold text-[#1b1712]'
+                          : 'border-border text-ink-muted group-hover:border-border-strong'
                       )}
                     >
                       {row.id}
                     </span>
-                    <span className="flex min-w-0 flex-1 flex-col">
-                      <span className="truncate text-[17px] font-bold text-ink">{row.name}</span>
-                      {row.facts && (
-                        <span className="truncate text-[13px] text-ink-subtle">
-                          {row.meccan !== null &&
-                            `${formatMessage({ id: row.meccan ? 'library.meccan' : 'library.medinan' })} · `}
-                          {formatMessage({ id: 'library.ayahs' }, { count: row.facts.ayahs })}
-                        </span>
-                      )}
-                    </span>
-                    {row.facts && (
-                      <span className="shrink-0 text-[13px] tabular-nums text-ink-subtle">
-                        {picking && sizes[row.id] ? sizeLabel(sizes[row.id]) : clock(row.facts.seconds)}
+                    <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                      <span className="truncate text-[18px] font-bold leading-snug text-ink">
+                        {row.name}
                       </span>
-                    )}
+                      <span className="truncate text-[13px] text-ink-subtle">
+                        {[
+                          row.meccan !== null &&
+                            formatMessage({ id: row.meccan ? 'library.meccan' : 'library.medinan' }),
+                          row.facts && formatMessage({ id: 'library.ayahs' }, { count: row.facts.ayahs }),
+                          picking && sizes[row.id]
+                            ? sizeLabel(sizes[row.id])
+                            : row.facts && clock(row.facts.seconds),
+                        ]
+                          .filter(Boolean)
+                          .join(' · ')}
+                      </span>
+                    </span>
+                    {/* One round control at the end: play, the playing bars, or the tick. */}
                     <span
                       aria-hidden="true"
                       className={cn(
-                        'flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors',
-                        active ? 'text-gold' : 'text-ink-subtle group-hover:text-ink'
+                        'flex h-10 w-10 shrink-0 items-center justify-center rounded-full border transition-colors',
+                        picking
+                          ? ticked
+                            ? 'border-gold bg-gold text-[#1b1712]'
+                            : 'border-border-strong text-transparent'
+                          : active
+                            ? 'border-gold/70 text-gold'
+                            : 'border-border text-ink-subtle group-hover:border-ink group-hover:bg-ink group-hover:text-background'
                       )}
                     >
                       {picking ? (
-                        <span
-                          className={cn(
-                            'flex h-6 w-6 items-center justify-center rounded-full border-2 transition-colors',
-                            picked.has(row.id)
-                              ? 'border-gold bg-gold text-[#1b1712]'
-                              : 'border-border-strong'
-                          )}
-                        >
-                          {picked.has(row.id) && <IoCheckmark className="h-4 w-4" />}
-                        </span>
+                        <IoCheckmark className="h-[18px] w-[18px]" />
                       ) : active && playing ? (
                         <span className="flex h-4 items-end gap-[3px]">
                           {[0, 0.25, 0.1].map((delay) => (
@@ -404,17 +408,19 @@ export function ReciterLibrary({
                           ))}
                         </span>
                       ) : (
-                        <IoPlay className="h-4 w-4" />
+                        <IoPlay className="h-4 w-4 translate-x-[-1px] rtl:translate-x-[1px]" />
                       )}
                     </span>
                   </button>
+                  {/* Download and share, on hover, laid over the row's empty middle
+                      (never squeezing the name). */}
                   {!picking && (
-                    <span className="hidden shrink-0 items-center gap-0.5 pe-2 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 md:flex">
+                    <span className="pointer-events-none absolute inset-y-0 end-[4.25rem] hidden items-center gap-0.5 opacity-0 transition-opacity group-focus-within:pointer-events-auto group-focus-within:opacity-100 group-hover:pointer-events-auto group-hover:opacity-100 md:flex">
                       <a
                         href={`/api/download/${slug}/${row.id}`}
                         download
                         aria-label={`${formatMessage({ id: 'library.downloadSurah' })}: ${row.name}`}
-                        className="flex h-9 w-9 items-center justify-center rounded-full text-ink-subtle transition-colors hover:bg-surface-sunken hover:text-ink"
+                        className="flex h-9 w-9 items-center justify-center rounded-full bg-surface text-ink-subtle transition-colors hover:bg-surface-sunken hover:text-ink"
                       >
                         <IoCloudDownloadOutline className="h-[17px] w-[17px]" aria-hidden="true" />
                       </a>
@@ -427,7 +433,7 @@ export function ReciterLibrary({
                           )
                         }
                         aria-label={`${formatMessage({ id: 'library.shareSurah' })}: ${row.name}`}
-                        className="flex h-9 w-9 items-center justify-center rounded-full text-ink-subtle transition-colors hover:bg-surface-sunken hover:text-ink"
+                        className="flex h-9 w-9 items-center justify-center rounded-full bg-surface text-ink-subtle transition-colors hover:bg-surface-sunken hover:text-ink"
                       >
                         <IoShareSocialOutline className="h-[17px] w-[17px]" aria-hidden="true" />
                       </button>

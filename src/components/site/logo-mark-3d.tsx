@@ -17,6 +17,15 @@ const loadThree = () => (threeModule ??= import('./three-parts'));
 if (typeof window !== 'undefined') void loadThree();
 
 const smooth = (x: number) => x * x * (3 - 2 * x);
+/**
+ * Where the mark does not fly: phones and touch screens (the flight is a
+ * per-scroll transform of a live canvas, too heavy there) and reduced motion.
+ * There it stays in the hero, and once it has scrolled past, the header's
+ * flat mark slides in beside the wordmark.
+ */
+const GROUNDED =
+  '(prefers-reduced-motion: reduce), (max-width: 767px), (pointer: coarse)';
+
 const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
 const clamp = (x: number) => Math.min(1, Math.max(-1, x));
 
@@ -26,9 +35,9 @@ const clamp = (x: number) => Math.min(1, Math.max(-1, x));
  * as the page scrolls it flies up and settles beside the wordmark in the
  * header, where it stays, in 3D, still turning. On a desktop it leans
  * toward the mouse and can be grabbed and spun; it springs back when let go.
- * A still of its first frame shows at once; the live scene takes over. With
- * reduced motion it stays in the hero, still, and the header shows the flat
- * mark.
+ * A still of its first frame shows at once; the live scene takes over. On a
+ * phone (see GROUNDED) it stays in the hero, and the header's flat mark
+ * slides in once it has scrolled past; with reduced motion it is also still.
  */
 export function LogoMark3D({
   label,
@@ -44,11 +53,46 @@ export function LogoMark3D({
   const scaleRef = useRef(1);
   const [mounted, setMounted] = useState(false);
   const [ready, setReady] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const [grounded, setGrounded] = useState(false);
+  useEffect(() => {
+    setGrounded(window.matchMedia(GROUNDED).matches);
+    setMounted(true);
+  }, []);
+
+  // Grounded: the header's mark comes in once the hero's has scrolled past
+  // the bar (globals.css animates it from `data-mark-dock`).
+  useEffect(() => {
+    if (!mounted || !grounded) return;
+    const anchor = anchorRef.current;
+    const bar = document.querySelector('.header-shell');
+    if (!anchor || !bar) return;
+    const root = document.documentElement;
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      const past =
+        anchor.getBoundingClientRect().bottom <=
+        bar.getBoundingClientRect().bottom;
+      root.dataset.markDock = past ? 'in' : 'out';
+    };
+    const request = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener('scroll', request, { passive: true });
+    window.addEventListener('resize', request);
+    return () => {
+      delete root.dataset.markDock;
+      window.removeEventListener('scroll', request);
+      window.removeEventListener('resize', request);
+    };
+  }, [mounted, grounded]);
 
   // The flight: from the hero's anchor to the header slot as the hero scrolls away.
   useEffect(() => {
-    if (!mounted) return;
+    if (!mounted || grounded) return;
     const anchor = anchorRef.current;
     const flyer = flyerRef.current;
     const slot = document.getElementById(MARK_SLOT_ID);
@@ -123,7 +167,7 @@ export function LogoMark3D({
       window.removeEventListener('resize', request);
       observer.disconnect();
     };
-  }, [mounted]);
+  }, [mounted, grounded]);
 
   // The scene.
   useEffect(() => {
@@ -486,10 +530,17 @@ export function LogoMark3D({
         }
       };
 
+      // Off screen (scrolled past, on a phone) it draws nothing.
+      let onScreen = true;
+      const visibility = new IntersectionObserver(([entry]) => {
+        onScreen = entry?.isIntersecting ?? true;
+      });
+      visibility.observe(host);
+
       let frame = 0;
       const loop = (time: number) => {
         frame = requestAnimationFrame(loop);
-        if (!document.hidden) draw(time);
+        if (!document.hidden && onScreen) draw(time);
       };
       // The first frame is drawn at once, not on the browser's next
       // animation frame, so the mark shows as soon as it is ready even where
@@ -499,6 +550,7 @@ export function LogoMark3D({
 
       cleanup = () => {
         cancelAnimationFrame(frame);
+        visibility.disconnect();
         window.removeEventListener('pointermove', onPointerMove);
         document.removeEventListener('mouseout', onMouseOut);
         host.removeEventListener('pointerdown', onPointerDown);
@@ -521,8 +573,6 @@ export function LogoMark3D({
     };
   }, [mounted]);
 
-  const still =
-    mounted && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // From the first paint the hero shows a still of this very scene's first
   // frame (rendered from it, 28 KB). The live canvas fades in over it once it
@@ -551,8 +601,8 @@ export function LogoMark3D({
     </div>
   );
 
-  // Reduced motion: the scene lives in the hero, nothing flies.
-  if (!mounted || still) {
+  // Grounded: the scene lives in the hero, nothing flies.
+  if (!mounted || grounded) {
     return (
       <div
         ref={anchorRef}

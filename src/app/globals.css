@@ -594,6 +594,42 @@ body:has([data-mark-anchor]) #brand-mark-slot {
   width: 0;
 }
 
+/* On a phone the mark does not fly (logo-mark-3d.tsx, GROUNDED): once the
+   hero's mark has scrolled past, the slot opens and the flat mark turns in
+   from the edge; scrolling back up, it goes the way it came. */
+html[data-mark-dock] #brand-mark-slot {
+  transition: width 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+html[data-mark-dock] #brand-mark-slot svg {
+  visibility: visible;
+  opacity: 0;
+  transform: translateX(16px) rotate(-140deg) scale(0.5);
+  transition:
+    transform 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 260ms ease-out;
+}
+html[dir='ltr'][data-mark-dock] #brand-mark-slot svg {
+  transform: translateX(-16px) rotate(140deg) scale(0.5);
+}
+html[data-mark-dock='in'] #brand-mark-slot {
+  width: 46px;
+}
+html[data-mark-dock='in'] #brand-mark-slot svg {
+  opacity: 1;
+  transform: none;
+}
+@media (min-width: 640px) {
+  html[data-mark-dock='in'] #brand-mark-slot {
+    width: 54px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-mark-dock] #brand-mark-slot,
+  html[data-mark-dock] #brand-mark-slot svg {
+    transition: none;
+  }
+}
+
 /* The sticky header reads what passes behind it (header-shell.tsx): clear at
    the top, light glass over the page, dark glass with light ink over the
    black cards. Its contents use the ink and border tokens, so re-pointing

@@ -4,11 +4,9 @@ import { ToolsSection } from '@/components/site/tools-section';
 import { getDhikrCatalogue } from '@/lib/dhikr-catalogue';
 import { buildPageMetadata } from '@/lib/seo/metadata';
 import type { SeoLocale } from '@/lib/seo/routes';
-import ar from '@/locales/ar.json';
-import de from '@/locales/de.json';
-import en from '@/locales/en.json';
+import { MESSAGES } from '@/locales';
 
-const COPY = { ar, en, de } as const;
+const COPY = MESSAGES;
 
 export const homeMetadata = (locale: SeoLocale) => {
   const copy = COPY[locale];

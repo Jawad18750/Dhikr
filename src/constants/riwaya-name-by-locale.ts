@@ -2,10 +2,7 @@ import { Riwaya } from '@/types';
 
 import { Language } from './language';
 
-export const RiwayaNameByLocale: Record<
-  Language,
-  Record<keyof typeof Riwaya, string>
-> = {
+const BASE = {
   ar: {
     Hafs: 'حفص',
     Warsh: 'ورش',
@@ -51,4 +48,18 @@ export const RiwayaNameByLocale: Record<
     IbnJammaz: 'Ibn Jammaz',
     Yaqoub: 'Yaqoub',
   },
+} satisfies Record<'ar' | 'en' | 'de', Record<keyof typeof Riwaya, string>>;
+
+/** Riwaya names by UI language; languages in Latin script use the English spellings. */
+export const RiwayaNameByLocale: Record<Language, Record<keyof typeof Riwaya, string>> = {
+  ...BASE,
+  fr: BASE.en,
+  es: BASE.en,
+  tr: BASE.en,
+  id: BASE.en,
+  ms: BASE.en,
+  ur: BASE.ar,
+  fa: BASE.ar,
+  bn: BASE.en,
+  ru: BASE.en,
 };

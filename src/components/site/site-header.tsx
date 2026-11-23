@@ -7,11 +7,9 @@ import {
   IoPersonCircleOutline,
 } from 'react-icons/io5';
 
-import { type SeoLocale, withLocale } from '@/lib/seo/routes';
+import { isRtl, type SeoLocale, withLocale } from '@/lib/seo/routes';
 import { BRAND } from '@/lib/seo/site';
-import ar from '@/locales/ar.json';
-import de from '@/locales/de.json';
-import en from '@/locales/en.json';
+import { MESSAGES } from '@/locales';
 
 import { HeaderMark } from './header-mark';
 import { HeaderShell } from './header-shell';
@@ -23,7 +21,7 @@ import { SiteNav } from './site-nav';
 import { ThemeToggle } from './theme-toggle';
 import { LatinWordmark, Wordmark } from './wordmark';
 
-const COPY = { ar, en, de } as const;
+const COPY = MESSAGES;
 
 
 /** The site's top bar: the wordmark, then the sections and the light/dark
@@ -63,7 +61,7 @@ export function SiteHeader({ locale }: { locale: SeoLocale }) {
             to right elsewhere. */}
         <Link
           href={home}
-          dir={locale === 'ar' ? 'rtl' : 'ltr'}
+          dir={isRtl(locale) ? 'rtl' : 'ltr'}
           aria-label={t['nav.home']}
           className="bar-in flex items-center text-ink transition-colors duration-300 sm:justify-self-start"
         >
@@ -76,7 +74,7 @@ export function SiteHeader({ locale }: { locale: SeoLocale }) {
             <HeaderMark label={BRAND[locale]} />
             <LogoMark className="h-full w-9 text-gold sm:w-11" />
           </span>
-          {locale === 'ar' ? (
+          {isRtl(locale) ? (
             <Wordmark className="h-9 w-auto sm:h-11" />
           ) : (
             <LatinWordmark className="text-[26px] sm:text-[30px]" />

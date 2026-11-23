@@ -1,8 +1,29 @@
-export const LOCALES = ['ar', 'en', 'de'] as const;
+export const LOCALES = ['ar', 'en', 'fr', 'de', 'es', 'tr', 'id', 'ms', 'ur', 'fa', 'bn', 'ru'] as const;
 
 export type SeoLocale = (typeof LOCALES)[number];
 
 export const DEFAULT_LOCALE: SeoLocale = 'ar';
+
+/** Languages written right to left. */
+export const RTL_LOCALES: ReadonlySet<SeoLocale> = new Set<SeoLocale>(['ar', 'ur', 'fa']);
+
+export const isRtl = (locale: string): boolean => RTL_LOCALES.has(locale as SeoLocale);
+
+/** Each language by its own name, for the language menu. */
+export const LOCALE_NAMES: Record<SeoLocale, string> = {
+  ar: 'العربية',
+  en: 'English',
+  fr: 'Français',
+  de: 'Deutsch',
+  es: 'Español',
+  tr: 'Türkçe',
+  id: 'Bahasa Indonesia',
+  ms: 'Bahasa Melayu',
+  ur: 'اردو',
+  fa: 'فارسی',
+  bn: 'বাংলা',
+  ru: 'Русский',
+};
 
 export type SeoRoute = {
   name: string;
@@ -12,7 +33,7 @@ export type SeoRoute = {
   changeFrequency: 'daily' | 'weekly' | 'monthly' | 'yearly';
   priority: number;
   dynamic?: boolean;
-  /** An Arabic document only: its /en and /de addresses redirect to it. */
+  /** An Arabic document only: its addresses in the other languages redirect to it. */
   arabicOnly?: boolean;
 };
 
@@ -133,7 +154,7 @@ export const ROUTES: readonly SeoRoute[] = [
   },
 ] as const;
 
-const PREFIXED = new Set<string>(['en', 'de']);
+const PREFIXED = new Set<string>(LOCALES.filter((locale) => locale !== DEFAULT_LOCALE));
 
 const normalize = (path: string): string => {
   if (!path) return '/';
@@ -175,12 +196,12 @@ export const alternatesFor = (
   path: string
 ): Record<SeoLocale | 'x-default', string> => {
   const bare = stripLocale(path);
-  return {
-    ar: withLocale('ar', bare),
-    en: withLocale('en', bare),
-    de: withLocale('de', bare),
-    'x-default': withLocale('ar', bare),
-  };
+  const out = { 'x-default': withLocale(DEFAULT_LOCALE, bare) } as Record<
+    SeoLocale | 'x-default',
+    string
+  >;
+  for (const locale of LOCALES) out[locale] = withLocale(locale, bare);
+  return out;
 };
 
 const matchesRoute = (route: SeoRoute, barePath: string): boolean => {

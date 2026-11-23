@@ -57,10 +57,9 @@ export const buildPageMetadata = ({
         ? {}
         : {
             languages: {
-              ar: absolute(base, alternates.ar),
-              en: absolute(base, alternates.en),
-              de: absolute(base, alternates.de),
-              'x-default': absolute(base, alternates['x-default']),
+              ...Object.fromEntries(
+                Object.entries(alternates).map(([key, path]) => [key, absolute(base, path)])
+              ),
             },
           }),
     },

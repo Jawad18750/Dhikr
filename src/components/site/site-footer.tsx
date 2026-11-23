@@ -1,16 +1,14 @@
 import Link from 'next/link';
 import { IoCodeSlashOutline, IoKeyOutline } from 'react-icons/io5';
 
-import { type SeoLocale, withLocale } from '@/lib/seo/routes';
+import { isRtl, type SeoLocale, withLocale } from '@/lib/seo/routes';
 import { BRAND } from '@/lib/seo/site';
-import ar from '@/locales/ar.json';
-import de from '@/locales/de.json';
-import en from '@/locales/en.json';
+import { MESSAGES } from '@/locales';
 
 import { LogoMark3D } from './logo-mark-3d';
 import { LatinWordmark, Wordmark } from './wordmark';
 
-const COPY = { ar, en, de } as const;
+const COPY = MESSAGES;
 
 const link = 'w-fit text-ink-muted transition-colors hover:text-ink';
 const heading = 'text-sm font-bold text-ink';
@@ -59,7 +57,7 @@ export function SiteFooter({ locale }: { locale: SeoLocale }) {
               className="flex w-fit items-center gap-2.5 text-ink"
             >
               <LogoMark3D badge label={BRAND[locale]} className="h-10 w-10" />
-              {locale === 'ar' ? (
+              {isRtl(locale) ? (
                 <Wordmark className="h-10 w-auto" title={BRAND[locale]} />
               ) : (
                 <LatinWordmark className="text-[28px]" />

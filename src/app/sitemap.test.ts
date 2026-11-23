@@ -20,7 +20,7 @@ beforeAll(async () => {
 });
 
 describe('sitemap', () => {
-  it('lists the home, about, contact and privacy in three languages', async () => {
+  it('lists the home, about, contact and privacy in every language', async () => {
     const entries = await sitemap();
     const urls = entries.map((entry) => entry.url);
 
@@ -32,6 +32,9 @@ describe('sitemap', () => {
         'https://tarteel.example/about',
         'https://tarteel.example/en/about',
         'https://tarteel.example/de/about',
+        'https://tarteel.example/fr',
+        'https://tarteel.example/ur/about',
+        'https://tarteel.example/ru/privacy',
       ])
     );
   });

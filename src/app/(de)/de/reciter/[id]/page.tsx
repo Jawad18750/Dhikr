@@ -6,7 +6,7 @@ type Props = {
 };
 
 /**
- * Reciter pages are Arabic documents. The German URL is a canonicalised twin,
+ * Reciter pages are Arabic documents. This language’s URL is a canonicalised twin,
  * so it sends the visitor to the document the canonical names.
  */
 export default async function Page({ params, searchParams }: Props) {

@@ -1,4 +1,4 @@
-import type { SeoLocale } from './routes';
+import { LOCALES, type SeoLocale } from './routes';
 import { SITE } from './site';
 
 type WebsiteGraphInput = {
@@ -49,7 +49,7 @@ export function websiteGraph({
         '@id': `${siteUrl}#website`,
         url: siteUrl,
         name: SITE.name,
-        inLanguage: ['ar', 'en', 'de'],
+        inLanguage: [...LOCALES],
         publisher: { '@id': `${siteUrl}#organization` },
       },
       organization,
@@ -62,7 +62,7 @@ export function websiteGraph({
         operatingSystem: 'Any',
         isAccessibleForFree: true,
         offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-        inLanguage: ['ar', 'en', 'de'],
+        inLanguage: [...LOCALES],
         publisher: { '@id': `${siteUrl}#organization` },
       },
     ],

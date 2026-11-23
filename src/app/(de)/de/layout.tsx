@@ -9,7 +9,7 @@ import { rootViewport } from '@/lib/seo/root-viewport';
 export const metadata: Metadata = rootMetadata('de');
 export const viewport = rootViewport;
 
-export default function GermanLayout({
+export default function Layout_de({
   children,
 }: Readonly<{
   children: React.ReactNode;

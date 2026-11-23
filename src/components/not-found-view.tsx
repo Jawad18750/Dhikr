@@ -20,6 +20,51 @@ const COPY = {
     body: 'Entschuldigung, diese Seite existiert nicht. Bitte prüfen Sie die URL.',
     home: 'Zurück zur Startseite',
   },
+  fr: {
+    title: 'Page introuvable',
+    body: 'Désolé, cette page n’existe pas. Vérifiez l’adresse.',
+    home: 'Retour à l’accueil',
+  },
+  es: {
+    title: 'Página no encontrada',
+    body: 'Lo sentimos, esta página no existe. Revisa la dirección.',
+    home: 'Volver al inicio',
+  },
+  tr: {
+    title: 'Sayfa bulunamadı',
+    body: 'Üzgünüz, bu sayfa yok. Lütfen adresi kontrol edin.',
+    home: 'Ana sayfaya dön',
+  },
+  id: {
+    title: 'Halaman tidak ditemukan',
+    body: 'Maaf, halaman ini tidak ada. Periksa kembali alamatnya.',
+    home: 'Kembali ke beranda',
+  },
+  ms: {
+    title: 'Halaman tidak dijumpai',
+    body: 'Maaf, halaman ini tidak wujud. Sila semak alamatnya.',
+    home: 'Kembali ke laman utama',
+  },
+  ur: {
+    title: 'صفحہ نہیں ملا',
+    body: 'معذرت، یہ صفحہ موجود نہیں۔ براہِ کرم پتہ دوبارہ دیکھیں۔',
+    home: 'سرورق پر واپس جائیں',
+  },
+  fa: {
+    title: 'صفحه پیدا نشد',
+    body: 'متأسفیم، این صفحه وجود ندارد. لطفاً نشانی را بررسی کنید.',
+    home: 'بازگشت به صفحهٔ اصلی',
+  },
+  bn: {
+    title: 'পৃষ্ঠাটি পাওয়া যায়নি',
+    body: 'দুঃখিত, এই পৃষ্ঠাটি নেই। অনুগ্রহ করে ঠিকানাটি দেখে নিন।',
+    home: 'মূল পাতায় ফিরুন',
+  },
+  ru: {
+    title: 'Страница не найдена',
+    body: 'Извините, такой страницы нет. Проверьте адрес.',
+    home: 'На главную',
+  },
 } as const;
 
 export function NotFoundView({ locale }: { locale: SeoLocale }) {

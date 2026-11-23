@@ -1,14 +1,12 @@
 import type { Metadata } from 'next';
 
-import ar from '@/locales/ar.json';
-import de from '@/locales/de.json';
-import en from '@/locales/en.json';
+import { MESSAGES } from '@/locales';
 import { clientConfig } from '@/utils';
 
 import { type SeoLocale, withLocale } from './routes';
 import { BRAND, SITE } from './site';
 
-const COPY = { ar, en, de } as const;
+const COPY = MESSAGES;
 
 /**
  * Root metadata for one locale. The locale comes from the route group, not the

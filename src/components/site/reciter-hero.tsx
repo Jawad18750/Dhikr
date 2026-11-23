@@ -4,15 +4,13 @@ import { IoCloudDownloadOutline, IoHeadsetOutline, IoTimeOutline, IoTrophyOutlin
 import { splitMoshafName } from '@/lib/dhikr-catalogue';
 import { flagOf } from '@/lib/reciter-countries';
 import type { SeoLocale } from '@/lib/seo/routes';
-import ar from '@/locales/ar.json';
-import de from '@/locales/de.json';
-import en from '@/locales/en.json';
+import { MESSAGES } from '@/locales';
 import type { Reciter } from '@/types';
 import { LinkSource } from '@/types';
 
 import { CardMark } from './logo-mark';
 
-const COPY = { ar, en, de } as const;
+const COPY = MESSAGES;
 
 /** Megabytes or gigabytes, in the page's language (Latin digits in Arabic). */
 function sizeLabel(bytes: number, locale: SeoLocale) {

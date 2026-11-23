@@ -7,11 +7,6 @@ import { IntlProvider } from 'react-intl';
 import type { Language } from '@/constants/language';
 import { localeFromPath } from '@/lib/seo/routes';
 
-import ar from '../locales/ar.json';
-import de from '../locales/de.json';
-import en from '../locales/en.json';
-
-const messages = { en, ar, de };
 
 // Runs before paint on the client, and falls back to useEffect during SSR.
 const useIsomorphicLayoutEffect =
@@ -19,6 +14,8 @@ const useIsomorphicLayoutEffect =
 
 interface Props {
   initialLocale?: Language;
+  /** This document's language's messages, from the server (one language, not all). */
+  messages: Record<string, string>;
   children: ReactNode;
 }
 
@@ -34,6 +31,7 @@ interface Props {
  */
 export default function IntlProviderWrapper({
   initialLocale = 'ar',
+  messages,
   children,
 }: Props) {
   const pathname = usePathname();
@@ -46,7 +44,7 @@ export default function IntlProviderWrapper({
   }, [pathname]);
 
   return (
-    <IntlProvider locale={locale} messages={messages[locale]}>
+    <IntlProvider locale={locale} messages={messages}>
       {children}
     </IntlProvider>
   );

@@ -1,4 +1,4 @@
-import { Inter } from 'next/font/google';
+import { Inter, Noto_Sans_Arabic } from 'next/font/google';
 import localFont from 'next/font/local';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 
@@ -15,7 +15,8 @@ import { SiteHeader } from '@/components/site/site-header';
 import { PlayerProvider } from '@/components/site/site-player';
 import StoragePersist from '@/components/storage-persist';
 import { websiteGraph } from '@/lib/seo/json-ld';
-import type { SeoLocale } from '@/lib/seo/routes';
+import { isRtl, type SeoLocale } from '@/lib/seo/routes';
+import { MESSAGES } from '@/locales';
 
 // Thmanyah ships inside the build (hashed, unmodified files), never from a
 // public folder: its licence allows web use only as part of a packaged
@@ -33,11 +34,22 @@ const thmanyah = localFont({
   preload: true,
 });
 
+// Urdu and Persian letters (ی ک گ ے ٹ …) are not in Thmanyah: those two languages take
+// Noto Sans Arabic in its place, under the same variable. Not preloaded, so no other
+// page ever downloads it.
+const notoArabic = Noto_Sans_Arabic({
+  subsets: ['arabic'],
+  variable: '--font-thmanyah',
+  display: 'swap',
+  preload: false,
+});
+
 // Inter for every Latin character, digits included, in Arabic text and English alike:
 // it carries only the Latin range, so Arabic letters fall through to Thmanyah
 // (tailwind.config: Inter first, then Thmanyah).
 const inter = Inter({
-  subsets: ['latin'],
+  // Latin, Turkish and Malay accents, and Cyrillic for Russian; Bengali has its own system face.
+  subsets: ['latin', 'latin-ext', 'cyrillic'],
   variable: '--font-inter',
   display: 'swap',
   // No generated fallback face: it is Arial, which has Arabic letters, and would draw
@@ -62,11 +74,11 @@ export function RootShell({
 }) {
   return (
     <NuqsAdapter>
-      <IntlProviderWrapper initialLocale={locale}>
+      <IntlProviderWrapper initialLocale={locale} messages={MESSAGES[locale]}>
         <HtmlWrapper>
           <body
             suppressHydrationWarning
-            className={`${thmanyah.variable} ${inter.variable} min-h-full bg-background font-sans antialiased`}
+            className={`${isRtl(locale) && locale !== 'ar' ? notoArabic.variable : thmanyah.variable} ${inter.variable} min-h-full bg-background font-sans antialiased`}
           >
             <a
               href="#main-content"

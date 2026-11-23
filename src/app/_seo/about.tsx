@@ -3,11 +3,9 @@ import { breadcrumbTrail, faqPage } from '@/lib/seo/json-ld';
 import { buildPageMetadata } from '@/lib/seo/metadata';
 import { type SeoLocale, withLocale } from '@/lib/seo/routes';
 import { SITE } from '@/lib/seo/site';
-import ar from '@/locales/ar.json';
-import de from '@/locales/de.json';
-import en from '@/locales/en.json';
+import { MESSAGES } from '@/locales';
 
-const COPY = { ar, en, de } as const;
+const COPY = MESSAGES;
 
 const faqFor = (locale: SeoLocale) => {
   const copy = COPY[locale];

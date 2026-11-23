@@ -26,10 +26,9 @@ const absolute = (origin: string, path: string): string =>
 const languagesFor = (origin: string, path: string): Record<string, string> => {
   const alternates = alternatesFor(path);
   return {
-    ar: absolute(origin, alternates.ar),
-    en: absolute(origin, alternates.en),
-    de: absolute(origin, alternates.de),
-    'x-default': absolute(origin, alternates['x-default']),
+    ...Object.fromEntries(
+      Object.entries(alternates).map(([key, path]) => [key, absolute(origin, path)])
+    ),
   };
 };
 

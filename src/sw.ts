@@ -213,7 +213,7 @@ const connectivityProbe = {
 const privateNetworkOnly = {
   matcher: ({ url, sameOrigin }: { url: URL; sameOrigin: boolean }) =>
     sameOrigin &&
-    /^\/(?:(?:en|de)\/)?(?:account|admin)(?:\/|$)|^\/api\/(?:auth|account|admin|v1|download)(?:\/|$)/.test(
+    /^\/(?:[a-z]{2}\/)?(?:account|admin)(?:\/|$)|^\/api\/(?:auth|account|admin|v1|download)(?:\/|$)/.test(
       url.pathname
     ),
   handler: new NetworkOnly(),

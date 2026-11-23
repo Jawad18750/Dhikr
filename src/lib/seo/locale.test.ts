@@ -10,10 +10,11 @@ describe('resolveLocale', () => {
   it('falls back to the cookie, then the browser', () => {
     expect(resolveLocale(null, 'en-US', 'de')).toBe('de');
     expect(resolveLocale(null, 'en-US', null)).toBe('en');
-    expect(resolveLocale(null, 'fr-FR', null)).toBe('ar');
+    expect(resolveLocale(null, 'fr-FR', null)).toBe('fr');
+    expect(resolveLocale(null, 'ja-JP', null)).toBe('ar');
   });
 
   it('ignores unsupported values', () => {
-    expect(resolveLocale('fr', 'fr-FR', 'it')).toBe('ar');
+    expect(resolveLocale('it', 'ja-JP', 'xx')).toBe('ar');
   });
 });

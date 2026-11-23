@@ -22,8 +22,13 @@ describe('getSurahDisplayName', () => {
     expect(getSurahDisplayName(fatiha, 'en')).toBe('Al-Fatihah');
   });
 
-  it('falls back to tashkeel-stripped Arabic otherwise', () => {
+  it('uses tashkeel-stripped Arabic in Arabic script languages', () => {
     expect(getSurahDisplayName(fatiha, 'ar')).toBe('سورة الفاتحة');
-    expect(getSurahDisplayName(fatiha, 'fr')).toBe('سورة الفاتحة');
+    expect(getSurahDisplayName(fatiha, 'ur')).toBe('سورة الفاتحة');
+    expect(getSurahDisplayName(fatiha, 'fa')).toBe('سورة الفاتحة');
+  });
+
+  it('uses the English title in other languages', () => {
+    expect(getSurahDisplayName(fatiha, 'fr')).toBe(fatiha.englishName);
   });
 });

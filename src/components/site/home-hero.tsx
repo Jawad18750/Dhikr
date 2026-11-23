@@ -1,12 +1,10 @@
 import type { SeoLocale } from '@/lib/seo/routes';
-import ar from '@/locales/ar.json';
-import de from '@/locales/de.json';
-import en from '@/locales/en.json';
+import { MESSAGES } from '@/locales';
 
 import { HeroApps } from './hero-apps';
 import { LogoMark3D } from './logo-mark-3d';
 
-const COPY = { ar, en, de } as const;
+const COPY = MESSAGES;
 
 /** The hero card: what the site is; the reciters follow right below it. */
 export function HomeHero({ locale }: { locale: SeoLocale }) {

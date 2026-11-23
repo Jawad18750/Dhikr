@@ -3,18 +3,18 @@
 ## URL policy
 
 - Arabic is the default and lives at bare paths: `/`, `/about`, `/reciter/[id]`.
-- English lives under `/en`, German under `/de`.
+- Eleven more languages live under their prefix: `/en`, `/fr`, `/de`, `/es`, `/tr`, `/id`, `/ms`, `/ur`, `/fa`, `/bn`, `/ru` (`LOCALES` in `src/lib/seo/routes.ts`; Urdu and Persian are right to left).
 - `x-default` is always Arabic.
-- Reciter pages are Arabic documents. `/en/reciter/[id]` and `/de/reciter/[id]` redirect to the Arabic document, are excluded from the sitemap, and declare no `hreflang` pair. This follows the open-tilawa model: a translated reciter page is a thin twin of the Arabic document.
+- Reciter pages are Arabic documents. `/<lang>/reciter/[id]` redirects to the Arabic document, are excluded from the sitemap, and declare no `hreflang` pair. This follows the open-tilawa model: a translated reciter page is a thin twin of the Arabic document.
 - `?moshafId` and `?surah` are player state, not separate documents. Their canonical is `/reciter/[id]`.
-- Surah pages (`/surah/1` to `/surah/114`) list every reciter of a surah. Like reciter pages they are Arabic documents: `/en/surah/[id]` and `/de/surah/[id]` redirect to them, and only the Arabic URLs are in the sitemap. The header's language switch sends these two kinds of page to the other language's home.
+- Surah pages (`/surah/1` to `/surah/114`) list every reciter of a surah. Like reciter pages they are Arabic documents: `/<lang>/surah/[id]` redirects to them, and only the Arabic URLs are in the sitemap. The header's language menu sends these two kinds of page to the chosen language's home.
 
 ## Prerender and route groups
 
 Public pages are split into locale root layouts:
 
 - `src/app/(ar)` owns the bare Arabic paths.
-- `src/app/(en)/en` and `src/app/(de)/de` own the prefixed twins.
+- `src/app/(<lang>)/<lang>` own the prefixed twins. They are generated from the English group by `node scripts/locale-routes.mjs`; change `(en)` and rerun it.
 
 Each root layout passes a constant locale to `RootShell`, so the document has no
 request-dependent API and `/`, `/en`, `/de`, `/about`, `/contact` and `/privacy`

@@ -10,9 +10,7 @@ import { breadcrumbTrail } from '@/lib/seo/json-ld';
 import { buildPageMetadata } from '@/lib/seo/metadata';
 import { type SeoLocale, withLocale } from '@/lib/seo/routes';
 import { SITE } from '@/lib/seo/site';
-import ar from '@/locales/ar.json';
-import de from '@/locales/de.json';
-import en from '@/locales/en.json';
+import { MESSAGES } from '@/locales';
 import { getReciterPlaylistCached } from '@/services/reciters/cached';
 import type { Reciter } from '@/types';
 import { LinkSource } from '@/types';
@@ -21,7 +19,7 @@ import { buildLocalPlaylist } from '@/utils/build-local-playlist';
 
 import ReciterPage from './reciter-page';
 
-const COPY = { ar, en, de } as const;
+const COPY = MESSAGES;
 
 type Props = {
   params: Promise<{ id: string }>;

@@ -8,10 +8,7 @@ const fromAcceptLanguage = (value: string | null): SeoLocale | null => {
   const first = value.split(',')[0]?.trim().toLowerCase();
   if (!first) return null;
   const base = first.split('-')[0];
-  if (base === 'ar') return 'ar';
-  if (base === 'en') return 'en';
-  if (base === 'de') return 'de';
-  return null;
+  return isLocale(base) ? base : null;
 };
 
 /**

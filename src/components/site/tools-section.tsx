@@ -12,15 +12,13 @@ import {
 } from 'react-icons/io5';
 
 import type { SeoLocale } from '@/lib/seo/routes';
-import ar from '@/locales/ar.json';
-import de from '@/locales/de.json';
-import en from '@/locales/en.json';
+import { MESSAGES } from '@/locales';
 import { cn } from '@/utils';
 
 import { CardMark } from './logo-mark';
 import { AyahTimeline, WordLights } from './tools-live';
 
-const COPY: Record<SeoLocale, Record<string, string>> = { ar, en, de };
+const COPY = MESSAGES;
 
 const fill = (text: string, values: Record<string, string | number>) =>
   text.replace(/\{(\w+)\}/g, (_, name: string) => String(values[name] ?? ''));

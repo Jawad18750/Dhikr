@@ -159,7 +159,7 @@ export function SiteMenu({ links, locale }: { links: MenuLink[]; locale: SeoLoca
                   {formatMessage({ id: 'nav.language' })}
                 </span>
                 <Suspense fallback={null}>
-                  <LanguageSwitch locale={locale} />
+                  <LanguageSwitch locale={locale} up />
                 </Suspense>
               </div>
               <div

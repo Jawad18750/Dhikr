@@ -4,6 +4,7 @@ import {
   alternatesFor,
   isIndexable,
   localeFromPath,
+  LOCALES,
   stripLocale,
   withLocale,
 } from './routes';
@@ -36,13 +37,23 @@ describe('seo routes', () => {
     expect(stripLocale('/en')).toBe('/');
   });
 
-  it('builds the three language twins and x-default', () => {
-    expect(alternatesFor('/about')).toEqual({
+  it('builds a twin for every language, and x-default', () => {
+    const twins = alternatesFor('/about');
+    expect(Object.keys(twins)).toHaveLength(LOCALES.length + 1);
+    expect(twins).toMatchObject({
       ar: '/about',
       en: '/en/about',
       de: '/de/about',
+      ur: '/ur/about',
       'x-default': '/about',
     });
+  });
+
+  it('reads every language prefix, and only those', () => {
+    for (const locale of LOCALES) {
+      expect(localeFromPath(withLocale(locale, '/about'))).toBe(locale);
+    }
+    expect(localeFromPath('/xx/about')).toBe('ar');
   });
 
   it('knows which pages may be indexed', () => {

@@ -488,6 +488,17 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                 </Link>
                 <button
                   type="button"
+                  onClick={() => setSpeed((held) => SPEEDS[(SPEEDS.indexOf(held) + 1) % SPEEDS.length])}
+                  aria-label={formatMessage({ id: 'library.speed' })}
+                  className={cn(
+                    'flex h-9 min-w-9 shrink-0 items-center justify-center rounded-full px-1.5 text-[13px] font-bold tabular-nums transition-colors hover:bg-on-hero/10',
+                    speed === 1 ? 'text-on-hero/75' : 'text-hero-gold'
+                  )}
+                >
+                  <span dir="ltr">{speed}×</span>
+                </button>
+                <button
+                  type="button"
                   onClick={cycleSleep}
                   aria-label={formatMessage({ id: 'player.sleep' })}
                   title={formatMessage({ id: 'player.sleep' })}
@@ -590,9 +601,12 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                     type="button"
                     onClick={() => setSpeed((held) => SPEEDS[(SPEEDS.indexOf(held) + 1) % SPEEDS.length])}
                     aria-label={formatMessage({ id: 'library.speed' })}
-                    className="hidden h-10 w-10 items-center justify-center rounded-full text-[13px] font-bold tabular-nums text-on-hero/75 transition-colors hover:bg-on-hero/10 hover:text-on-hero md:flex"
+                    className={cn(
+                      'hidden h-10 w-10 items-center justify-center rounded-full text-[13px] font-bold tabular-nums transition-colors hover:bg-on-hero/10 hover:text-on-hero sm:flex',
+                      speed === 1 ? 'text-on-hero/75' : 'text-hero-gold'
+                    )}
                   >
-                    {speed}×
+                    <span dir="ltr">{speed}×</span>
                   </button>
                   <span className="hidden md:flex"><button
                     type="button"

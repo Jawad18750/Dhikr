@@ -92,7 +92,24 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const [duration, setDuration] = useState(0);
   const [speed, setSpeed] = useState(1);
   const [repeat, setRepeat] = useState(false);
-  const [reading, setReading] = useState(false);
+  // The mushaf line is open unless this listener has closed it (remembered on the device).
+  const [reading, setReading] = useState(true);
+  useEffect(() => {
+    try {
+      if (localStorage.getItem('dhikr:reader') === 'off') setReading(false);
+    } catch {
+      /* storage blocked: open */
+    }
+  }, []);
+  const toggleReading = () =>
+    setReading((open) => {
+      try {
+        localStorage.setItem('dhikr:reader', open ? 'off' : 'on');
+      } catch {
+        /* storage blocked: this visit only */
+      }
+      return !open;
+    });
   const [folded, setFolded] = useState(false);
   const pendingSeek = useRef<number | null>(null);
 
@@ -108,7 +125,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       void audio.play();
       return;
     }
-    if (held && held.slug !== next.slug) setReading(false);
     pendingSeek.current = from;
     setAlbum(next);
     setIndex(at);
@@ -173,7 +189,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     audio?.load();
     setAlbum(null);
     setIndex(null);
-    setReading(false);
     setFolded(false);
     setTime(0);
     setDuration(0);
@@ -411,7 +426,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                   </a>
                   <button
                     type="button"
-                    onClick={() => setReading((open) => !open)}
+                    onClick={toggleReading}
                     aria-pressed={reading}
                     aria-label={formatMessage({ id: 'reader.open' })}
                     className={cn(

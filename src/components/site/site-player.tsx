@@ -18,6 +18,7 @@ import {
 } from 'react-icons/io5';
 import { useIntl } from 'react-intl';
 
+import { reciterName } from '@/lib/reciter-names';
 import { cn } from '@/utils';
 
 import { ReaderLine } from './reader-line';
@@ -88,7 +89,7 @@ export function usePlayer(): Player {
 const SPEEDS = [1, 1.25, 1.5, 0.75];
 
 export function PlayerProvider({ children }: { children: React.ReactNode }) {
-  const { formatMessage } = useIntl();
+  const { formatMessage, locale } = useIntl();
   const audioRef = useRef<HTMLAudioElement>(null);
   const [album, setAlbum] = useState<PlayerAlbum | null>(null);
   const [index, setIndex] = useState<number | null>(null);
@@ -331,7 +332,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     if (!('mediaSession' in navigator) || !album || !track) return;
     navigator.mediaSession.metadata = new MediaMetadata({
       title: track.name,
-      artist: album.reciter,
+      artist: reciterName(album.slug, album.reciter, locale),
       // The reciter's portrait, else the «ذكر» rosette (an address of its own, so no copy of
       // an older icon cached under another name can stand in for it).
       artwork: [
@@ -344,7 +345,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     navigator.mediaSession.setActionHandler('pause', () => audioRef.current?.pause());
     navigator.mediaSession.setActionHandler('previoustrack', previous);
     navigator.mediaSession.setActionHandler('nexttrack', next);
-  }, [album, track, next, previous]);
+  }, [album, track, next, previous, locale]);
   useEffect(() => {
     if ('mediaSession' in navigator) {
       navigator.mediaSession.playbackState = album ? (playing ? 'playing' : 'paused') : 'none';
@@ -440,7 +441,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                 className="flex min-w-0 max-w-[200px] flex-col px-1 text-start"
               >
                 <span className="truncate text-[14px] font-bold leading-tight">{track.name}</span>
-                <span className="truncate text-[12px] leading-tight text-on-hero/60">{album.reciter}</span>
+                <span className="truncate text-[12px] leading-tight text-on-hero/60">{reciterName(album.slug, album.reciter, locale)}</span>
               </button>
               <button
                 type="button"
@@ -482,7 +483,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                   <Avatar album={album} className="h-10 w-10 rounded-[12px]" />
                   <span className="flex min-w-0 flex-col">
                     <span className="truncate text-[15px] font-bold">{track.name}</span>
-                    <span className="truncate text-[12px] text-on-hero/60">{album.reciter}</span>
+                    <span className="truncate text-[12px] text-on-hero/60">{reciterName(album.slug, album.reciter, locale)}</span>
                   </span>
                 </Link>
                 <button
@@ -524,7 +525,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                   <Avatar album={album} className="h-10 w-10 rounded-[12px] sm:h-11 sm:w-11" />
                   <span className="flex min-w-0 flex-col">
                     <span className="truncate text-[15px] font-bold sm:text-[16px]">{track.name}</span>
-                    <span className="truncate text-[12px] text-on-hero/60 sm:text-[13px]">{album.reciter}</span>
+                    <span className="truncate text-[12px] text-on-hero/60 sm:text-[13px]">{reciterName(album.slug, album.reciter, locale)}</span>
                   </span>
                 </Link>
                 <div className="flex items-center justify-center gap-0.5 sm:gap-1">

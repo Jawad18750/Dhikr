@@ -17,9 +17,17 @@ const SURAHS = 114;
  * in the photo's start corner (the right in Arabic), the first three in gold.
  * The whole box opens the reciter.
  */
-/** The recitation's style in the page's language: «مرتل» is «Murattal» in Latin script. */
-const STYLES: Record<string, string> = { مرتل: 'Murattal', مجود: 'Mujawwad', حدر: 'Hadr', معلم: 'Muallim' };
-const styleName = (style: string, locale: string) => (locale === 'ar' ? style : (STYLES[style] ?? style));
+/** The recitation's style in the page's script: «مرتل» is «Murattal» in Latin, «Мураттал» in Cyrillic. */
+const STYLES: Record<'latn' | 'cyrl' | 'beng', Record<string, string>> = {
+  latn: { مرتل: 'Murattal', مجود: 'Mujawwad', حدر: 'Hadr', معلم: 'Muallim' },
+  cyrl: { مرتل: 'Мураттал', مجود: 'Муджаввад', حدر: 'Хадр', معلم: 'Муаллим' },
+  beng: { مرتل: 'মুরাত্তাল', مجود: 'মুজাওয়াদ', حدر: 'হাদর', معلم: 'মুআল্লিম' },
+};
+const styleName = (style: string, locale: string) => {
+  if (locale === 'ar' || locale === 'ur' || locale === 'fa') return style;
+  const script = locale === 'ru' ? 'cyrl' : locale === 'bn' ? 'beng' : 'latn';
+  return STYLES[script][style] ?? style;
+};
 
 export function ReciterCard({ reciter }: { reciter: CatalogueReciter }) {
   const { formatMessage, locale } = useIntl();

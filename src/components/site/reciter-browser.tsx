@@ -23,6 +23,9 @@ type Mode = 'reciter' | 'surah';
 /** How many cards show before «show all»: the most listened. */
 const FIRST_ROW = 12;
 
+/** Riwayat the catalogue names in Arabic, and their message in each language. */
+const RIWAYA_KEYS: Record<string, string> = { 'قالون عن نافع': 'riwaya.qalunNafi' };
+
 const matches = (text: string, query: string) =>
   normalizeArabicText(text.toLowerCase()).includes(
     normalizeArabicText(query.toLowerCase())
@@ -55,7 +58,12 @@ export function ReciterBrowser({ reciters }: { reciters: CatalogueReciter[] }) {
       reciters.filter((r) => {
         if (riwaya && r.riwaya !== riwaya) return false;
         if (country && r.country !== country) return false;
-        return mode !== 'reciter' || !query.trim() || matches(r.name, query);
+        return (
+          mode !== 'reciter' ||
+          !query.trim() ||
+          matches(r.name, query) ||
+          (r.altName !== undefined && matches(r.altName, query))
+        );
       }),
     [reciters, riwaya, country, mode, query]
   );
@@ -154,7 +162,7 @@ export function ReciterBrowser({ reciters }: { reciters: CatalogueReciter[] }) {
                 key={value}
                 active={riwaya === value}
                 onClick={() => setRiwaya(riwaya === value ? null : value)}
-                label={value}
+                label={RIWAYA_KEYS[value] ? formatMessage({ id: RIWAYA_KEYS[value] }) : value}
                 count={count}
               />
             ))}

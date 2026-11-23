@@ -16,7 +16,7 @@ export async function GET(request: Request) {
       country: r.country,
       surahs: r.surahTotal,
       rank: r.rank,
-      portrait: r.cataloguePortrait,
+      portrait: r.portrait,
       page: `https://dhikr.ly${r.href}`,
     }))
   );

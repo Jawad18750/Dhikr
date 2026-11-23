@@ -1,4 +1,8 @@
+import type { IconType } from 'react-icons';
+import { IoBookOutline, IoCloudDownloadOutline, IoTimeOutline, IoTrophyOutline } from 'react-icons/io5';
+
 import { splitMoshafName } from '@/lib/dhikr-catalogue';
+import { flagOf } from '@/lib/reciter-countries';
 import type { SeoLocale } from '@/lib/seo/routes';
 import ar from '@/locales/ar.json';
 import de from '@/locales/de.json';
@@ -43,16 +47,17 @@ export function ReciterHero({
   const { riwaya, style } = splitMoshafName(reciter.moshaf.name);
   const surahs = Number(reciter.moshaf.surah_total) || 0;
   const cells = [
-    surahs > 0 && { value: String(surahs), label: t['stats.surahs'] },
+    surahs > 0 && { value: String(surahs), label: t['stats.surahs'], icon: IoBookOutline },
     figures &&
       figures.seconds > 0 && {
         value: `${Math.floor(figures.seconds / 3600)}:${String(Math.floor((figures.seconds % 3600) / 60)).padStart(2, '0')}`,
         label: `${t['stats.length']}`,
+        icon: IoTimeOutline,
       },
-    figures && figures.bytes > 0 && { value: sizeLabel(figures.bytes, locale), label: t['stats.size'] },
+    figures && figures.bytes > 0 && { value: sizeLabel(figures.bytes, locale), label: t['stats.size'], icon: IoCloudDownloadOutline },
     figures &&
-      figures.rank !== null && { value: `#${figures.rank}`, label: t['stats.rankValue'] },
-  ].filter(Boolean) as { value: string; label: string }[];
+      figures.rank !== null && { value: `#${figures.rank}`, label: t['stats.rankValue'], icon: IoTrophyOutline },
+  ].filter(Boolean) as { value: string; label: string; icon: IconType }[];
 
   return (
     <section
@@ -87,6 +92,7 @@ export function ReciterHero({
             </span>
             {country && (
               <span className="rounded-full border border-on-hero/20 px-2.5 py-0.5 text-on-hero/80 sm:px-3.5 sm:py-1">
+                <span aria-hidden="true">{flagOf(country)} </span>
                 {new Intl.DisplayNames([locale], { type: 'region' }).of(country)}
               </span>
             )}
@@ -105,7 +111,10 @@ export function ReciterHero({
         >
           {cells.map((cell) => (
             <div key={cell.label} className="flex min-w-0 flex-col items-center gap-0.5 px-1 text-center">
-              <dt className="order-last truncate text-[11px] text-on-hero/55 sm:text-[13px]">{cell.label}</dt>
+              <dt className="order-last flex min-w-0 items-center gap-1 truncate text-[11px] text-on-hero/55 sm:text-[13px]">
+                <cell.icon className="h-3 w-3 shrink-0 text-hero-gold/80 sm:h-3.5 sm:w-3.5" aria-hidden="true" />
+                <span className="truncate">{cell.label}</span>
+              </dt>
               <dd className="truncate text-[17px] font-bold tabular-nums sm:text-[22px]">{cell.value}</dd>
             </div>
           ))}

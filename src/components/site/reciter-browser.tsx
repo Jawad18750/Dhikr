@@ -13,6 +13,7 @@ import { useIntl } from 'react-intl';
 import { SURAHS } from '@/constants';
 import { selectedReciterAtom } from '@/jotai/atom';
 import type { CatalogueReciter } from '@/lib/dhikr-catalogue';
+import { flagOf } from '@/lib/reciter-countries';
 import { reciterRouteFor } from '@/lib/reciter-route';
 import { cn, getSurahDisplayName, normalizeArabicText } from '@/utils';
 
@@ -177,7 +178,7 @@ export function ReciterBrowser({ reciters }: { reciters: CatalogueReciter[] }) {
                 key={code}
                 active={country === code}
                 onClick={() => setCountry(country === code ? null : code)}
-                label={countryName(code)}
+                label={`${flagOf(code)} ${countryName(code)}`}
                 count={count}
               />
             ))}

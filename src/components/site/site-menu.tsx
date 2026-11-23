@@ -1,11 +1,13 @@
 'use client';
 
-import { type ReactNode, useEffect, useRef, useState } from 'react';
+import { type ReactNode, Suspense, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useIntl } from 'react-intl';
 
+import type { SeoLocale } from '@/lib/seo/routes';
 import { cn } from '@/utils';
 
+import { LanguageSwitch } from './language-switch';
 import { ThemeToggle } from './theme-toggle';
 
 export type MenuLink = { href: string; label: string; icon: ReactNode };
@@ -24,7 +26,7 @@ const CLOSE_MS = 280;
  * whatever the bar is passing over; the veil sits under the bar (z-50), the
  * card over it.
  */
-export function SiteMenu({ links }: { links: MenuLink[] }) {
+export function SiteMenu({ links, locale }: { links: MenuLink[]; locale: SeoLocale }) {
   const { formatMessage } = useIntl();
   const [phase, setPhase] = useState<Phase>('closed');
   const [frame, setFrame] = useState({ top: 0, originX: 0, originY: 0 });
@@ -151,7 +153,18 @@ export function SiteMenu({ links }: { links: MenuLink[] }) {
               ))}
               <div
                 style={{ animationDelay: `${90 + links.length * 55}ms` }}
-                className="site-menu-row mt-1 flex items-center justify-between border-t border-border px-4 pb-1 pt-3"
+                className="site-menu-row mt-1 flex items-center justify-between border-t border-border px-4 pt-3"
+              >
+                <span className="text-[15px] text-ink-muted">
+                  {formatMessage({ id: 'nav.language' })}
+                </span>
+                <Suspense fallback={null}>
+                  <LanguageSwitch locale={locale} />
+                </Suspense>
+              </div>
+              <div
+                style={{ animationDelay: `${90 + (links.length + 1) * 55}ms` }}
+                className="site-menu-row flex items-center justify-between px-4 pb-1 pt-2"
               >
                 <span className="text-[15px] text-ink-muted">
                   {formatMessage({ id: 'nav.appearance' })}

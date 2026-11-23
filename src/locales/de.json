@@ -389,5 +389,6 @@
   "reader.open": "Mushaf",
   "player.fold": "Player verkleinern",
   "player.unfold": "Player öffnen",
-  "player.close": "Player schließen"
+  "player.close": "Player schließen",
+  "nav.language": "Sprache"
 }

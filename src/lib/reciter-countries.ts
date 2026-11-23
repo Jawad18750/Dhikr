@@ -44,3 +44,9 @@ export const RECITER_COUNTRY: Readonly<Record<string, string>> = {
   arafat_aljumaii: 'TN',
   shaya_altamimi: 'KW',
 };
+
+/** A country's flag as its emoji (two regional indicator letters), from its ISO code. */
+export const flagOf = (code: string) =>
+  /^[A-Z]{2}$/.test(code)
+    ? String.fromCodePoint(...[...code].map((c) => 0x1_f1_e6 + c.charCodeAt(0) - 65))
+    : '';

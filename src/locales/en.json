@@ -403,5 +403,6 @@
   "reader.open": "Mushaf",
   "player.fold": "Minimise the player",
   "player.unfold": "Open the player",
-  "player.close": "Close the player"
+  "player.close": "Close the player",
+  "nav.language": "Language"
 }

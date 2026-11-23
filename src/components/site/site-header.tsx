@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Suspense } from 'react';
 import {
   IoCodeSlashOutline,
   IoInformationCircleOutline,
@@ -13,6 +14,7 @@ import en from '@/locales/en.json';
 
 import { HeaderMark } from './header-mark';
 import { HeaderShell } from './header-shell';
+import { LanguageSwitch } from './language-switch';
 import { LogoMark } from './logo-mark';
 import { MARK_SLOT_ID } from './logo-mark-3d';
 import { type MenuLink, SiteMenu } from './site-menu';
@@ -78,15 +80,18 @@ export function SiteHeader({ locale }: { locale: SeoLocale }) {
           <SiteNav links={links} label={t['nav.reciters']} />
         </div>
         <div
-          className="bar-in hidden sm:block sm:justify-self-end"
+          className="bar-in hidden items-center gap-2 sm:flex sm:justify-self-end"
           style={{ animationDelay: '160ms' }}
         >
+          <Suspense fallback={null}>
+            <LanguageSwitch locale={locale} />
+          </Suspense>
           <ThemeToggle />
         </div>
 
         {/* Phones: one row, everything else behind the menu button. */}
         <div className="bar-in sm:hidden" style={{ animationDelay: '120ms' }}>
-          <SiteMenu links={links} />
+          <SiteMenu links={links} locale={locale} />
         </div>
       </header>
     </HeaderShell>

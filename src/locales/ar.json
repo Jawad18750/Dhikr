@@ -404,5 +404,6 @@
   "reader.open": "المصحف",
   "player.fold": "تصغير المشغّل",
   "player.unfold": "فتح المشغّل",
-  "player.close": "إغلاق المشغّل"
+  "player.close": "إغلاق المشغّل",
+  "nav.language": "اللغة"
 }

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { IoChevronBack } from 'react-icons/io5';
 
+import { HadithCard } from '@/components/site/hadith-card';
 import { CardMark } from '@/components/site/logo-mark';
 import { ABOUT, collection } from '@/lib/hadith';
 import { buildPageMetadata } from '@/lib/seo/metadata';
@@ -46,7 +47,7 @@ export default async function Page({ params }: Props) {
         <h1 className="font-display text-[32px] font-black leading-[1.3] sm:text-[44px]">{c.title}</h1>
         {about?.author && <p className="text-[17px] text-on-hero/75">{about.author}</p>}
         <p className="text-[14px] leading-[1.8] text-on-hero/55">
-          {number.format(c.count)} حديثًا · {number.format(c.chapters.length)} بابًا
+          {number.format(c.count)} حديثًا{c.chapters.length > 1 && ` · ${number.format(c.chapters.length)} بابًا`}
           {c.source && (
             <>
               {' · '}
@@ -58,6 +59,14 @@ export default async function Page({ params }: Props) {
         </p>
       </section>
 
+      {c.chapters.length === 1 ? (
+        // One chapter (the forties): the hadiths themselves.
+        <div className="flex flex-col gap-4">
+          {c.hadiths.map((h) => (
+            <HadithCard key={h.number} slug={slug} hadith={h} />
+          ))}
+        </div>
+      ) : (
       <section aria-labelledby="contents" className="flex flex-col gap-4">
         <h2 id="contents" className="font-display text-[24px] font-black text-ink sm:text-[28px]">
           الأبواب
@@ -79,6 +88,7 @@ export default async function Page({ params }: Props) {
           ))}
         </ol>
       </section>
+      )}
     </div>
   );
 }

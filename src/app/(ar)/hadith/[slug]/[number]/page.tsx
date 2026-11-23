@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return buildPageMetadata({
     locale: 'ar',
     path: `/hadith/${slug}/${number}`,
-    title: `${at.c.title}، الحديث ${number}: ${at.hadith.chapter} | ذكر`,
+    title: `${at.c.title}، الحديث ${number}${at.hadith.chapter === at.c.title ? '' : `: ${at.hadith.chapter}`} | ذكر`,
     description: at.hadith.text.slice(0, 200),
     omitLanguages: true,
   });
@@ -48,7 +48,7 @@ export default async function Page({ params }: Props) {
           <Link href={`/hadith/${slug}`} className="hover:text-ink">
             {c.title}
           </Link>
-          {chapter && (
+          {chapter && chapter.title !== c.title && (
             <>
               <span aria-hidden="true">·</span>
               <Link href={`/hadith/${slug}/chapter/${chapter.n}#h-${hadith.number}`} className="hover:text-ink">

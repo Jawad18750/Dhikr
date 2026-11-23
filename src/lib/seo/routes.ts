@@ -190,6 +190,15 @@ export const ROUTES: readonly SeoRoute[] = [
     dynamic: true,
   },
   {
+    name: 'search',
+    path: '/search',
+    arabicOnly: true,
+    index: false,
+    sitemap: false,
+    changeFrequency: 'yearly',
+    priority: 0,
+  },
+  {
     name: 'account',
     path: '/account',
     index: false,

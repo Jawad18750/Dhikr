@@ -47,7 +47,7 @@ export const libraryIdOf = (id: string) => `tafsir_${id}`;
 
 const surahs = new Map<string, [number, string][]>();
 
-function surahEntries(id: string, surah: number): [number, string][] | null {
+export function surahEntries(id: string, surah: number): [number, string][] | null {
   const meta = tafsirs().find((t) => t.id === id);
   if (!meta || !Number.isInteger(surah) || surah < 1 || surah > 114) return null;
   const key = `${id}:${surah}`;

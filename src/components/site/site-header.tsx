@@ -6,6 +6,7 @@ import {
   IoInformationCircleOutline,
   IoLibraryOutline,
   IoPersonCircleOutline,
+  IoSearchOutline,
 } from 'react-icons/io5';
 
 import { isRtl, type SeoLocale, withLocale } from '@/lib/seo/routes';
@@ -102,6 +103,14 @@ export function SiteHeader({ locale }: { locale: SeoLocale }) {
           style={{ animationDelay: '160ms' }}
         >
           <Link
+            href="/search"
+            aria-label={t['nav.search']}
+            title={t['nav.search']}
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-ink transition-colors hover:border-border-strong"
+          >
+            <IoSearchOutline className="h-[19px] w-[19px]" aria-hidden="true" />
+          </Link>
+          <Link
             href={account.href}
             aria-label={account.label}
             className="flex h-11 items-center gap-1.5 rounded-full border border-border px-3.5 text-[14px] font-bold text-ink transition-colors hover:border-border-strong"
@@ -116,7 +125,14 @@ export function SiteHeader({ locale }: { locale: SeoLocale }) {
         </div>
 
         {/* Phones: one row, everything else behind the menu button. */}
-        <div className="bar-in sm:hidden" style={{ animationDelay: '120ms' }}>
+        <div className="bar-in flex items-center gap-2 sm:hidden" style={{ animationDelay: '120ms' }}>
+          <Link
+            href="/search"
+            aria-label={t['nav.search']}
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-ink"
+          >
+            <IoSearchOutline className="h-5 w-5" aria-hidden="true" />
+          </Link>
           <SiteMenu links={[...links, account]} locale={locale} />
         </div>
       </header>

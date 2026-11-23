@@ -171,10 +171,12 @@ async function tafsirMatches(phrase: string, words: string[], offset: number, li
     await client.query('BEGIN READ ONLY');
     await client.query("SET LOCAL statement_timeout = '4s'");
     const { rows } = await client.query<{ tafsir: string; surah: number; hafs: number; n: string }>(
+      // A passage the source files under each ayah it covers is shown once, at its first.
       `WITH m AS (
-         SELECT tafsir, surah, hafs, folded LIKE ${exact} AS exact
-         FROM tafsir_passages WHERE ${conditions.join(' AND ')} LIMIT ${CAP})
-       SELECT tafsir, surah, hafs, count(*) OVER () AS n FROM m
+         SELECT tafsir, surah, hafs, folded LIKE ${exact} AS exact, md5(folded) AS same
+         FROM tafsir_passages WHERE ${conditions.join(' AND ')} LIMIT ${CAP}),
+       d AS (SELECT DISTINCT ON (tafsir, surah, same) tafsir, surah, hafs, exact FROM m ORDER BY tafsir, surah, same, hafs)
+       SELECT tafsir, surah, hafs, count(*) OVER () AS n FROM d
        ORDER BY exact DESC, array_position($${values.length + 1}::text[], tafsir), surah, hafs
        OFFSET ${offset} LIMIT ${limit}`,
       [...values, order]

@@ -20,8 +20,8 @@ const smooth = (x: number) => x * x * (3 - 2 * x);
 /**
  * Where the mark does not fly: phones and touch screens (the flight is a
  * per-scroll transform of a live canvas, too heavy there) and reduced motion.
- * There it stays in the hero, and once it has scrolled past, the header's
- * flat mark slides in beside the wordmark.
+ * There it stays in the hero, and once it has scrolled past, its live canvas
+ * moves into the header and turns in beside the wordmark.
  */
 const GROUNDED =
   '(prefers-reduced-motion: reduce), (max-width: 767px), (pointer: coarse)';
@@ -67,6 +67,7 @@ export function LogoMark3D({
     const bar = document.querySelector('.header-shell');
     if (!anchor || !bar) return;
     const root = document.documentElement;
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let ticking = false;
     const update = () => {
       ticking = false;
@@ -74,6 +75,8 @@ export function LogoMark3D({
         anchor.getBoundingClientRect().bottom <=
         bar.getBoundingClientRect().bottom;
       root.dataset.markDock = past ? 'in' : 'out';
+      // The scene moves its canvas into the header slot (see «dock» below).
+      if (!still) landedRef.current = past;
     };
     const request = () => {
       if (ticking) return;
@@ -85,6 +88,7 @@ export function LogoMark3D({
     window.addEventListener('resize', request);
     return () => {
       delete root.dataset.markDock;
+      landedRef.current = false;
       window.removeEventListener('scroll', request);
       window.removeEventListener('resize', request);
     };
@@ -459,13 +463,26 @@ export function LogoMark3D({
         });
       }
 
+      // On a phone the mark does not fly: once the hero's has scrolled past,
+      // the canvas itself moves into the header slot and goes on turning
+      // there at the slot's size. A box in the slot holds it.
+      const slot = window.matchMedia(GROUNDED).matches
+        ? document.getElementById(MARK_SLOT_ID)
+        : null;
+      const dock = slot ? document.createElement('span') : null;
+      if (slot && dock) {
+        dock.className = 'mark-dock';
+        slot.append(dock);
+      }
+
       const resize = () => {
-        const size = host.clientWidth;
+        const size = (renderer.domElement.parentElement ?? host).clientWidth;
         if (size > 0) renderer.setSize(size, size, false);
       };
       resize();
       const resizeObserver = new ResizeObserver(resize);
       resizeObserver.observe(host);
+      if (dock) resizeObserver.observe(dock);
 
       // The scene's own clock.
       let clock = 0;
@@ -495,11 +512,20 @@ export function LogoMark3D({
         // it is shown rather than the hero's.
         if (landed !== drawnLanded) {
           drawnLanded = landed;
-          renderer.setPixelRatio(
-            landed
-              ? Math.max(0.2, window.devicePixelRatio * scaleRef.current * 1.5)
-              : Math.min(window.devicePixelRatio, 2)
-          );
+          if (dock) {
+            // Docked: the canvas itself sits in the header at its own size.
+            (landed ? dock : host).append(renderer.domElement);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+          } else {
+            renderer.setPixelRatio(
+              landed
+                ? Math.max(
+                    0.2,
+                    window.devicePixelRatio * scaleRef.current * 1.5
+                  )
+                : Math.min(window.devicePixelRatio, 2)
+            );
+          }
           resize();
         }
         speed += ((landed ? 0.6 : 1) - speed) * Math.min(1, dt * 4);
@@ -550,7 +576,10 @@ export function LogoMark3D({
       let frame = 0;
       const loop = (time: number) => {
         frame = requestAnimationFrame(loop);
-        if (!document.hidden && onScreen) draw(time);
+        // Docked in the header it is always in view.
+        if (!document.hidden && (onScreen || (dock && landedRef.current))) {
+          draw(time);
+        }
       };
       // The first frame is drawn at once, not on the browser's next
       // animation frame, so the mark shows as soon as it is ready even where
@@ -574,6 +603,7 @@ export function LogoMark3D({
         pmrem.dispose();
         renderer.dispose();
         renderer.domElement.remove();
+        dock?.remove();
       };
     })();
 

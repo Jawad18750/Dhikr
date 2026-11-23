@@ -609,12 +609,23 @@ body:has([data-mark-anchor]) #brand-mark-slot {
 }
 
 /* On a phone the mark does not fly (logo-mark-3d.tsx, GROUNDED): once the
-   hero's mark has scrolled past, the slot opens and the flat mark turns in
-   from the edge; scrolling back up, it goes the way it came. */
+   hero's mark has scrolled past, the slot opens and the mark turns in from
+   the edge (the live 3D canvas, moved into `.mark-dock`; the flat mark only
+   with reduced motion); scrolling back up, it goes the way it came. */
+.mark-dock {
+  display: block;
+  height: 100%;
+  aspect-ratio: 1;
+  flex-shrink: 0;
+}
+#brand-mark-slot:has(.mark-dock canvas) > svg,
+#brand-mark-slot .mark-dock:empty {
+  display: none;
+}
 html[data-mark-dock] #brand-mark-slot {
   transition: width 420ms cubic-bezier(0.22, 1, 0.36, 1);
 }
-html[data-mark-dock] #brand-mark-slot svg {
+html[data-mark-dock] #brand-mark-slot > :is(svg, .mark-dock) {
   visibility: visible;
   opacity: 0;
   transform: translateX(16px) rotate(-140deg) scale(0.5);
@@ -622,13 +633,13 @@ html[data-mark-dock] #brand-mark-slot svg {
     transform 520ms cubic-bezier(0.22, 1, 0.36, 1),
     opacity 260ms ease-out;
 }
-html[dir='ltr'][data-mark-dock] #brand-mark-slot svg {
+html[dir='ltr'][data-mark-dock] #brand-mark-slot > :is(svg, .mark-dock) {
   transform: translateX(-16px) rotate(140deg) scale(0.5);
 }
 html[data-mark-dock='in'] #brand-mark-slot {
   width: 46px;
 }
-html[data-mark-dock='in'] #brand-mark-slot svg {
+html[data-mark-dock='in'] #brand-mark-slot > :is(svg, .mark-dock) {
   opacity: 1;
   transform: none;
 }
@@ -639,7 +650,7 @@ html[data-mark-dock='in'] #brand-mark-slot svg {
 }
 @media (prefers-reduced-motion: reduce) {
   html[data-mark-dock] #brand-mark-slot,
-  html[data-mark-dock] #brand-mark-slot svg {
+  html[data-mark-dock] #brand-mark-slot > :is(svg, .mark-dock) {
     transition: none;
   }
 }

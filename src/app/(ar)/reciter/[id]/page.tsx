@@ -4,6 +4,7 @@ import { ReciterHero } from '@/components/site/reciter-hero';
 import { ReciterLibrary } from '@/components/site/reciter-library';
 import { getDhikrCatalogue, getDhikrPortrait } from '@/lib/dhikr-catalogue';
 import { getRecitationFiles, getSurahFacts } from '@/lib/dhikr-surah-facts';
+import { listenCount } from '@/lib/listen-counts';
 import { breadcrumbTrail } from '@/lib/seo/json-ld';
 import { buildPageMetadata } from '@/lib/seo/metadata';
 import { type SeoLocale, withLocale } from '@/lib/seo/routes';
@@ -186,6 +187,7 @@ export default async function Page({ params, searchParams }: Props) {
                 seconds: Object.values(facts).reduce((sum, f) => sum + f.seconds, 0),
                 bytes: Object.values(sizes).reduce((sum, b) => sum + b, 0),
                 rank: catalogued?.rank ?? null,
+                listens: await listenCount(reciter.moshaf.id),
               }
             : null
         }

@@ -291,7 +291,6 @@
   "browse.wordByWord": "Word by word",
   "browse.new": "New",
   "browse.rank": "Rank {rank}",
-  "browse.surahWith": "recited by {name}",
   "tools.title": "Open data and tools",
   "tools.body": "For listeners, teachers, researchers and developers: timings, recitations and Qalun text, on the ayah borders of the Jamahiriya mushaf.",
   "tools.inProgress": "In progress",
@@ -406,5 +405,16 @@
   "player.close": "Close the player",
   "nav.language": "Language",
   "download.zip": "One ZIP",
-  "download.separate": "Separate files"
+  "download.separate": "Separate files",
+  "stats.listens": "plays this month",
+  "surah.title": "Surah {name}",
+  "surah.ayahs": "{count} ayahs",
+  "surah.reciterCount": "{count} reciters",
+  "surah.nav": "Surahs",
+  "surah.previous": "Previous surah",
+  "surah.next": "Next surah",
+  "surah.listHeading": "Reciters",
+  "surah.reciterPage": "Reciter page",
+  "surah.metaTitle": "Surah {name}: Qalun recitations | Dhikr",
+  "surah.metaDescription": "Listen to Surah {name} in the Qalun narration by {count} reciters, with the mushaf word by word."
 }

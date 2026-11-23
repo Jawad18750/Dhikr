@@ -90,5 +90,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   }
 
+  // Surah pages, Arabic documents like the reciter pages: the 114 of them.
+  const surahRoute = ROUTES.find((route) => route.name === 'surah');
+  for (let id = 1; id <= 114; id++) {
+    entries.push({
+      url: absolute(appUrl, withLocale('ar', `/surah/${id}`)),
+      lastModified: CONTENT_LAST_MODIFIED,
+      changeFrequency: surahRoute?.changeFrequency ?? 'weekly',
+      priority: surahRoute?.priority ?? 0.7,
+    });
+  }
+
   return entries;
 }

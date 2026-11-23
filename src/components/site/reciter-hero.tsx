@@ -1,5 +1,5 @@
 import type { IconType } from 'react-icons';
-import { IoCloudDownloadOutline, IoTimeOutline, IoTrophyOutline } from 'react-icons/io5';
+import { IoCloudDownloadOutline, IoHeadsetOutline, IoTimeOutline, IoTrophyOutline } from 'react-icons/io5';
 
 import { splitMoshafName } from '@/lib/dhikr-catalogue';
 import { flagOf } from '@/lib/reciter-countries';
@@ -41,11 +41,21 @@ export function ReciterHero({
   /** ISO code of the reciter's country, where it has been checked. */
   country?: string | null;
   /** The whole recitation: its length, its size and his place in the listening. */
-  figures?: { seconds: number; bytes: number; rank: number | null } | null;
+  figures?: { seconds: number; bytes: number; rank: number | null; listens: number | null } | null;
 }) {
   const t = COPY[locale];
   const { riwaya, style } = splitMoshafName(reciter.moshaf.name);
   const cells = [
+    figures &&
+      figures.listens !== null &&
+      figures.listens > 0 && {
+        value: new Intl.NumberFormat(locale === 'ar' ? 'ar-u-nu-latn' : locale, {
+          notation: 'compact',
+          maximumFractionDigits: 1,
+        }).format(figures.listens),
+        label: t['stats.listens'],
+        icon: IoHeadsetOutline,
+      },
     figures &&
       figures.seconds > 0 && {
         value: `${Math.floor(figures.seconds / 3600)}:${String(Math.floor((figures.seconds % 3600) / 60)).padStart(2, '0')}`,

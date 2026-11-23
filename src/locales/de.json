@@ -277,7 +277,6 @@
   "browse.wordByWord": "Wort für Wort",
   "browse.new": "Neu",
   "browse.rank": "Platz {rank}",
-  "browse.surahWith": "rezitiert von {name}",
   "tools.title": "Offene Daten und Werkzeuge",
   "tools.body": "Für Hörer, Lehrer, Forscher und Entwickler: Timings, Rezitationen und Qalun-Text, nach den Aya-Grenzen des Jamahiriya-Mushaf.",
   "tools.inProgress": "In Arbeit",
@@ -392,5 +391,16 @@
   "player.close": "Player schließen",
   "nav.language": "Sprache",
   "download.zip": "Eine ZIP",
-  "download.separate": "Einzelne Dateien"
+  "download.separate": "Einzelne Dateien",
+  "stats.listens": "Wiedergaben diesen Monat",
+  "surah.title": "Sure {name}",
+  "surah.ayahs": "{count} Verse",
+  "surah.reciterCount": "{count} Rezitatoren",
+  "surah.nav": "Suren",
+  "surah.previous": "Vorherige Sure",
+  "surah.next": "Nächste Sure",
+  "surah.listHeading": "Rezitatoren",
+  "surah.reciterPage": "Seite des Rezitators",
+  "surah.metaTitle": "Sure {name}: Rezitationen nach Qalun | Dhikr",
+  "surah.metaDescription": "Höre Sure {name} in der Überlieferung Qalun von {count} Rezitatoren, mit dem Mushaf Wort für Wort."
 }

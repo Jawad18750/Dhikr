@@ -292,7 +292,6 @@
   "browse.wordByWord": "كلمة بكلمة",
   "browse.new": "جديد",
   "browse.rank": "المرتبة {rank}",
-  "browse.surahWith": "بصوت {name}",
   "tools.title": "بيانات وأدوات مفتوحة",
   "tools.body": "للمستمع والمعلّم والباحث والمطوّر: توقيتات وتلاوات ونص برواية قالون، بحدود آيات مصحف الجماهيرية.",
   "tools.inProgress": "قيد الإعداد",
@@ -407,5 +406,16 @@
   "player.close": "إغلاق المشغّل",
   "nav.language": "اللغة",
   "download.zip": "ملف ZIP",
-  "download.separate": "ملفات منفصلة"
+  "download.separate": "ملفات منفصلة",
+  "stats.listens": "استماع هذا الشهر",
+  "surah.title": "سورة {name}",
+  "surah.ayahs": "{count} آية",
+  "surah.reciterCount": "{count} قارئًا",
+  "surah.nav": "السور",
+  "surah.previous": "السورة السابقة",
+  "surah.next": "السورة التالية",
+  "surah.listHeading": "القرّاء",
+  "surah.reciterPage": "صفحة القارئ",
+  "surah.metaTitle": "سورة {name}: تلاوات برواية قالون | ذكر",
+  "surah.metaDescription": "استمع إلى سورة {name} برواية قالون عن نافع بأصوات {count} قارئًا، مع المصحف كلمة بكلمة."
 }

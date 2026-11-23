@@ -67,6 +67,8 @@ type Player = {
   album: PlayerAlbum | null;
   index: number | null;
   playing: boolean;
+  /** The surah playing (its number), whichever list it was started from. */
+  trackId: number | null;
   /** Play [at] of [album] from [from] seconds (the same surah just resumes). */
   start: (album: PlayerAlbum, at: number, from?: number) => void;
   toggle: () => void;
@@ -121,7 +123,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     const audio = audioRef.current;
     if (!audio || !next.tracks[at]) return;
     const { album: held, index: heldAt } = live.current;
-    if (held?.slug === next.slug && heldAt === at) {
+    if (held?.slug === next.slug && heldAt !== null && held.tracks[heldAt]?.id === next.tracks[at].id) {
       void audio.play();
       return;
     }
@@ -242,9 +244,10 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     return () => observer.disconnect();
   }, [album, folded]);
 
+  const trackId = track?.id ?? null;
   const value = useMemo<Player>(
-    () => ({ album, index, playing, start, toggle }),
-    [album, index, playing, start, toggle]
+    () => ({ album, index, playing, trackId, start, toggle }),
+    [album, index, playing, trackId, start, toggle]
   );
 
   const quiet =

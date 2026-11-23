@@ -1,20 +1,18 @@
 'use client';
 
-import { useAtomValue } from 'jotai';
+import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import {
+  IoChevronBack,
   IoChevronDown,
   IoChevronUp,
-  IoPlayOutline,
   IoSearchOutline,
 } from 'react-icons/io5';
 import { useIntl } from 'react-intl';
 
 import { SURAHS } from '@/constants';
-import { selectedReciterAtom } from '@/jotai/atom';
 import type { CatalogueReciter } from '@/lib/dhikr-catalogue';
 import { flagOf } from '@/lib/reciter-countries';
-import { reciterRouteFor } from '@/lib/reciter-route';
 import { cn, getSurahDisplayName, normalizeArabicText } from '@/utils';
 
 import { ReciterCard } from './reciter-card';
@@ -31,12 +29,10 @@ const matches = (text: string, query: string) =>
 
 /**
  * One search field with a reciter/surah switch, a line of filters with counts, and the
- * reciter grid. Searching by surah opens it with the reciter last played,
- * or the most listened one.
+ * reciter grid. A surah opens its own page: every reciter who has it.
  */
 export function ReciterBrowser({ reciters }: { reciters: CatalogueReciter[] }) {
   const { formatMessage, locale } = useIntl();
-  const lastReciter = useAtomValue(selectedReciterAtom);
   const [mode, setMode] = useState<Mode>('reciter');
   const [query, setQuery] = useState('');
   const [riwaya, setRiwaya] = useState<string | null>(null);
@@ -65,15 +61,6 @@ export function ReciterBrowser({ reciters }: { reciters: CatalogueReciter[] }) {
 
   const filtering = riwaya || country || (mode === 'reciter' && query.trim());
   const shown = filtering || expanded ? filtered : filtered.slice(0, FIRST_ROW);
-
-  // Surah search plays with the last reciter, else the most listened one.
-  const surahHost = useMemo(() => {
-    if (lastReciter) {
-      return { href: reciterRouteFor(lastReciter), name: lastReciter.name };
-    }
-    const top = reciters[0];
-    return top ? { href: top.href, name: top.name } : null;
-  }, [lastReciter, reciters]);
 
   const surahs = useMemo(
     () =>
@@ -236,22 +223,14 @@ export function ReciterBrowser({ reciters }: { reciters: CatalogueReciter[] }) {
             id="reciters-title"
             className="font-display text-[32px] font-black leading-[1.3] text-ink sm:text-[44px]"
           >
-            {formatMessage({ id: 'browse.modeSurah' })}
-            {surahHost && (
-              <span className="ms-3 text-lg font-medium text-ink-muted">
-                {formatMessage(
-                  { id: 'browse.surahWith' },
-                  { name: surahHost.name }
-                )}
-              </span>
-            )}
+            {formatMessage({ id: 'library.title' })}
           </h2>
-          {surahs.length > 0 && surahHost ? (
+          {surahs.length > 0 ? (
             <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-2.5">
               {surahs.map((surah) => (
-                <a
+                <Link
                   key={surah.id}
-                  href={`${surahHost.href}&surah=${surah.id}`}
+                  href={`/surah/${surah.id}`}
                   className="flex items-center gap-3 rounded-[18px] border border-border px-3.5 py-3 hover:border-border-strong"
                 >
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-surface-sunken text-[15px] font-bold text-ink">
@@ -260,11 +239,11 @@ export function ReciterBrowser({ reciters }: { reciters: CatalogueReciter[] }) {
                   <span className="flex-1 text-lg font-bold leading-[1.4] text-ink">
                     {getSurahDisplayName(surah, locale)}
                   </span>
-                  <IoPlayOutline
-                    className="h-5 w-5 shrink-0 text-ink-muted"
+                  <IoChevronBack
+                    className="h-5 w-5 shrink-0 text-ink-muted ltr:rotate-180"
                     aria-hidden="true"
                   />
-                </a>
+                </Link>
               ))}
             </div>
           ) : (

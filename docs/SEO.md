@@ -7,6 +7,7 @@
 - `x-default` is always Arabic.
 - Reciter pages are Arabic documents. `/en/reciter/[id]` and `/de/reciter/[id]` redirect to the Arabic document, are excluded from the sitemap, and declare no `hreflang` pair. This follows the open-tilawa model: a translated reciter page is a thin twin of the Arabic document.
 - `?moshafId` and `?surah` are player state, not separate documents. Their canonical is `/reciter/[id]`.
+- Surah pages (`/surah/1` to `/surah/114`) list every reciter of a surah. Like reciter pages they are Arabic documents: `/en/surah/[id]` and `/de/surah/[id]` redirect to them, and only the Arabic URLs are in the sitemap. The header's language switch sends these two kinds of page to the other language's home.
 
 ## Prerender and route groups
 

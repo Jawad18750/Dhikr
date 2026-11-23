@@ -45,7 +45,6 @@ export function ReciterLibrary({
 
   const player = usePlayer();
   const mine = player.album?.slug === slug;
-  const index = mine ? player.index : null;
   const playing = mine && player.playing;
   const [query, setQuery] = useState('');
   const [resume, setResume] = useState<Resume | null>(null);
@@ -107,6 +106,8 @@ export function ReciterLibrary({
     );
   }, [rows, query]);
 
+  const found = mine ? rows.findIndex((row) => row.id === player.trackId) : -1;
+  const index = found >= 0 ? found : null;
   // The queue the site's player takes: this recitation's surahs, in order.
   const album = useMemo<PlayerAlbum>(
     () => ({

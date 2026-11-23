@@ -63,6 +63,15 @@ export const ROUTES: readonly SeoRoute[] = [
     dynamic: true,
   },
   {
+    name: 'surah',
+    path: '/surah/[id]',
+    index: true,
+    sitemap: true,
+    changeFrequency: 'weekly',
+    priority: 0.7,
+    dynamic: true,
+  },
+  {
     name: 'settings',
     path: '/settings',
     index: false,

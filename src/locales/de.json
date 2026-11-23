@@ -32,6 +32,7 @@
   "settings.reciterSourcesDescription": "Wähle aus, welche Quellen in der Rezitatorenliste angezeigt werden sollen. Mindestens eine Quelle muss aktiviert sein.",
   "settings.selectAll": "Alle auswählen",
   "settings.deselectAll": "Alle abwählen",
+  "settings.source.dhikr": "Dhikr",
   "settings.source.mp3quran": "MP3 Quran",
   "settings.source.itqan": "Itqan",
   "settings.source.quranai": "Qurani.ai",

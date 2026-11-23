@@ -140,7 +140,7 @@ export const playerModeAtom = atom<PlayerMode>('listening');
  */
 export const enabledSourcesAtom = createAtomWithStorage<LinkSource[]>(
   'enabled-sources',
-  [LinkSource.QURAN_FOUNDATION, LinkSource.MP3QURAN_V4]
+  [LinkSource.DHIKR]
 );
 
 /** Desktop reciter panel state. It must survive a route change. */

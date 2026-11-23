@@ -20,6 +20,7 @@ import { fuzzySearch, generateFavId } from '@/utils';
 // Define all possible Riwaya values. Empty selection means "all".
 const riwayaValues = Object.values(Riwaya) as readonly Riwaya[];
 const sourceValues = [
+  LinkSource.DHIKR,
   LinkSource.MP3QURAN,
   LinkSource.MP3QURAN_V4,
   LinkSource.ITQAN,

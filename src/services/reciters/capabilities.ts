@@ -26,6 +26,24 @@ export type ProviderCapabilities = {
 const VERIFIED_AT = '2026-11-05';
 
 export const PROVIDER_CAPABILITIES: Record<LinkSource, ProviderCapabilities> = {
+  [LinkSource.DHIKR]: {
+    id: LinkSource.DHIKR,
+    label: { ar: 'ذكر', en: 'Dhikr' },
+    beta: false,
+    // quran-audio.abdeljawad.com/timings/<slug>/NNN.json, Qalun ayah numbering.
+    timing: 'ayah',
+    timingCoverage: 'partial',
+    timingIntegration: 'implemented',
+    names: 'ar',
+    riwayah: { multiple: true, qiraah: false },
+    audioTiers: ['original'],
+    wordAudio: false,
+    auth: 'none',
+    cors: 'open',
+    download: true,
+    docsUrl: 'https://quran-audio.abdeljawad.com/api/v3/reciters',
+    verifiedAt: '2026-11-23',
+  },
   [LinkSource.MP3QURAN]: {
     id: LinkSource.MP3QURAN,
     label: { ar: 'MP3 Quran', en: 'MP3 Quran' },

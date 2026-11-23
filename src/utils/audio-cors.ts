@@ -6,7 +6,10 @@
  * an `AudioContext` can silence it. Itqan's `storage.cms.itqan.dev` is the one
  * provider without CORS, so it plays without an analyser.
  */
-const CORS_AUDIO_HOSTS = new Set(['quranhub.b-cdn.net']);
+const CORS_AUDIO_HOSTS = new Set([
+  'quranhub.b-cdn.net',
+  'quran-audio.abdeljawad.com',
+]);
 
 export const canUseAudioAnalyser = (
   url: string | null | undefined

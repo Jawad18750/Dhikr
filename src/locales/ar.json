@@ -32,6 +32,7 @@
   "settings.reciterSourcesDescription": "اختر المصادر التي تريد عرضها في قائمة القراء. يجب تفعيل مصدر واحد على الأقل.",
   "settings.selectAll": "تفعيل الكل",
   "settings.deselectAll": "إلغاء تفعيل الكل",
+  "settings.source.dhikr": "ذكر",
   "settings.source.mp3quran": "MP3 القرآن",
   "settings.source.itqan": "إتقان",
   "settings.source.quranai": "قرآني",

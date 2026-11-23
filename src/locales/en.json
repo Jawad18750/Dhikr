@@ -32,6 +32,7 @@
   "settings.reciterSourcesDescription": "Choose which sources to show in the reciter list. At least one must be enabled.",
   "settings.selectAll": "Select all",
   "settings.deselectAll": "Deselect all",
+  "settings.source.dhikr": "Dhikr",
   "settings.source.mp3quran": "MP3 Quran",
   "settings.source.itqan": "Itqan",
   "settings.source.quranai": "Qurani.ai",

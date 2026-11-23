@@ -2,6 +2,7 @@ import { Language } from '@/constants/language';
 import type { Moshaf, Playlist, Reciter } from '@/types';
 import { LinkSource } from '@/types';
 
+import { DhikrAdapter } from './dhikr.adapter';
 import { isMp3QuranV4Enabled } from './flags';
 import { ItqanAdapter } from './itqan.adapter';
 import { Mp3QuranAdapter } from './mp3quran.adapter';
@@ -15,6 +16,7 @@ import type { ReciterSource } from './reciter-source';
  * list. The two word-timing providers lead, because they are the defaults.
  */
 const adapters: ReciterSource[] = [
+  DhikrAdapter,
   QuranFoundationAdapter,
   ...(isMp3QuranV4Enabled() ? [Mp3QuranV4Adapter] : []),
   Mp3QuranAdapter,

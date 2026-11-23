@@ -1,6 +1,7 @@
 import type { Moshaf } from '@/types';
 import { LinkSource } from '@/types';
 
+import { dhikrTimings } from './dhikr.timings';
 import { itqanTimings } from './itqan.timings';
 import { mp3QuranV3Timings } from './mp3quran-v3.timings';
 import {
@@ -20,6 +21,7 @@ import type {
 } from './types';
 
 const providers: Partial<Record<LinkSource, TimingProvider>> = {
+  [LinkSource.DHIKR]: dhikrTimings,
   [LinkSource.MP3QURAN]: mp3QuranV3Timings,
   [LinkSource.MP3QURAN_V4]: mp3QuranV4Timings,
   [LinkSource.ITQAN]: itqanTimings,

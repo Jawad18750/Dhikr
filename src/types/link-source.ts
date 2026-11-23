@@ -1,4 +1,5 @@
 export const LinkSource = {
+  DHIKR: 'dhikr.ly',
   MP3QURAN: 'mp3quran.net',
   MP3QURAN_V4: 'mp3quran.v4',
   ITQAN: 'itqan.dev',

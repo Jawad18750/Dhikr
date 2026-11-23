@@ -53,6 +53,23 @@ export function ReciterLibrary({
   const [picking, setPicking] = useState(false);
   const [picked, setPicked] = useState<Set<number>>(new Set());
   const [toast, setToast] = useState<string | null>(null);
+  // Separate files being saved, one after another: how many of how many.
+  const [saving, setSaving] = useState<{ done: number; total: number } | null>(null);
+  const saveSeparately = async (ids: number[]) => {
+    setSaving({ done: 0, total: ids.length });
+    for (const [at, id] of ids.entries()) {
+      const link = document.createElement('a');
+      link.href = `/api/download/${slug}/${id}`;
+      link.download = '';
+      document.body.append(link);
+      link.click();
+      link.remove();
+      setSaving({ done: at + 1, total: ids.length });
+      // A breath between them, so the browser takes each as its own download.
+      await new Promise((resolve) => window.setTimeout(resolve, 1500));
+    }
+    setSaving(null);
+  };
 
   // The reciter is the "last played" one for the home's surah search.
   useEffect(() => {
@@ -182,8 +199,14 @@ export function ReciterLibrary({
               : formatMessage({ id: 'library.listen' })}
         </button>
         {allIds.length > 1 && (
-          <a
-            href={`/api/download/${slug}?s=all`}
+          <button
+            type="button"
+            onClick={() => {
+              // The khatma: every surah ticked, then one ZIP or separate files below.
+              setPicking(true);
+              setPicked(new Set(allIds));
+              document.getElementById('library-title')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }}
             aria-label={`${formatMessage({ id: 'library.khatma' })} · ${sizeLabel(bytesOf(allIds))}`}
             className="flex h-12 w-12 shrink-0 items-center justify-center gap-2 rounded-full border-[1.5px] border-border text-[15px] font-bold text-ink transition-colors hover:border-border-strong sm:h-[52px] sm:w-auto sm:px-5"
           >
@@ -194,7 +217,7 @@ export function ReciterLibrary({
                 {sizeLabel(bytesOf(allIds))}
               </span>
             )}
-          </a>
+          </button>
         )}
         <button
           type="button"
@@ -210,7 +233,7 @@ export function ReciterLibrary({
         <div className="flex flex-wrap items-end justify-between gap-4">
           <h2
             id="library-title"
-            className="font-display text-[28px] font-black leading-[1.3] text-ink sm:text-[36px]"
+            className="scroll-mt-28 font-display text-[28px] font-black leading-[1.3] text-ink sm:text-[36px]"
           >
             {formatMessage({ id: 'library.title' })}
             <span className="ms-3 align-middle text-base font-medium text-ink-subtle">
@@ -270,17 +293,36 @@ export function ReciterLibrary({
                 id: pickedIds.length === allIds.length ? 'download.none' : 'download.all',
               })}
             </button>
-            <a
-              href={downloadHref}
-              aria-disabled={!downloadHref}
-              className={cn(
-                'flex h-10 items-center gap-2 rounded-full bg-gradient-to-b from-gold-light to-gold px-5 text-[15px] font-bold text-[#1b1712] transition-opacity',
-                !downloadHref && 'pointer-events-none opacity-40'
-              )}
-            >
-              <IoCloudDownloadOutline className="h-[17px] w-[17px]" aria-hidden="true" />
-              {formatMessage({ id: 'download.go' })}
-            </a>
+            {saving ? (
+              <span className="flex h-10 items-center px-2 text-[15px] font-bold tabular-nums text-ink">
+                {formatMessage(
+                  { id: 'download.downloadingShort' },
+                  { completed: saving.done, total: saving.total }
+                )}
+              </span>
+            ) : (
+              <span className="flex items-center gap-2">
+                <a
+                  href={downloadHref}
+                  aria-disabled={!downloadHref}
+                  className={cn(
+                    'flex h-10 items-center gap-2 rounded-full bg-gradient-to-b from-gold-light to-gold px-4 text-[15px] font-bold text-[#1b1712] transition-opacity',
+                    !downloadHref && 'pointer-events-none opacity-40'
+                  )}
+                >
+                  <IoCloudDownloadOutline className="h-[17px] w-[17px]" aria-hidden="true" />
+                  {formatMessage({ id: 'download.zip' })}
+                </a>
+                <button
+                  type="button"
+                  disabled={pickedIds.length === 0}
+                  onClick={() => void saveSeparately(pickedIds)}
+                  className="flex h-10 items-center gap-2 rounded-full border-[1.5px] border-border px-4 text-[15px] font-bold text-ink transition-colors hover:border-border-strong disabled:opacity-40"
+                >
+                  {formatMessage({ id: 'download.separate' })}
+                </button>
+              </span>
+            )}
           </div>
         )}
 
@@ -368,7 +410,7 @@ export function ReciterLibrary({
                   {!picking && (
                     <span className="hidden shrink-0 items-center gap-0.5 pe-2 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 md:flex">
                       <a
-                        href={row.link}
+                        href={`/api/download/${slug}/${row.id}`}
                         download
                         aria-label={`${formatMessage({ id: 'library.downloadSurah' })}: ${row.name}`}
                         className="flex h-9 w-9 items-center justify-center rounded-full text-ink-subtle transition-colors hover:bg-surface-sunken hover:text-ink"

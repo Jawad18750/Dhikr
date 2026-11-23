@@ -405,5 +405,7 @@
   "player.fold": "تصغير المشغّل",
   "player.unfold": "فتح المشغّل",
   "player.close": "إغلاق المشغّل",
-  "nav.language": "اللغة"
+  "nav.language": "اللغة",
+  "download.zip": "ملف ZIP",
+  "download.separate": "ملفات منفصلة"
 }

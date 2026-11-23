@@ -417,7 +417,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                 </div>
                 <span className="flex items-center justify-end gap-0.5 sm:gap-1">
                   <a
-                    href={track.link}
+                    href={`/api/download/${album.slug}/${track.id}`}
                     download
                     aria-label={formatMessage({ id: 'library.download' })}
                     className={cn(quiet, 'hidden lg:flex')}

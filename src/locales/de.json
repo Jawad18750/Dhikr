@@ -390,5 +390,7 @@
   "player.fold": "Player verkleinern",
   "player.unfold": "Player öffnen",
   "player.close": "Player schließen",
-  "nav.language": "Sprache"
+  "nav.language": "Sprache",
+  "download.zip": "Eine ZIP",
+  "download.separate": "Einzelne Dateien"
 }

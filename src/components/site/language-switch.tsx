@@ -96,7 +96,7 @@ export function LanguageSwitch({
                 hrefLang={target}
                 lang={target}
                 aria-current={target === locale ? 'true' : undefined}
-                className={`flex h-12 items-center gap-3 rounded-[14px] px-3 text-[15px] transition-colors ${
+                className={`flex min-h-12 items-center gap-2.5 rounded-[14px] px-2.5 py-1.5 text-[15px] leading-tight transition-colors ${
                   target === locale
                     ? 'bg-surface-sunken font-bold text-ink'
                     : 'text-ink-muted hover:bg-surface-sunken hover:text-ink'
@@ -109,7 +109,7 @@ export function LanguageSwitch({
                   {LOCALE_FLAGS[target]}
                 </span>
                 {/* bdi: each name keeps its own direction without moving off the row's start. */}
-                <span className="min-w-0 flex-1 truncate text-start">
+                <span className="min-w-0 flex-1 text-start">
                   <bdi>{LOCALE_NAMES[target]}</bdi>
                 </span>
                 {target === locale && <IoCheckmark className="h-4 w-4 shrink-0" aria-hidden="true" />}

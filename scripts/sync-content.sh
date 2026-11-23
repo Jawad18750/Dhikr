@@ -11,10 +11,12 @@ rsync -az --delete "$SRC/app/assets/data/library/" "$DEST/app/assets/data/librar
 rsync -az --delete "$SRC/app/assets/images/library/" "$DEST/app/assets/images/library/"
 # The thematic encyclopedia, as the masahif app ships it.
 ssh Abdeljawad 'mkdir -p /opt/dhikr-content/masahif_app/assets/data/library'
-rsync -rlt --compress --delete --chmod=D755,F644 "$SRC/masahif_app/assets/data/library/mawsuah/" "$DEST/masahif_app/assets/data/library/mawsuah/"
+rsync -rlt --compress --delete "$SRC/masahif_app/assets/data/library/mawsuah/" "$DEST/masahif_app/assets/data/library/mawsuah/"
 # The Quranpedia study pages read a per-surah build of the apps' database.
 QP="$(mktemp -d)"
 node --no-warnings "$(dirname "$0")/build-quranpedia.mjs" "$SRC" "$QP"
-rsync -rlt --compress --delete --chmod=D755,F644 "$QP/" "$DEST/quranpedia/"
+rsync -rlt --compress --delete "$QP/" "$DEST/quranpedia/"
 rm -rf "$QP"
+# Readable by the site whatever the copies' modes were here (macOS rsync has no --chmod).
+ssh Abdeljawad 'chmod -R u=rwX,go=rX /opt/dhikr-content/quranpedia /opt/dhikr-content/masahif_app'
 echo "synced from $SRC ($(cd "$SRC" && git rev-parse --short HEAD 2>/dev/null || echo 'no git'))"

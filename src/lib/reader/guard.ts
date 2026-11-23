@@ -45,8 +45,19 @@ export function sameOrigin(request: Request): boolean {
   if (site && site !== 'same-origin') return false;
   const origin = request.headers.get('origin');
   if (origin) {
+    // Behind the proxy the request's own URL is the local listener, so the origin is
+    // checked against the site's public address and the Host the proxy passed on.
+    const hosts = new Set<string>();
     try {
-      return new URL(origin).host === new URL(request.url).host;
+      hosts.add(new URL(process.env.NEXT_PUBLIC_APP_URL ?? '').host);
+    } catch {
+      /* no public address configured (development) */
+    }
+    const forwarded = request.headers.get('x-forwarded-host') ?? request.headers.get('host');
+    if (forwarded) hosts.add(forwarded.split(',')[0].trim());
+    try {
+      hosts.add(new URL(request.url).host);
+      return hosts.has(new URL(origin).host);
     } catch {
       return false;
     }

@@ -3,6 +3,7 @@ import ar from '@/locales/ar.json';
 import de from '@/locales/de.json';
 import en from '@/locales/en.json';
 
+import { HeroApps } from './hero-apps';
 import { LogoMark3D } from './logo-mark-3d';
 
 const COPY = { ar, en, de } as const;
@@ -34,6 +35,7 @@ export function HomeHero({ locale }: { locale: SeoLocale }) {
         <p className="max-w-[560px] text-lg leading-[1.75] text-on-hero/70 sm:text-[22px]">
           {t['hero.body']}
         </p>
+        <HeroApps />
       </div>
       <div className="flex w-full items-center justify-center px-6 pt-10 lg:w-[46%] lg:p-8">
         <LogoMark3D

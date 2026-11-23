@@ -7,7 +7,7 @@ import ar from '@/locales/ar.json';
 import de from '@/locales/de.json';
 import en from '@/locales/en.json';
 
-import { LogoMark } from './logo-mark';
+import { LogoMark3D } from './logo-mark-3d';
 import { Wordmark } from './wordmark';
 
 const COPY = { ar, en, de } as const;
@@ -34,7 +34,7 @@ export function SiteFooter({ locale }: { locale: SeoLocale }) {
               aria-label={BRAND[locale]}
               className="flex w-fit items-center gap-2.5 text-ink"
             >
-              <LogoMark className="h-10 w-10 text-gold" />
+              <LogoMark3D badge label={BRAND[locale]} className="h-10 w-10" />
               <Wordmark className="h-10 w-auto" title={BRAND[locale]} />
             </Link>
             <p className="leading-[1.8] text-ink-muted">{t['hero.body']}</p>

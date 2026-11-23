@@ -11,6 +11,7 @@ import ar from '@/locales/ar.json';
 import de from '@/locales/de.json';
 import en from '@/locales/en.json';
 
+import { HeaderMark } from './header-mark';
 import { HeaderShell } from './header-shell';
 import { LogoMark } from './logo-mark';
 import { MARK_SLOT_ID } from './logo-mark-3d';
@@ -60,6 +61,7 @@ export function SiteHeader({ locale }: { locale: SeoLocale }) {
             id={MARK_SLOT_ID}
             className="block h-9 w-[46px] shrink-0 overflow-hidden sm:h-11 sm:w-[54px]"
           >
+            <HeaderMark label={BRAND[locale]} />
             <LogoMark className="h-full w-9 text-gold sm:w-11" />
           </span>
           <Wordmark className="h-9 w-auto sm:h-11" />

@@ -619,6 +619,7 @@ body:has([data-mark-anchor]) #brand-mark-slot {
   flex-shrink: 0;
 }
 #brand-mark-slot:has(.mark-dock canvas) > svg,
+#brand-mark-slot:has(.mark-badge) > svg,
 #brand-mark-slot .mark-dock:empty {
   display: none;
 }

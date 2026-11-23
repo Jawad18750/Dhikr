@@ -26,6 +26,25 @@ const smooth = (x: number) => x * x * (3 - 2 * x);
 const GROUNDED =
   '(prefers-reduced-motion: reduce), (max-width: 767px), (pointer: coarse)';
 
+/**
+ * The blades' own turning, as QUL's ring turns its chips (qul.tarteel.ai,
+ * shards/renderer.js): over a 50 s tween that runs out and back, each blade
+ * turns through 62.832 × w × its own noise radians, w going 0 → 1 → 0, so
+ * every blade spins at its own pace (≈0.5–0.8 rad/s) and winds back. The noise
+ * values are QUL's first ten; a slow drift keeps the pattern from repeating.
+ */
+const TURN_SECONDS = 50;
+const TURN_RADIANS = 62.832;
+const TURN_NOISE = [
+  0.4239, 0.4784, 0.5042, 0.5926, 0.5997, 0.6124, 0.6174, 0.6647, 0.6308, 0.5483,
+];
+const TURN_DRIFT = 0.02;
+const TURN_DRIFT_SPEED = 0.075;
+const pingPong = (time: number, seconds: number) => {
+  const cycle = (time / seconds) % 2;
+  return cycle < 1 ? cycle : 2 - cycle;
+};
+
 const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
 const clamp = (x: number) => Math.min(1, Math.max(-1, x));
 
@@ -42,27 +61,34 @@ const clamp = (x: number) => Math.min(1, Math.max(-1, x));
 export function LogoMark3D({
   label,
   className,
+  badge = false,
 }: {
   label: string;
   className?: string;
+  /**
+   * A small mark where it simply sits (the footer, the header of every page but
+   * the home): gold, facing forward, turning; it neither flies nor docks.
+   */
+  badge?: boolean;
 }) {
   const anchorRef = useRef<HTMLDivElement>(null);
   const flyerRef = useRef<HTMLDivElement>(null);
   const hostRef = useRef<HTMLDivElement>(null);
-  const landedRef = useRef(false);
+  const landedRef = useRef(badge);
   const scaleRef = useRef(1);
   const [mounted, setMounted] = useState(false);
   const [ready, setReady] = useState(false);
   const [grounded, setGrounded] = useState(false);
   useEffect(() => {
-    setGrounded(window.matchMedia(GROUNDED).matches);
+    setGrounded(!badge && window.matchMedia(GROUNDED).matches);
     setMounted(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- set once
   }, []);
 
   // Grounded: the header's mark comes in once the hero's has scrolled past
   // the bar (globals.css animates it from `data-mark-dock`).
   useEffect(() => {
-    if (!mounted || !grounded) return;
+    if (!mounted || !grounded || badge) return;
     const anchor = anchorRef.current;
     const bar = document.querySelector('.header-shell');
     if (!anchor || !bar) return;
@@ -92,11 +118,11 @@ export function LogoMark3D({
       window.removeEventListener('scroll', request);
       window.removeEventListener('resize', request);
     };
-  }, [mounted, grounded]);
+  }, [mounted, grounded, badge]);
 
   // The flight: from the hero's anchor to the header slot as the hero scrolls away.
   useEffect(() => {
-    if (!mounted || grounded) return;
+    if (!mounted || grounded || badge) return;
     const anchor = anchorRef.current;
     const flyer = flyerRef.current;
     const slot = document.getElementById(MARK_SLOT_ID);
@@ -171,7 +197,7 @@ export function LogoMark3D({
       window.removeEventListener('resize', request);
       observer.disconnect();
     };
-  }, [mounted, grounded]);
+  }, [mounted, grounded, badge]);
 
   // The scene.
   useEffect(() => {
@@ -446,6 +472,7 @@ export function LogoMark3D({
       const blades: {
         mesh: InstanceType<typeof THREE.Mesh>;
         phase: number;
+        noise: number;
         angle: number;
       }[] = [];
       for (let index = 0; index < PETALS; index++) {
@@ -457,7 +484,8 @@ export function LogoMark3D({
         ring.add(arm);
         blades.push({
           mesh: blade,
-          phase: index * 0.63,
+          phase: index * 1.7,
+          noise: TURN_NOISE[index % TURN_NOISE.length],
           // The blade's direction from the centre, screen-up at zero.
           angle: Math.PI / 2 + (index / PETALS) * Math.PI * 2,
         });
@@ -466,9 +494,10 @@ export function LogoMark3D({
       // On a phone the mark does not fly: once the hero's has scrolled past,
       // the canvas itself moves into the header slot and goes on turning
       // there at the slot's size. A box in the slot holds it.
-      const slot = window.matchMedia(GROUNDED).matches
-        ? document.getElementById(MARK_SLOT_ID)
-        : null;
+      const slot =
+        !badge && window.matchMedia(GROUNDED).matches
+          ? document.getElementById(MARK_SLOT_ID)
+          : null;
       const dock = slot ? document.createElement('span') : null;
       if (slot && dock) {
         dock.className = 'mark-dock';
@@ -550,14 +579,19 @@ export function LogoMark3D({
         stage.rotation.y = BASE_YAW * (1 - gilt) + tilt.y;
         ring.rotation.z = -clock * 0.22 + spin;
         ring.rotation.y = Math.sin(clock * 0.35) * 0.18;
+        const turn = pingPong(clock, TURN_SECONDS);
         for (const blade of blades) {
-          // Each blade turns on its own long axis, like a fan of glass.
+          // Each blade turns on its own long axis, like a fan of glass, at its
+          // own pace (see TURN_SECONDS).
           // Where it points now, after the ring's own turn.
           const facing = blade.angle + ring.rotation.z;
           blade.mesh.rotation.y =
             twist.value -
             reach.value * Math.cos(facing - reach.angle) +
-            Math.sin(clock * 0.9 + blade.phase) * 0.12;
+            TURN_RADIANS *
+              turn *
+              (blade.noise +
+                TURN_DRIFT * Math.sin(TURN_DRIFT_SPEED * clock + blade.phase));
         }
         renderer.render(scene, camera);
         if (first) {
@@ -611,7 +645,7 @@ export function LogoMark3D({
       disposed = true;
       cleanup();
     };
-  }, [mounted]);
+  }, [mounted, badge]);
 
 
   // From the first paint the hero shows a still of this very scene's first
@@ -640,6 +674,21 @@ export function LogoMark3D({
       />
     </div>
   );
+
+  // A badge: the scene where it sits, no still behind it (it is small and
+  // arrives at once), never an anchor the header or the flight look for.
+  if (badge) {
+    return (
+      <div role="img" aria-label={label} className={`mark-badge ${className ?? ''}`}>
+        <div
+          ref={hostRef}
+          className={`h-full w-full transition-opacity duration-500 ${
+            ready ? 'opacity-100' : 'opacity-0'
+          }`}
+        />
+      </div>
+    );
+  }
 
   // Grounded: the scene lives in the hero, nothing flies.
   if (!mounted || grounded) {

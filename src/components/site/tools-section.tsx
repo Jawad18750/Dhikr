@@ -122,6 +122,10 @@ export function ToolsSection({
           <p className="text-base leading-[1.7] text-[#cbe4d7]">
             {t('tools.ayahTimingsBody')}
           </p>
+          <p className="text-[15px] leading-[1.75] text-[#a9c9b8]">
+            <span className="font-bold">{t('tools.ideaLabel')}: </span>
+            {t('tools.ayahTimingsIdea')}
+          </p>
           <div
             className="mt-auto flex flex-col gap-2 rounded-2xl bg-white/[0.07] px-4 py-3.5"
             aria-hidden="true"
@@ -185,6 +189,10 @@ export function ToolsSection({
           <p className="text-base leading-[1.7] text-[#c9d0e4]">
             {t('tools.wordTimingsBody')}
           </p>
+          <p className="text-[15px] leading-[1.75] text-[#a7b0c8]">
+            <span className="font-bold">{t('tools.ideaLabel')}: </span>
+            {t('tools.wordTimingsIdea')}
+          </p>
           <div
             className="mt-auto flex flex-wrap gap-1.5 rounded-2xl bg-white/[0.07] px-4 py-3.5"
             aria-hidden="true"
@@ -216,6 +224,10 @@ export function ToolsSection({
           </h3>
           <p className="text-base leading-[1.7] text-[#3a2c14]">
             {t('tools.textBody')}
+          </p>
+          <p className="text-[15px] leading-[1.75] text-[#4a3a1d]">
+            <span className="font-bold">{t('tools.ideaLabel')}: </span>
+            {t('tools.textIdea')}
           </p>
           <div
             className="mt-auto flex flex-col gap-2 rounded-2xl bg-white/40 px-4 py-3.5"
@@ -257,6 +269,10 @@ export function ToolsSection({
           <p className="text-base leading-[1.7] text-on-hero/65">
             {t('tools.apiBody')}
           </p>
+          <p className="text-[15px] leading-[1.75] text-on-hero/50">
+            <span className="font-bold">{t('tools.ideaLabel')}: </span>
+            {t('tools.apiIdea')}
+          </p>
           <div
             dir="ltr"
             className="mt-auto flex flex-col gap-1.5 rounded-2xl bg-[#0b0b0c] px-4 py-3.5 text-left font-mono text-sm text-white"
@@ -270,16 +286,7 @@ export function ToolsSection({
               {t('tools.apiAnswer', { count: reciterCount })}
             </span>
           </div>
-          <a
-            href={`${DHIKR_AUDIO_BASE}/api/v3/reciters`}
-            className={cn(
-              pill,
-              'self-start bg-on-hero/[0.08] text-on-hero hover:bg-on-hero/15'
-            )}
-          >
-            <IoCodeSlashOutline aria-hidden="true" />
-            {t('tools.apiOpen')}
-          </a>
+          {inProgress('neutral')}
         </article>
 
         {/* The numbering converter: one ayah, its two numbers, the arrow between. */}
@@ -295,6 +302,10 @@ export function ToolsSection({
           </h3>
           <p className="text-base leading-[1.7] text-on-hero/65">
             {t('tools.converterBody')}
+          </p>
+          <p className="text-[15px] leading-[1.75] text-on-hero/50">
+            <span className="font-bold">{t('tools.ideaLabel')}: </span>
+            {t('tools.converterIdea')}
           </p>
           <div
             className="mt-auto flex flex-wrap items-center gap-2.5 text-[15px] [perspective:400px]"
@@ -324,6 +335,10 @@ export function ToolsSection({
           </h3>
           <p className="text-base leading-[1.7] text-on-hero/65">
             {t('tools.audioBody')}
+          </p>
+          <p className="text-[15px] leading-[1.75] text-on-hero/50">
+            <span className="font-bold">{t('tools.ideaLabel')}: </span>
+            {t('tools.audioIdea')}
           </p>
           <div
             className="mt-auto flex items-center gap-4 rounded-2xl bg-[#0b0b0c] px-4 py-3.5 text-white"

@@ -1,121 +1,51 @@
 'use client';
 
-import React from 'react';
-import { FormattedMessage } from 'react-intl';
+import { useIntl } from 'react-intl';
 
-import packageJson from '@/../package.json';
-import { FollowAlongAbout } from '@/components/follow-along-about';
+/** What «ذكر» is: one opening line, four short sections, and the questions. */
+const SECTIONS = ['reciter', 'mushaf', 'data', 'sources'] as const;
 
 export default function AboutPage() {
-  const currentYear = new Date().getFullYear();
-  const version = packageJson.version;
+  const { formatMessage } = useIntl();
+  const t = (id: string) => formatMessage({ id });
 
   return (
-    <div className="mt-10 flex w-full flex-col items-center justify-center bg-background text-foreground">
-      <div className="mx-auto w-full max-w-2xl">
-        <h1 className="mb-6 text-center text-3xl font-bold">
-          <FormattedMessage
-            defaultMessage="حول تطبيق Quran.us.kg"
-            id="about.title"
-          />
+    <article className="mx-auto flex w-full max-w-[760px] flex-col gap-12 px-4 pb-16 pt-10 sm:px-6 sm:pt-16">
+      <header className="flex flex-col gap-5">
+        <h1 className="font-display text-[36px] font-black leading-[1.3] text-ink sm:text-[52px]">
+          {t('about.title')}
         </h1>
+        <p className="text-lg leading-[1.9] text-ink-muted sm:text-[21px]">
+          {t('about.description')}
+        </p>
+      </header>
 
-        <div className="m-1 space-y-4 rounded p-2 ps-4 text-lg md:m-2 md:border md:border-gray-200 md:p-8 md:shadow-sm md:dark:border-gray-700">
-          <p>
-            <FormattedMessage
-              defaultMessage="Quran.us.kg هو تطبيق قرآن مفتوح المصدر صمم لتوفير تجربة استماع مثالية عبر مختلف المنصات. بُني التطبيق باستخدام تقنيات ويب حديثة لضمان:"
-              id="about.description"
-            />
-          </p>
-
-          <ul className="list-outside list-disc space-y-3 ps-8">
-            <li className="ps-2">
-              <FormattedMessage
-                defaultMessage="أداء عالي السرعة واستجابة سريعة"
-                id="about.feature.performance"
-              />
-            </li>
-            <li className="ps-2">
-              <FormattedMessage
-                defaultMessage="تصميم سريع الاستجابة لجميع أحجام الشاشات"
-                id="about.feature.responsive"
-              />
-            </li>
-            <li className="ps-2">
-              <FormattedMessage
-                defaultMessage="تلاوات من عدة مصادر مع عرض مصدر كل قارئ"
-                id="about.feature.providers"
-              />
-            </li>
-            <li className="ps-2">
-              <FormattedMessage
-                defaultMessage="تحديثات وتطوير مستمر من المجتمع المفتوح"
-                id="about.feature.community"
-              />
-            </li>
-          </ul>
-
-          <p className="mt-4">
-            <FormattedMessage
-              defaultMessage="يسعى التطبيق إلى توفير مصدر متاح للجميع ودائم للقرآن الكريم، مع الحفاظ على أعلى معايير الجودة التقنية والتصميمية."
-              id="about.mission"
-            />
-          </p>
-
-          <FollowAlongAbout />
-
-          <h2 className="mb-2 mt-6 text-2xl font-semibold">
-            <FormattedMessage
-              defaultMessage="مصادر تلاوة متعددة"
-              id="about.providers.title"
-            />
-          </h2>
-
-          <p>
-            <FormattedMessage
-              defaultMessage="يجمع التطبيق التلاوات من عدة مزودين مستقلين، منهم MP3Quran وItqan وQurani.ai ومؤسسة القرآن. يظهر مصدر كل قارئ في القائمة، ويمكنك التحكم في المصادر المفعّلة من الإعدادات."
-              id="about.providers.description1"
-            />
-          </p>
-          <p>
-            <FormattedMessage
-              defaultMessage="هؤلاء المزودون خدمات خارجية مستقلة وليسوا جزءاً من التطبيق. قد تختلف جودة الصوت والتوقيتات وإمكانية التحميل من مصدر لآخر، ويعرض التطبيق ما يدعمه كل مصدر."
-              id="about.providers.description2"
-            />
-          </p>
-        </div>
-
-        <section className="m-1 rounded p-2 ps-4 md:m-2 md:border md:border-gray-200 md:p-8 md:shadow-sm md:dark:border-gray-700">
-          <h2 className="mb-3 text-2xl font-semibold">
-            <FormattedMessage
-              defaultMessage="أسئلة شائعة"
-              id="about.faq.title"
-            />
-          </h2>
-          <div className="space-y-4">
-            {[1, 2, 3, 4].map((number) => (
-              <div key={number}>
-                <h3 className="text-lg font-semibold">
-                  <FormattedMessage id={`about.faq.q${number}`} />
-                </h3>
-                <p className="mt-1">
-                  <FormattedMessage id={`about.faq.a${number}`} />
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <div className="mt-5 flex w-full max-w-2xl items-center justify-center text-sm text-gray-600">
-          <p>
-            <FormattedMessage
-              defaultMessage="جميع الحقوق محفوظة"
-              id="about.footer.rights"
-            />
-            @ {currentYear} v{version}
-          </p>
-        </div>
+      <div className="flex flex-col gap-10">
+        {SECTIONS.map((key) => (
+          <section key={key} className="flex flex-col gap-3">
+            <h2 className="text-[22px] font-bold leading-[1.4] text-ink sm:text-2xl">
+              {t(`about.${key}.title`)}
+            </h2>
+            <p className="text-[17px] leading-[1.9] text-ink-muted">{t(`about.${key}.body`)}</p>
+          </section>
+        ))}
       </div>
-    </div>
+
+      <section className="flex flex-col gap-6 border-t border-border pt-10">
+        <h2 className="text-[22px] font-bold leading-[1.4] text-ink sm:text-2xl">
+          {t('about.faq.title')}
+        </h2>
+        <dl className="flex flex-col gap-6">
+          {[1, 2, 3, 4].map((number) => (
+            <div key={number} className="flex flex-col gap-1.5">
+              <dt className="text-[17px] font-bold text-ink">{t(`about.faq.q${number}`)}</dt>
+              <dd className="text-[17px] leading-[1.8] text-ink-muted">
+                {t(`about.faq.a${number}`)}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+    </article>
   );
 }

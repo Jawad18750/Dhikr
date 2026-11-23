@@ -10,6 +10,8 @@ import en from '@/locales/en.json';
 import type { Reciter } from '@/types';
 import { LinkSource } from '@/types';
 
+import { CardMark } from './logo-mark';
+
 const COPY = { ar, en, de } as const;
 
 /** Megabytes or gigabytes, in the page's language (Latin digits in Arabic). */
@@ -71,8 +73,9 @@ export function ReciterHero({
     <section
       data-header-tone="dark"
       aria-labelledby="reciter-title"
-      className="flex w-full flex-col gap-5 rounded-[28px] bg-hero p-4 text-on-hero sm:gap-7 sm:rounded-[36px] sm:p-7"
+      className="relative isolate flex w-full flex-col gap-5 overflow-hidden rounded-[28px] bg-hero p-4 text-on-hero sm:gap-7 sm:rounded-[36px] sm:p-7"
     >
+      <CardMark />
       <div className="flex items-center gap-4 sm:gap-7">
         <div className="h-[84px] w-[84px] shrink-0 overflow-hidden rounded-[20px] bg-on-hero/10 shadow-[0_0_0_3px_rgba(230,196,122,0.25)] sm:h-[150px] sm:w-[150px] sm:rounded-[28px] sm:shadow-[0_0_0_5px_rgba(230,196,122,0.25)]">
           {portrait ? (

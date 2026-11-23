@@ -36,3 +36,17 @@ export function LogoMark({
     </svg>
   );
 }
+
+/**
+ * The mark as a faint watermark in a card's far corner, large and cut by the card's
+ * edge, so a dark card is never just a blank field. Its card needs `relative`,
+ * `isolate` (it sits behind the content, over the card's own colour) and
+ * `overflow-hidden`.
+ */
+export function CardMark({ className = '' }: { className?: string }) {
+  return (
+    <LogoMark
+      className={`card-mark pointer-events-none absolute -z-10 -bottom-14 -end-14 h-52 w-52 text-hero-gold opacity-[0.09] sm:-bottom-20 sm:-end-20 sm:h-80 sm:w-80 ${className}`}
+    />
+  );
+}

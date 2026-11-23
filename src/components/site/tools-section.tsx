@@ -15,6 +15,8 @@ import en from '@/locales/en.json';
 import { DHIKR_AUDIO_BASE } from '@/services/reciters/dhikr.adapter';
 import { cn } from '@/utils';
 
+import { CardMark } from './logo-mark';
+
 const COPY: Record<SeoLocale, Record<string, string>> = { ar, en, de };
 
 const fill = (text: string, values: Record<string, string | number>) =>
@@ -90,8 +92,9 @@ export function ToolsSection({
       id="tools"
       data-header-tone="dark"
       aria-labelledby="tools-title"
-      className="flex scroll-mt-6 flex-col gap-7 rounded-[28px] bg-hero px-5 py-10 text-on-hero sm:rounded-[40px] sm:px-10 sm:py-14"
+      className="relative isolate flex scroll-mt-6 flex-col gap-7 overflow-hidden rounded-[28px] bg-hero px-5 py-10 text-on-hero sm:rounded-[40px] sm:px-10 sm:py-14"
     >
+      <CardMark />
       <div className="flex flex-col gap-3">
         <h2
           id="tools-title"

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { IoChevronBack, IoChevronForward } from 'react-icons/io5';
 
+import { CardMark } from '@/components/site/logo-mark';
 import { type SurahReciter, SurahReciters } from '@/components/site/surah-reciters';
 import { SURAHS } from '@/constants';
 import { getDhikrCatalogue } from '@/lib/dhikr-catalogue';
@@ -92,8 +93,9 @@ export default async function Page({ params }: Props) {
       <section
         data-header-tone="dark"
         aria-labelledby="surah-title"
-        className="flex w-full flex-col gap-5 rounded-[28px] bg-hero p-5 text-on-hero sm:gap-7 sm:rounded-[36px] sm:p-8"
+        className="relative isolate flex w-full flex-col gap-5 overflow-hidden rounded-[28px] bg-hero p-5 text-on-hero sm:gap-7 sm:rounded-[36px] sm:p-8"
       >
+        <CardMark />
         <div className="flex items-center gap-4 sm:gap-6">
         <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-hero-gold/40 text-[20px] font-bold tabular-nums text-hero-gold sm:h-20 sm:w-20 sm:text-[28px]">
           {surah.id}

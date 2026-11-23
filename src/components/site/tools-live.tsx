@@ -164,8 +164,8 @@ export function NumberingConverter({
           className="h-9 w-[72px] rounded-lg bg-white/10 px-2 text-center tabular-nums text-white outline-none focus-visible:ring-2 focus-visible:ring-gold-light/60"
         />
       </div>
-      <div className="flex items-center gap-2.5">
-        <span className="rounded-lg bg-white/10 px-2.5 py-1 tabular-nums text-white">
+      <div className="flex items-center gap-1.5 text-[13px] sm:gap-2.5 sm:text-[14px]">
+        <span className="whitespace-nowrap rounded-lg bg-white/10 px-2 py-1 tabular-nums text-white">
           {from} {surah}:{ayah}
         </span>
         <button
@@ -176,11 +176,11 @@ export function NumberingConverter({
             setFromHafs((value) => !value);
             if (next) setAyah(next);
           }}
-          className="flex h-8 w-8 items-center justify-center rounded-full text-gold-light transition-colors hover:bg-white/10"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-gold-light transition-colors hover:bg-white/10"
         >
           ⇄
         </button>
-        <span className="rounded-lg bg-white/10 px-2.5 py-1 tabular-nums text-gold-light">
+        <span className="min-w-0 truncate whitespace-nowrap rounded-lg bg-white/10 px-2 py-1 tabular-nums text-gold-light">
           {answer.length ? `${to} ${surah}:${answer.join('، ')}` : labels.none}
         </span>
       </div>

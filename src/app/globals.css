@@ -688,7 +688,74 @@ html[data-mark-dock='in'] #brand-mark-slot > :is(svg, .mark-dock) {
   background-color: rgb(255 255 255 / 0.72);
 }
 
-/* The phone menu (site-menu.tsx): the veil fades, the card drops in. */
+/* ─── The header's motion ─── */
+
+/* The bar: roomy at the top of the page, tighter once it moves
+   (header-shell.tsx sets `data-compact`). */
+.site-bar {
+  padding-block: 10px;
+  transition: padding 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.header-shell[data-compact] .site-bar {
+  padding-block: 6px;
+}
+@media (min-width: 640px) {
+  .site-bar {
+    padding-block: 16px;
+  }
+  .header-shell[data-compact] .site-bar {
+    padding-block: 9px;
+  }
+}
+
+/* On arrival its parts drop in one after another. */
+@keyframes bar-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+    filter: blur(4px);
+  }
+}
+.bar-in {
+  animation: bar-in 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* The desktop sections: a pill glides to the link in hand (site-nav.tsx),
+   the icon lifts and turns a little. */
+.site-nav-pill {
+  transition:
+    left 460ms cubic-bezier(0.22, 1, 0.36, 1),
+    width 460ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 260ms ease;
+}
+.site-nav-link {
+  transition: color 300ms ease;
+}
+.site-nav-icon {
+  display: inline-flex;
+  transition: transform 460ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.site-nav-link:hover .site-nav-icon,
+.site-nav-link:focus-visible .site-nav-icon {
+  transform: translateY(-2px) rotate(-8deg) scale(1.1);
+}
+
+/* The light/dark knob slides from the sun to the moon (theme-toggle.tsx):
+   one button (36px) and the 2px gap along. */
+.theme-knob {
+  transition:
+    transform 520ms cubic-bezier(0.34, 1.3, 0.64, 1),
+    background-color 300ms ease;
+}
+.theme-knob[data-dark] {
+  transform: translateX(38px);
+}
+[dir='rtl'] .theme-knob[data-dark] {
+  transform: translateX(-38px);
+}
+
+/* The phone menu (site-menu.tsx): the card opens out of the button as a
+   growing circle and folds back into it; its rows rise in one by one. */
 @keyframes site-menu-veil {
   from {
     opacity: 0;
@@ -696,20 +763,44 @@ html[data-mark-dock='in'] #brand-mark-slot > :is(svg, .mark-dock) {
 }
 @keyframes site-menu-card {
   from {
+    clip-path: circle(0 at var(--menu-x) var(--menu-y));
+  }
+  to {
+    clip-path: circle(150% at var(--menu-x) var(--menu-y));
+  }
+}
+@keyframes site-menu-row {
+  from {
     opacity: 0;
-    transform: translateY(-8px) scale(0.98);
+    transform: translateY(10px);
   }
 }
 .site-menu-veil {
-  animation: site-menu-veil 200ms ease-out;
+  animation: site-menu-veil 260ms ease-out both;
 }
 .site-menu-card {
-  transform-origin: top center;
-  animation: site-menu-card 260ms cubic-bezier(0.22, 1, 0.36, 1);
+  animation: site-menu-card 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.site-menu-row {
+  animation: site-menu-row 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.site-menu-veil[data-closing] {
+  animation: site-menu-veil 280ms ease-in reverse both;
+}
+.site-menu-card[data-closing] {
+  animation: site-menu-card 280ms cubic-bezier(0.55, 0, 0.75, 0.2) reverse
+    both;
 }
 @media (prefers-reduced-motion: reduce) {
+  .site-bar,
+  .site-nav-pill,
+  .theme-knob {
+    transition: none;
+  }
+  .bar-in,
   .site-menu-veil,
-  .site-menu-card {
+  .site-menu-card,
+  .site-menu-row {
     animation: none;
   }
 }

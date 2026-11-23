@@ -8,8 +8,9 @@ import { useTheme } from '@/hooks/use-theme';
 import { cn } from '@/utils';
 
 /**
- * The header's one appearance control: a pill with a sun and a moon, the
- * current mode shown filled. Light is the default.
+ * The one appearance control: a pill with a sun and a moon and a knob that
+ * slides to the chosen one; the sun turns as it goes, the moon swings in.
+ * Light is the default.
  */
 export function ThemeToggle() {
   const { resolvedMode, setMode } = useTheme();
@@ -19,14 +20,20 @@ export function ThemeToggle() {
 
   const dark = mounted && resolvedMode === 'dark';
   const option =
-    'flex h-9 w-9 items-center justify-center rounded-full transition-colors duration-200';
+    'relative z-10 flex h-9 w-9 items-center justify-center rounded-full transition-colors duration-300';
 
   return (
     <div
       role="group"
       aria-label={formatMessage({ id: 'nav.appearance' })}
-      className="flex items-center gap-0.5 rounded-full border border-border p-1"
+      className="relative flex items-center gap-0.5 rounded-full border border-border p-1 transition-colors duration-300"
     >
+      {/* The knob: under the sun in light, under the moon in dark. */}
+      <span
+        aria-hidden="true"
+        className="theme-knob absolute start-1 top-1 h-9 w-9 rounded-full bg-ink"
+        data-dark={dark ? '' : undefined}
+      />
       <button
         type="button"
         onClick={() => setMode('light')}
@@ -34,10 +41,16 @@ export function ThemeToggle() {
         aria-label={formatMessage({ id: 'nav.lightMode' })}
         className={cn(
           option,
-          dark ? 'text-ink-muted hover:text-ink' : 'bg-ink text-background'
+          dark ? 'text-ink-muted hover:text-ink' : 'text-background'
         )}
       >
-        <IoSunnyOutline className="h-[18px] w-[18px]" aria-hidden="true" />
+        <IoSunnyOutline
+          className={cn(
+            'h-[18px] w-[18px] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]',
+            dark ? '-rotate-90 scale-90' : 'rotate-0'
+          )}
+          aria-hidden="true"
+        />
       </button>
       <button
         type="button"
@@ -46,10 +59,16 @@ export function ThemeToggle() {
         aria-label={formatMessage({ id: 'nav.darkMode' })}
         className={cn(
           option,
-          dark ? 'bg-ink text-background' : 'text-ink-muted hover:text-ink'
+          dark ? 'text-background' : 'text-ink-muted hover:text-ink'
         )}
       >
-        <IoMoonOutline className="h-[18px] w-[18px]" aria-hidden="true" />
+        <IoMoonOutline
+          className={cn(
+            'h-[18px] w-[18px] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]',
+            dark ? 'rotate-0' : 'rotate-[30deg] scale-90'
+          )}
+          aria-hidden="true"
+        />
       </button>
     </div>
   );

@@ -15,13 +15,12 @@ import { HeaderShell } from './header-shell';
 import { LogoMark } from './logo-mark';
 import { MARK_SLOT_ID } from './logo-mark-3d';
 import { type MenuLink, SiteMenu } from './site-menu';
+import { SiteNav } from './site-nav';
 import { ThemeToggle } from './theme-toggle';
 import { Wordmark } from './wordmark';
 
 const COPY = { ar, en, de } as const;
 
-const navLink =
-  'flex items-center gap-1.5 whitespace-nowrap text-ink transition-colors hover:text-primary';
 
 /** The site's top bar: the wordmark, then the sections and the light/dark
  * pill, or on a phone a menu button that holds them. */
@@ -49,11 +48,11 @@ export function SiteHeader({ locale }: { locale: SeoLocale }) {
 
   return (
     <HeaderShell>
-      <header className="mx-auto flex w-full max-w-[1360px] items-center justify-between gap-4 px-4 py-2.5 sm:gap-8 sm:px-6 sm:py-4">
+      <header className="site-bar mx-auto flex w-full max-w-[1360px] items-center justify-between gap-4 px-4 sm:gap-8 sm:px-6">
         <Link
           href={home}
           aria-label={t['nav.home']}
-          className="flex items-center text-ink"
+          className="bar-in flex items-center text-ink transition-colors duration-300"
         >
           {/* The 3D mark lands here from the home hero; elsewhere the flat one
               shows. The slot's width holds the 10px gap to the wordmark. */}
@@ -68,23 +67,18 @@ export function SiteHeader({ locale }: { locale: SeoLocale }) {
         </Link>
 
         {/* Wider screens: the sections and the light/dark pill in the bar. */}
-        <nav
-          aria-label={t['nav.reciters']}
-          className="ms-auto hidden gap-7 text-base font-medium sm:flex"
+        <div
+          className="bar-in ms-auto hidden sm:block"
+          style={{ animationDelay: '80ms' }}
         >
-          {links.map((link) => (
-            <a key={link.href} href={link.href} className={navLink}>
-              {link.icon}
-              {link.label}
-            </a>
-          ))}
-        </nav>
-        <div className="hidden sm:block">
+          <SiteNav links={links} label={t['nav.reciters']} />
+        </div>
+        <div className="bar-in hidden sm:block" style={{ animationDelay: '160ms' }}>
           <ThemeToggle />
         </div>
 
         {/* Phones: one row, everything else behind the menu button. */}
-        <div className="sm:hidden">
+        <div className="bar-in sm:hidden" style={{ animationDelay: '120ms' }}>
           <SiteMenu links={links} />
         </div>
       </header>

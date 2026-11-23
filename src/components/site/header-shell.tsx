@@ -9,16 +9,20 @@ type Tone = 'top' | 'light' | 'dark';
  * over a section marked `data-header-tone="dark"` (the black cards) it turns
  * to dark glass with light ink, over the page to light glass with dark ink,
  * and at the very top it is clear. Before the script runs it is light glass,
- * so it is never clear over a photo.
+ * so it is never clear over a photo. Once the page moves it also tightens
+ * (`data-compact`, globals.css).
  */
 export function HeaderShell({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
   const [tone, setTone] = useState<Tone>('light');
+  const [compact, setCompact] = useState(false);
 
   useEffect(() => {
     const shell = ref.current;
     if (!shell) return;
     const update = () => {
+      // Once the page moves, the bar tightens.
+      setCompact(window.scrollY > 24);
       if (window.scrollY < 4) {
         setTone('top');
         return;
@@ -46,6 +50,7 @@ export function HeaderShell({ children }: { children: React.ReactNode }) {
     <div
       ref={ref}
       data-tone={tone}
+      data-compact={compact ? '' : undefined}
       className="header-shell sticky top-0 z-50 w-full transition-[background-color,box-shadow] duration-300"
     >
       {children}

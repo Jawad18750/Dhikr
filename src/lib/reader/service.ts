@@ -57,6 +57,17 @@ export async function readerStripHit(surah: number, height: number, x: number, y
   } | null>;
 }
 
+/** The printed surah names (all 114 stacked in cells, or one) and a cell's width. */
+export async function readerNames(
+  height: number,
+  surah?: number
+): Promise<{ svg: string; cell: number }> {
+  const params: Record<string, string | number> = { height };
+  if (surah) params.surah = surah;
+  const response = await call('/names', params);
+  return { svg: await response.text(), cell: Number(response.headers.get('x-name-cell')) };
+}
+
 export async function readerStars(surah: number): Promise<Record<string, number>> {
   return (await call('/stars', { surah, zoom: 1.6 })).json() as Promise<Record<string, number>>;
 }

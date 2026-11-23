@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { IoChevronBack, IoChevronForward } from 'react-icons/io5';
 
 import { CardMark } from '@/components/site/logo-mark';
+import { SurahName } from '@/components/site/surah-name';
 import { type SurahReciter, SurahReciters } from '@/components/site/surah-reciters';
 import { SURAHS } from '@/constants';
 import { getDhikrCatalogue } from '@/lib/dhikr-catalogue';
@@ -102,7 +103,7 @@ export default async function Page({ params }: Props) {
         </span>
         <div className="flex min-w-0 flex-1 flex-col gap-2 sm:gap-3">
           <h1 id="surah-title" className="font-display text-[30px] font-black leading-[1.25] sm:text-[52px]">
-            {ar['surah.title'].replace('{name}', name)}
+            <SurahName surah={surah.id} name={ar['surah.title'].replace('{name}', name)} size={54} alone />
           </h1>
           <span className="flex flex-wrap gap-1.5 text-[13px] sm:gap-2 sm:text-[15px]">
             <span className={chip}>{surah.revelationType === 'Meccan' ? ar['library.meccan'] : ar['library.medinan']}</span>

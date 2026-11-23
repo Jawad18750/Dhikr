@@ -20,6 +20,7 @@ import type { Reciter } from '@/types';
 import { cn, getSurahDisplayName, normalizeArabicText } from '@/utils';
 
 import { clock, type PlayerAlbum, readResume, type Resume, usePlayer } from './site-player';
+import { SurahName } from './surah-name';
 
 /**
  * A reciter's whole library: every surah he has, searchable, each with its
@@ -365,9 +366,12 @@ export function ReciterLibrary({
                       {row.id}
                     </span>
                     <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                      <span className="truncate text-[18px] font-bold leading-snug text-ink">
-                        {row.name}
-                      </span>
+                      <SurahName
+                        surah={row.id}
+                        name={row.name}
+                        size={38}
+                        className="text-[18px] font-bold leading-[38px] text-ink"
+                      />
                       <span className="truncate text-[13px] text-ink-subtle">
                         {[
                           row.meccan !== null &&

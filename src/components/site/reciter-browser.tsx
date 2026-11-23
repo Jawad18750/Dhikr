@@ -16,6 +16,7 @@ import { flagOf } from '@/lib/reciter-countries';
 import { cn, getSurahDisplayName, normalizeArabicText } from '@/utils';
 
 import { ReciterCard } from './reciter-card';
+import { SurahName } from './surah-name';
 
 type Mode = 'reciter' | 'surah';
 
@@ -236,9 +237,18 @@ export function ReciterBrowser({ reciters }: { reciters: CatalogueReciter[] }) {
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-surface-sunken text-[15px] font-bold text-ink">
                     {surah.id}
                   </span>
-                  <span className="flex-1 text-lg font-bold leading-[1.4] text-ink">
-                    {getSurahDisplayName(surah, locale)}
-                  </span>
+                  {locale === 'ar' ? (
+                    <SurahName
+                      surah={surah.id}
+                      name={getSurahDisplayName(surah, locale)}
+                      size={38}
+                      className="flex-1 text-lg font-bold leading-[38px] text-ink"
+                    />
+                  ) : (
+                    <span className="flex-1 text-lg font-bold leading-[1.4] text-ink">
+                      {getSurahDisplayName(surah, locale)}
+                    </span>
+                  )}
                   <IoChevronBack
                     className="h-5 w-5 shrink-0 text-ink-muted ltr:rotate-180"
                     aria-hidden="true"

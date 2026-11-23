@@ -41,6 +41,11 @@ browser, never in a reusable form, and never fast enough to collect the whole bo
   answers with the word there, which the page turns into a time to seek to. The server never
   answers "where is word N".
 
+- **Surah names:** the 114 names as the book prints them, cut from the الجماهيرية print
+  (the apps' own labels, sealed on the server like the rest). The browser gets one PNG at
+  its screen's size, a cell per surah, and the cell's width: pixels used as a mask, never
+  the shapes.
+
 ## Pace and abuse
 
 - A signed, HttpOnly, Secure, SameSite=Strict session cookie scoped to the reader's API

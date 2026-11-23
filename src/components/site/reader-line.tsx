@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 
+import { openReaderSession } from '@/lib/reader/session';
 import { cn } from '@/utils';
 
 /**
@@ -22,14 +23,7 @@ type Lit = { bitmap: ImageBitmap; tile: number; centre: number };
 /** How long a look along the line holds before it glides back to the recited word. */
 const LOOK_MS = 4000;
 
-let session: Promise<boolean> | null = null;
-const openSession = () =>
-  (session ??= fetch('/api/reader/session', { method: 'POST', credentials: 'same-origin' })
-    .then((r) => r.ok)
-    .catch(() => {
-      session = null;
-      return false;
-    }));
+const openSession = openReaderSession;
 
 const tileCache = new Map<string, Promise<ImageBitmap | null>>();
 function tileBitmap(url: string) {

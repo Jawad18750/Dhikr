@@ -101,7 +101,7 @@ export const denied = (status: number) =>
 export function gate(
   request: Request,
   cookie: string | undefined,
-  kind: 'layout' | 'row' | 'lit' | 'hit'
+  kind: 'layout' | 'row' | 'lit' | 'hit' | 'names'
 ): { session: string } | { response: NextResponse } {
   if (!sameOrigin(request)) return { response: denied(403) };
   const session = readSession(cookie);
@@ -109,8 +109,14 @@ export function gate(
   const address = clientAddress(request);
   // Per minute per session, and per hour per address: roomy for one listener, far
   // short of what collecting the book would take.
-  const minute: Record<typeof kind, number> = { layout: 30, row: 240, lit: 600, hit: 60 };
-  const hour: Record<typeof kind, number> = { layout: 400, row: 4000, lit: 12000, hit: 1200 };
+  const minute: Record<typeof kind, number> = { layout: 30, row: 240, lit: 600, hit: 60, names: 30 };
+  const hour: Record<typeof kind, number> = {
+    layout: 400,
+    row: 4000,
+    lit: 12000,
+    hit: 1200,
+    names: 600,
+  };
   if (
     !allow(`${kind}:s:${session}`, minute[kind], 60_000) ||
     !allow(`${kind}:a:${address}`, hour[kind], 3600_000)

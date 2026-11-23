@@ -2,7 +2,8 @@
  * Each reciter's country (ISO 3166 code), by moshaf slug, for the country
  * filter. Researched 2026-11-23 from public sources (way2quran, Midad, LANA,
  * archive.org, the reciters' own pages) and approved by the owner; a reciter
- * left out has no checked country and simply gets no country chip.
+ * left out has no checked country and simply gets no country chip. أبوبكر علي:
+ * Libyan, on the owner's word.
  */
 export const RECITER_COUNTRY: Readonly<Record<string, string>> = {
   ali_alyounse: 'LY',
@@ -38,6 +39,7 @@ export const RECITER_COUNTRY: Readonly<Record<string, string>> = {
   salah_albaji: 'LY',
   abdulbaset_dabbaj: 'LY',
   khalifa_bitro: 'LY',
+  abubakr_ali: 'LY',
   saber_abdulhakam: 'EG',
   arafat_aljumaii: 'TN',
   shaya_altamimi: 'KW',

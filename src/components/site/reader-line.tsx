@@ -260,7 +260,8 @@ export function ReaderLine({
   useEffect(() => {
     if (!strip || !viewWidth) return;
     setGliding(false);
-    setCentre(litCentreRef.current ?? Math.max(viewWidth / 2, width - viewWidth / 2));
+    // Its first word clear of the fade at the right edge (globals.css: 9% of the view).
+    setCentre(litCentreRef.current ?? width - viewWidth / 2 + viewWidth * 0.12 + 8);
   }, [strip, viewWidth, width]);
 
   // Follow the recited word, unless the reader is looking elsewhere along the line.

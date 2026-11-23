@@ -567,8 +567,8 @@ export function ReciterLibrary({
         }}
       />
 
-      {/* Room under the list for the line, when it rides on the player. */}
-      {reading && current && <div aria-hidden="true" className="h-24 w-full" />}
+      {/* Room under the list for the player (taller with the line on it). */}
+      {current && <div aria-hidden="true" className={cn('w-full', reading ? 'h-24' : 'h-0')} />}
       {current && (
         <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[70] px-3 pb-3 sm:px-6 sm:pb-5">
           <div className="player-bar pointer-events-auto mx-auto flex max-w-[920px] flex-col gap-2 overflow-hidden rounded-[24px] bg-hero px-4 pb-3 pt-3 text-on-hero shadow-[0_18px_50px_rgb(0_0_0/0.25)] sm:px-5">
@@ -587,47 +587,13 @@ export function ReciterLibrary({
                 />
               </div>
             )}
-            <div className="flex items-center gap-3">
-              <button
-                type="button"
-                onClick={toggle}
-                aria-label={formatMessage({ id: playing ? 'library.pause' : 'library.play' })}
-                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-b from-gold-light to-gold text-[#1b1712] transition-transform active:scale-90"
-              >
-                {playing ? (
-                  <IoPause className="h-5 w-5" aria-hidden="true" />
-                ) : (
-                  <IoPlay className="h-5 w-5 translate-x-[-1px] rtl:translate-x-[1px]" aria-hidden="true" />
-                )}
-              </button>
-              <span className="flex min-w-0 flex-1 flex-col">
-                <span className="truncate text-[16px] font-bold">{current.name}</span>
-                <span className="truncate text-[13px] text-on-hero/60">{reciter.name}</span>
+            {/* One row: the names, the controls with play in the middle, the mushaf. */}
+            <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">
+              <span className="flex min-w-0 flex-col">
+                <span className="truncate text-[15px] font-bold sm:text-[16px]">{current.name}</span>
+                <span className="truncate text-[12px] text-on-hero/60 sm:text-[13px]">{reciter.name}</span>
               </span>
-              <span className="flex items-center gap-0.5">
-                <button
-                  type="button"
-                  onClick={() => setReading((open) => !open)}
-                  aria-pressed={reading}
-                  aria-label={formatMessage({ id: 'reader.open' })}
-                  className={cn(
-                    'flex h-10 w-10 items-center justify-center gap-1.5 rounded-full text-[14px] font-bold transition-colors sm:w-auto sm:px-3',
-                    reading
-                      ? 'bg-on-hero text-hero'
-                      : 'bg-on-hero/10 text-on-hero hover:bg-on-hero/20'
-                  )}
-                >
-                  <IoBookOutline className="h-[17px] w-[17px]" aria-hidden="true" />
-                  <span className="hidden sm:inline">{formatMessage({ id: 'reader.open' })}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={cycleSpeed}
-                  aria-label={formatMessage({ id: 'library.speed' })}
-                  className="hidden h-10 min-w-10 items-center justify-center rounded-full px-2 text-[13px] font-bold tabular-nums text-on-hero/80 transition-colors hover:bg-on-hero/10 hover:text-on-hero sm:flex"
-                >
-                  {speed}×
-                </button>
+              <div className="flex items-center justify-center gap-0.5 sm:gap-1">
                 <button
                   type="button"
                   onClick={() => setRepeat((on) => !on)}
@@ -635,7 +601,7 @@ export function ReciterLibrary({
                   aria-label={formatMessage({ id: 'library.repeat' })}
                   className={cn(
                     'hidden h-10 w-10 items-center justify-center rounded-full transition-colors hover:bg-on-hero/10 sm:flex',
-                    repeat ? 'text-hero-gold' : 'text-on-hero/80 hover:text-on-hero'
+                    repeat ? 'text-hero-gold' : 'text-on-hero/75 hover:text-on-hero'
                   )}
                 >
                   <IoRepeat className="h-[19px] w-[19px]" aria-hidden="true" />
@@ -644,43 +610,80 @@ export function ReciterLibrary({
                   type="button"
                   onClick={() => seekBy(-10)}
                   aria-label={formatMessage({ id: 'library.back10' })}
-                  className="hidden h-10 w-10 items-center justify-center rounded-full text-on-hero/80 transition-colors hover:bg-on-hero/10 hover:text-on-hero sm:flex"
+                  className="hidden h-9 w-9 items-center justify-center rounded-full text-on-hero/75 transition-colors hover:bg-on-hero/10 hover:text-on-hero sm:flex sm:h-10 sm:w-10"
                 >
                   <IoPlayForwardOutline className="h-[18px] w-[18px] ltr:rotate-180" aria-hidden="true" />
                 </button>
                 <button
                   type="button"
-                  onClick={() => seekBy(10)}
-                  aria-label={formatMessage({ id: 'library.fwd10' })}
-                  className="hidden h-10 w-10 items-center justify-center rounded-full text-on-hero/80 transition-colors hover:bg-on-hero/10 hover:text-on-hero sm:flex"
+                  onClick={previous}
+                  aria-label={formatMessage({ id: 'library.prev' })}
+                  className="flex h-9 w-9 items-center justify-center rounded-full text-on-hero/75 transition-colors hover:bg-on-hero/10 hover:text-on-hero sm:h-10 sm:w-10"
                 >
-                  <IoPlayBackOutline className="h-[18px] w-[18px] ltr:rotate-180" aria-hidden="true" />
+                  <IoPlaySkipForward className="h-[18px] w-[18px] ltr:rotate-180" aria-hidden="true" />
                 </button>
                 <button
                   type="button"
-                  onClick={previous}
-                  aria-label={formatMessage({ id: 'library.prev' })}
-                  className="flex h-10 w-10 items-center justify-center rounded-full text-on-hero/80 transition-colors hover:bg-on-hero/10 hover:text-on-hero"
+                  onClick={toggle}
+                  aria-label={formatMessage({ id: playing ? 'library.pause' : 'library.play' })}
+                  className="mx-0.5 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-b from-gold-light to-gold text-[#1b1712] transition-transform active:scale-90 sm:mx-1.5"
                 >
-                  <IoPlaySkipForward className="h-[18px] w-[18px] ltr:rotate-180" aria-hidden="true" />
+                  {playing ? (
+                    <IoPause className="h-5 w-5" aria-hidden="true" />
+                  ) : (
+                    <IoPlay className="h-5 w-5 translate-x-[-1px] rtl:translate-x-[1px]" aria-hidden="true" />
+                  )}
                 </button>
                 <button
                   type="button"
                   onClick={next}
                   disabled={index === null || index + 1 >= playlist.length}
                   aria-label={formatMessage({ id: 'library.next' })}
-                  className="flex h-10 w-10 items-center justify-center rounded-full text-on-hero/80 transition-colors hover:bg-on-hero/10 hover:text-on-hero disabled:opacity-30"
+                  className="flex h-9 w-9 items-center justify-center rounded-full text-on-hero/75 transition-colors hover:bg-on-hero/10 hover:text-on-hero sm:h-10 sm:w-10 disabled:opacity-30"
                 >
                   <IoPlaySkipBack className="h-[18px] w-[18px] ltr:rotate-180" aria-hidden="true" />
                 </button>
+                <button
+                  type="button"
+                  onClick={() => seekBy(10)}
+                  aria-label={formatMessage({ id: 'library.fwd10' })}
+                  className="hidden h-9 w-9 items-center justify-center rounded-full text-on-hero/75 transition-colors hover:bg-on-hero/10 hover:text-on-hero sm:flex sm:h-10 sm:w-10"
+                >
+                  <IoPlayBackOutline className="h-[18px] w-[18px] ltr:rotate-180" aria-hidden="true" />
+                </button>
+                <button
+                  type="button"
+                  onClick={cycleSpeed}
+                  aria-label={formatMessage({ id: 'library.speed' })}
+                  className="hidden h-10 w-10 items-center justify-center rounded-full text-[13px] font-bold tabular-nums text-on-hero/75 transition-colors hover:bg-on-hero/10 hover:text-on-hero sm:flex"
+                >
+                  {speed}×
+                </button>
+              </div>
+              <span className="flex items-center justify-end gap-1">
                 <a
                   href={current.link}
                   download
                   aria-label={formatMessage({ id: 'library.download' })}
-                  className="hidden h-10 w-10 items-center justify-center rounded-full text-on-hero/80 transition-colors hover:bg-on-hero/10 hover:text-on-hero sm:flex"
+                  className="hidden h-9 w-9 items-center justify-center rounded-full text-on-hero/75 transition-colors hover:bg-on-hero/10 hover:text-on-hero sm:flex sm:h-10 sm:w-10"
                 >
                   <IoCloudDownloadOutline className="h-[18px] w-[18px]" aria-hidden="true" />
                 </a>
+                <button
+                  type="button"
+                  onClick={() => setReading((open) => !open)}
+                  aria-pressed={reading}
+                  aria-label={formatMessage({ id: 'reader.open' })}
+                  className={cn(
+                    'flex h-9 w-9 items-center justify-center gap-1.5 rounded-full text-[14px] font-bold transition-colors sm:h-10 sm:w-auto sm:px-3',
+                    reading
+                      ? 'bg-on-hero text-hero'
+                      : 'bg-on-hero/10 text-on-hero hover:bg-on-hero/20'
+                  )}
+                >
+                  <IoBookOutline className="h-[17px] w-[17px]" aria-hidden="true" />
+                  <span className="hidden sm:inline">{formatMessage({ id: 'reader.open' })}</span>
+                </button>
               </span>
             </div>
             <div className="flex items-center gap-3 text-[12px] tabular-nums text-on-hero/60">

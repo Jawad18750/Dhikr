@@ -102,7 +102,7 @@ export function ReaderLine({
   const [dpr, setDpr] = useState(1);
   /** The line's height on the screen (CSS px); the picture is drawn at its density. */
   const [size, setSize] = useState<number | null>(null);
-  const [strip, setStrip] = useState<Strip | null>(null);
+  const [held, setStrip] = useState<Strip | null>(null);
   const [timings, setTimings] = useState<Timing[]>([]);
   const [lit, setLit] = useState<{ ayah: number; word: number } | null>(null);
   const [dark, setDark] = useState(false);
@@ -139,6 +139,8 @@ export function ReaderLine({
   // The player card is the page reversed (black on a light page, white on a dark one), and
   // the ink is drawn for the card.
   const theme = dark ? 'light' : 'dark';
+  // The line in hand, only once it is the one for this size (never a stale one for a render).
+  const strip = held && held.height === pixels ? held : null;
 
   useEffect(() => {
     if (!pixels) return;

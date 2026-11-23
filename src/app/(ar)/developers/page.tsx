@@ -31,6 +31,7 @@ const TOC: ContentsItem[] = [
   { id: 'tafsir', title: 'التفاسير', group: 'المرجع' },
   { id: 'ayah', title: 'دراسة الآية', group: 'المرجع' },
   { id: 'library', title: 'المكتبة', group: 'المرجع' },
+  { id: 'mawsuah', title: 'التفسير الموضوعي', group: 'المرجع' },
   { id: 'errors', title: 'الأخطاء', group: 'المرجع' },
   { id: 'guide-ayah', title: 'تظليل الآية مع التلاوة', group: 'دروس' },
   { id: 'guide-words', title: 'تظليل كلمة كلمة', group: 'دروس' },
@@ -174,6 +175,7 @@ export default function Page() {
             ['/tafsir/{id}/{surah}', 'التفاسير', 'تسعة تفاسير كاملة على آيات قالون.'],
             ['/ayah/{surah}/{ayah}', 'دراسة الآية', 'المعاني والأسباب والبلاغة والأحكام والإعراب والتدبّر، من موسوعة quranpedia.'],
             ['/library/{book}/{section}', 'المكتبة', 'كتب التجويد والرسم والضبط والمتون، نصًّا مقسّمًا.'],
+            ['/mawsuah/{id}', 'التفسير الموضوعي', '333 موضوعًا من موسوعة التفسير الموضوعي، بنصها وحواشيها.'],
           ]}
         />
       </Section>
@@ -475,6 +477,28 @@ GET /numbering/qalun/1/1
         </p>
       </Section>
 
+      <Section id="mawsuah" title="التفسير الموضوعي">
+        <Endpoint path="/mawsuah" />
+        <p className={p}>
+          أبواب موسوعة التفسير الموضوعي (مركز تفسير للدراسات القرآنية) وموضوعاتها، بإذن خطي من الناشر:{' '}
+          <C>{'{ title, publisher, sections: [{ id, title, topics: [{ id, title, parts, page }] }] }'}</C>.
+        </p>
+        <Endpoint path="/mawsuah/{id}" />
+        <p className={p}>
+          موضوع كامل كما في تطبيقاتنا: <C>{'{ id, section, title, blocks, notes, page }'}</C>. كل كتلة لها نوع{' '}
+          <C>k</C>: عنوان <C>h</C> (ومستواه <C>l</C>)، وفقرة <C>p</C>، واقتباس <C>q</C>، وشعر <C>v</C>، وإحالة{' '}
+          <C>x</C>، وقائمة <C>l</C> (<C>items</C>)، وجدول <C>t</C> (<C>rows</C>). ونص الكتلة قطع (<C>r</C>): نص عادي،
+          أو <C>{'["q", نص الآية]'}</C>، أو <C>{'["a", السورة, من, إلى, التسمية]'}</C> بترقيم حفص، أو{' '}
+          <C>{'["f", رقم الحاشية]'}</C>.
+        </p>
+        <Code>{`GET /mawsuah/226
+{ "id": 226, "section": "السنن الإلهية", "title": "الابتلاء",
+  "blocks": [{ "k": "h", "l": 1, "r": ["مفهوم الابتلاء"] },
+             { "k": "p", "r": ["قال تعالى: ", ["q", "…"], " ", ["a", 2, 155, 155, "[البقرة: ١٥٥]"]] }],
+  "notes": [{ "n": 1, "r": ["مقاييس اللغة، ابن فارس ١/ ٢٩٢."] }] }`}</Code>
+        <p className={p}>حوّل أرقام الاستشهادات إلى آياتنا بـ<C>/numbering/hafs</C>، واذكر الموسوعة وناشرها بجوار ما تعرضه منها.</p>
+      </Section>
+
       <Section id="errors" title="الأخطاء">
         <p className={p}>كل خطأ يجيب بهذا الشكل، مع رمز ثابت تبني عليه:</p>
         <Code>{`{ "error": { "code": "not_found",
@@ -597,7 +621,7 @@ for s in reciter["surahs"]:
       <Section id="changelog" title="سجل التغييرات">
         <ul className="flex flex-col gap-2.5">
           {[
-            ['2026-11-24', 'التفاسير (/tafsir)، ودراسة الآية (/ayah)، والمكتبة (/library).'],
+            ['2026-11-24', 'التفاسير (/tafsir)، ودراسة الآية (/ayah)، والمكتبة (/library)، والتفسير الموضوعي (/mawsuah).'],
             ['2026-11-23', 'نص القرآن برواية قالون (/text) ومحوّل الترقيم (/numbering).'],
             ['2026-11-23', 'الإصدار 1: القرّاء، وتوقيت الآيات والكلمات، بمفتاح شخصي.'],
           ].map(([date, what]) => (

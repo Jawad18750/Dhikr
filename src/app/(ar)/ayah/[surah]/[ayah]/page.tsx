@@ -5,6 +5,7 @@ import { IoChevronBack, IoChevronForward } from 'react-icons/io5';
 
 import { AyahInk } from '@/components/site/ayah-ink';
 import { SURAHS } from '@/constants';
+import { topicsForAyah } from '@/lib/mawsuah';
 import { qalunSurah } from '@/lib/qalun-text';
 import { buildPageMetadata } from '@/lib/seo/metadata';
 import { type Study, studyCredits, studyFor } from '@/lib/study';
@@ -160,6 +161,7 @@ export default async function Page({ params }: Props) {
   const study = found?.study ?? {};
   const present = SECTIONS.filter((s) => (study[s.key]?.length ?? 0) > 0);
   const credits = studyCredits();
+  const mawsuah = topicsForAyah(n, a.ayah);
   const link = 'flex h-11 items-center gap-1.5 rounded-full border border-border px-4 text-[15px] font-bold text-ink hover:border-border-strong';
 
   return (
@@ -189,7 +191,7 @@ export default async function Page({ params }: Props) {
             </Link>
           ))}
         </div>
-        {present.length > 0 && (
+        {(present.length > 0 || mawsuah.length > 0) && (
           <nav aria-label="أقسام الصفحة" className="flex flex-wrap gap-1.5 border-t border-border pt-4">
             {present.map((s) => (
               <a
@@ -200,11 +202,16 @@ export default async function Page({ params }: Props) {
                 {s.title} <span className="font-normal text-ink-subtle">{study[s.key]?.length}</span>
               </a>
             ))}
+            {mawsuah.length > 0 && (
+              <a href="#mawsuah" className="rounded-full bg-surface-sunken px-3 py-1.5 text-[13.5px] font-bold text-ink hover:bg-border">
+                التفسير الموضوعي <span className="font-normal text-ink-subtle">{mawsuah.length}</span>
+              </a>
+            )}
           </nav>
         )}
       </header>
 
-      {present.length === 0 && <p className="text-[16px] text-ink-muted">لا مواد لهذه الآية بعد.</p>}
+      {present.length === 0 && mawsuah.length === 0 && <p className="text-[16px] text-ink-muted">لا مواد لهذه الآية بعد.</p>}
 
       {present.map((s) => (
         <section key={s.key} id={s.key} className="flex scroll-mt-24 flex-col gap-3">
@@ -213,6 +220,25 @@ export default async function Page({ params }: Props) {
           {s.credit && credits[s.credit] && <p className="text-[13px] leading-[1.8] text-ink-subtle">{credits[s.credit]}</p>}
         </section>
       ))}
+
+      {mawsuah.length > 0 && (
+        <section id="mawsuah" className="flex scroll-mt-24 flex-col gap-3">
+          <h2 className="font-display text-[22px] font-black text-ink sm:text-[26px]">في موسوعة التفسير الموضوعي</h2>
+          <ul className="flex flex-col divide-y divide-border overflow-hidden rounded-[18px] border border-border bg-surface">
+            {mawsuah.map((m) => (
+              <li key={`${m.id}-${m.heading}`}>
+                <Link
+                  href={`/mawsuah/${m.id}/${m.heading + 1}`}
+                  className="flex flex-col gap-0.5 px-4 py-3 transition-colors hover:bg-surface-sunken/60"
+                >
+                  <span className="text-[16px] font-bold text-ink">{m.title}</span>
+                  {m.headingTitle && <span className="text-[14px] text-ink-muted">{m.headingTitle}</span>}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <nav aria-label="الآيات" className="flex items-center justify-between gap-2 border-t border-border pt-5">
         {a.ayah > 1 ? (

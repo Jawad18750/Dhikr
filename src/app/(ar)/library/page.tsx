@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { CardMark } from '@/components/site/logo-mark';
 import { libraryIndex } from '@/lib/library';
 import { PDF_BOOKS } from '@/lib/library-pdfs';
+import { mawsuahIndex } from '@/lib/mawsuah';
 import { buildPageMetadata } from '@/lib/seo/metadata';
 import { libraryIdOf, tafsirs } from '@/lib/tafsir';
 
@@ -22,6 +23,7 @@ const number = new Intl.NumberFormat('ar-u-nu-latn');
 /** Every book the apps carry, by subject, each to its own page. */
 export default function Page() {
   const { categories: known, books } = libraryIndex();
+  const mawsuah = mawsuahIndex();
   // The printed editions we have only as PDF; the mutun are a subject of their own.
   const categories = [
     ...known,
@@ -44,6 +46,24 @@ export default function Page() {
           {number.format(books.length + PDF_BOOKS.length)} كتابًا و{number.format(tafsirs().length)} تفاسير كاملة
         </span>
       </section>
+
+      {mawsuah && (
+        <Link
+          href="/mawsuah"
+          className="group flex flex-col gap-2 rounded-[24px] border border-border bg-surface p-5 transition-colors hover:border-border-strong sm:flex-row sm:items-center sm:justify-between sm:p-6"
+        >
+          <span className="flex flex-col gap-1">
+            <span className="font-display text-[22px] font-black text-ink sm:text-[26px]">{mawsuah.title_ar}</span>
+            <span className="text-[15px] leading-[1.8] text-ink-muted">
+              {number.format(mawsuah.sections.reduce((n, s) => n + s.topics.length, 0))} موضوعًا في{' '}
+              {number.format(mawsuah.sections.length)} بابًا، من {mawsuah.publisher_ar}
+            </span>
+          </span>
+          <span className="self-start rounded-full bg-ink px-4 py-2 text-[14px] font-bold text-background sm:self-center">
+            تصفّح الموسوعة
+          </span>
+        </Link>
+      )}
 
       {categories.map((category) => (
         <section key={category.id} aria-labelledby={`category-${category.id}`} className="flex flex-col gap-4">

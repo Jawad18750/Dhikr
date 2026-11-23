@@ -20,7 +20,7 @@ Arabic documentation: https://dhikr.ly/developers
 4. Response shape
 5. Concepts and numbering
 6. Endpoints: /reciters, /reciters/{slug}, /timings, /word-timings, /text, /numbering,
-   /tafsir, /ayah, /library
+   /tafsir, /ayah, /library, /mawsuah
 7. Errors
 8. Guides: highlight the recited ayah; word by word; Hafs tafsir beside a Qalun ayah;
    download a whole recitation
@@ -192,6 +192,18 @@ The books on tajwid, orthography, ayah counting and the mutun, as text.
 - \`/library/{book}\` → \`{ id, category, title, author, source, sections: [{ section, chapter, title, headings }] }\`
 - \`/library/{book}/{section}\` → \`{ book, section, of, chapter, title, blocks: [{ type, text, page?, level? }] }\`
 
+### GET /mawsuah, /mawsuah/{id}
+موسوعة التفسير الموضوعي (Tafsir Center for Quranic Studies), published with the
+publisher's written permission: 333 Quranic topics in 18 sections.
+- \`/mawsuah\` → \`{ title, publisher, sections: [{ id, title, topics: [{ id, title, parts, page }] }] }\`
+- \`/mawsuah/{id}\` → \`{ id, section, title, blocks, notes, page }\`
+
+Each block has a kind \`k\`: heading \`h\` (level \`l\`), paragraph \`p\`, quote \`q\`, poetry
+\`v\`, cross-reference \`x\`, list \`l\` (\`items\`), table \`t\` (\`rows\`). Its text is a list
+of runs \`r\`: a plain string, \`["q", ayah text]\`, \`["a", surah, from, to, label]\` (Hafs
+numbers: convert with /numbering/hafs) or \`["f", footnote]\`. Credit the encyclopedia and its
+publisher next to what you show.
+
 ## 7. Errors
 
 \`{ "error": { "code": "...", "message": "...", "docs": "https://dhikr.ly/developers" } }\`
@@ -273,7 +285,8 @@ used; you see your own use on your account page. https://dhikr.ly/privacy
 
 ## 12. Changelog
 
-- 2026-11-24: tafsirs (/tafsir), the ayah study (/ayah) and the library (/library).
+- 2026-11-24: tafsirs (/tafsir), the ayah study (/ayah), the library (/library) and the
+  thematic encyclopedia (/mawsuah).
 - 2026-11-23: the Qalun text (/text) and the numbering converter (/numbering).
 - 2026-11-23: v1: reciters, ayah and word timings, with personal keys.
 

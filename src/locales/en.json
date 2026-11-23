@@ -277,11 +277,11 @@
   "nav.about": "About",
   "nav.otherLanguage": "العربية",
   "nav.home": "Dhikr, home",
-  "hero.badge": "Full recitations · read along",
-  "hero.title1": "Listen to the Quran,",
-  "hero.title2": "and follow each ayah in the mushaf",
-  "hero.body": "Complete recitations, with the ayah lit on the printed ink of the Jamahiriya mushaf as you listen. We start with Qalun from Nafi; other riwayat will follow.",
-  "hero.art": "Gold and green petal ornament",
+  "hero.badge": "For listeners and developers",
+  "hero.title1": "The open",
+  "hero.title2": "Quran library",
+  "hero.body": "Recitations with the mushaf, and open data and tools, growing with its team.",
+  "hero.art": "Gold and white petal ornament",
   "browse.searchLabel": "Search",
   "browse.placeholderReciter": "Search reciters",
   "browse.placeholderSurah": "Search surahs",
@@ -361,5 +361,8 @@
   "tools.apiAnswer": "200 · {count} reciters",
   "nav.appearance": "Appearance",
   "nav.menu": "Menu",
-  "nav.closeMenu": "Close menu"
+  "nav.closeMenu": "Close menu",
+  "footer.explore": "Explore",
+  "footer.more": "Dhikr",
+  "footer.rights": "© {year} Dhikr"
 }

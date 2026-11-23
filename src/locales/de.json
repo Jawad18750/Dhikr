@@ -263,11 +263,11 @@
   "nav.about": "Über uns",
   "nav.otherLanguage": "العربية",
   "nav.home": "Dhikr, Startseite",
-  "hero.badge": "Vollständige Rezitationen · mitlesen",
-  "hero.title1": "Höre den Koran",
-  "hero.title2": "und folge jeder Aya im Mushaf",
-  "hero.body": "Vollständige Rezitationen, bei denen die Aya auf der gedruckten Tinte des Jamahiriya-Mushaf aufleuchtet, während du zuhörst. Wir beginnen mit Qalun nach Nafi; weitere Riwayat folgen.",
-  "hero.art": "Ornament aus goldenen und grünen Blättern",
+  "hero.badge": "Für Hörer und Entwickler",
+  "hero.title1": "Die offene",
+  "hero.title2": "Koran-Bibliothek",
+  "hero.body": "Rezitationen mit dem Mushaf, dazu offene Daten und Werkzeuge, die mit ihrem Team wächst.",
+  "hero.art": "Ornament aus goldenen und weißen Blättern",
   "browse.searchLabel": "Suche",
   "browse.placeholderReciter": "Rezitatoren suchen",
   "browse.placeholderSurah": "Suren suchen",
@@ -347,5 +347,8 @@
   "tools.apiAnswer": "200 · {count} Rezitatoren",
   "nav.appearance": "Darstellung",
   "nav.menu": "Menü",
-  "nav.closeMenu": "Menü schließen"
+  "nav.closeMenu": "Menü schließen",
+  "footer.explore": "Entdecken",
+  "footer.more": "Dhikr",
+  "footer.rights": "© {year} Dhikr"
 }

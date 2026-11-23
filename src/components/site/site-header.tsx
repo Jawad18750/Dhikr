@@ -48,11 +48,11 @@ export function SiteHeader({ locale }: { locale: SeoLocale }) {
 
   return (
     <HeaderShell>
-      <header className="site-bar mx-auto flex w-full max-w-[1360px] items-center justify-between gap-4 px-4 sm:gap-8 sm:px-6">
+      <header className="site-bar mx-auto flex w-full max-w-[1360px] items-center justify-between gap-4 px-4 sm:grid sm:grid-cols-[1fr_auto_1fr] sm:gap-8 sm:px-6">
         <Link
           href={home}
           aria-label={t['nav.home']}
-          className="bar-in flex items-center text-ink transition-colors duration-300"
+          className="bar-in flex items-center text-ink transition-colors duration-300 sm:justify-self-start"
         >
           {/* The 3D mark lands here from the home hero; elsewhere the flat one
               shows. The slot's width holds the 10px gap to the wordmark. */}
@@ -66,14 +66,19 @@ export function SiteHeader({ locale }: { locale: SeoLocale }) {
           <span className="sr-only">{BRAND[locale]}</span>
         </Link>
 
-        {/* Wider screens: the sections and the light/dark pill in the bar. */}
+        {/* Wider screens: the sections in the middle of the bar (a three-part
+            grid, so they sit at its true centre whatever the sides weigh),
+            the light/dark pill at the end. */}
         <div
-          className="bar-in ms-auto hidden sm:block"
+          className="bar-in hidden sm:block"
           style={{ animationDelay: '80ms' }}
         >
           <SiteNav links={links} label={t['nav.reciters']} />
         </div>
-        <div className="bar-in hidden sm:block" style={{ animationDelay: '160ms' }}>
+        <div
+          className="bar-in hidden sm:block sm:justify-self-end"
+          style={{ animationDelay: '160ms' }}
+        >
           <ThemeToggle />
         </div>
 

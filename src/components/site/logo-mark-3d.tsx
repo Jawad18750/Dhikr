@@ -478,8 +478,11 @@ export function LogoMark3D({
         frame = requestAnimationFrame(loop);
         if (!document.hidden) draw(time);
       };
-      if (still) draw(0);
-      else frame = requestAnimationFrame(loop);
+      // The first frame is drawn at once, not on the browser's next
+      // animation frame, so the mark shows as soon as it is ready even where
+      // frames are held back (a background tab, a busy page).
+      draw(performance.now());
+      if (!still) frame = requestAnimationFrame(loop);
 
       cleanup = () => {
         cancelAnimationFrame(frame);

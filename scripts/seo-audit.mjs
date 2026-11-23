@@ -72,10 +72,15 @@ const main = async () => {
     'every loc is absolute',
     locs.every((loc) => /^https?:\/\//.test(loc))
   );
-  const paired = locs.filter((loc) => !/\/reciter\//.test(loc));
+  // Arabic-only documents (reciter and surah pages, the surah index, the docs) have no
+  // twins; every other URL has one per language (12) plus x-default.
+  const TWINS = 13;
+  const paired = locs.filter(
+    (loc) => !/\/(?:reciter|surah)\/|\/(?:surahs|developers)$/.test(loc)
+  );
   check(
-    'every paired URL has four language twins',
-    alternates.length === paired.length * 4,
+    `every paired URL has ${TWINS} language twins`,
+    alternates.length === paired.length * TWINS,
     `${alternates.length} alternates for ${paired.length} paired URLs`
   );
   check(

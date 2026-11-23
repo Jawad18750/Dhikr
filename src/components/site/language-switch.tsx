@@ -6,13 +6,28 @@ import { IoCheckmark, IoGlobeOutline } from 'react-icons/io5';
 import { useIntl } from 'react-intl';
 
 import {
-  isRtl,
   LOCALE_NAMES,
   LOCALES,
   type SeoLocale,
   stripLocale,
   withLocale,
 } from '@/lib/seo/routes';
+
+/** A flag beside each language: where most of its readers here are. */
+const LOCALE_FLAGS: Record<SeoLocale, string> = {
+  ar: '🇱🇾',
+  en: '🇬🇧',
+  fr: '🇫🇷',
+  de: '🇩🇪',
+  es: '🇪🇸',
+  tr: '🇹🇷',
+  id: '🇮🇩',
+  ms: '🇲🇾',
+  ur: '🇵🇰',
+  fa: '🇮🇷',
+  bn: '🇧🇩',
+  ru: '🇷🇺',
+};
 
 /**
  * The globe: a short list of every language by its own name. A choice goes to the
@@ -70,7 +85,7 @@ export function LanguageSwitch({
       {open && (
         <ul
           id={listId}
-          className={`absolute end-0 z-50 grid max-h-[min(70vh,520px)] w-[min(86vw,380px)] grid-cols-2 gap-0.5 overflow-auto rounded-[20px] border border-border bg-surface p-1.5 shadow-[0_18px_50px_-12px_rgb(0_0_0/0.35)] ${
+          className={`absolute end-0 z-50 grid max-h-[min(70vh,520px)] w-[min(88vw,400px)] grid-cols-2 gap-1 overflow-auto rounded-[20px] border border-border bg-surface p-1.5 shadow-[0_18px_50px_-12px_rgb(0_0_0/0.35)] ${
             up ? 'bottom-full mb-2 origin-bottom' : 'top-full mt-2 origin-top'
           } menu-pop`}
         >
@@ -81,14 +96,21 @@ export function LanguageSwitch({
                 hrefLang={target}
                 lang={target}
                 aria-current={target === locale ? 'true' : undefined}
-                className={`flex h-11 items-center justify-between gap-2 rounded-[14px] px-3 text-[15px] transition-colors ${
+                className={`flex h-12 items-center gap-3 rounded-[14px] px-3 text-[15px] transition-colors ${
                   target === locale
                     ? 'bg-surface-sunken font-bold text-ink'
                     : 'text-ink-muted hover:bg-surface-sunken hover:text-ink'
                 }`}
               >
-                <span dir={isRtl(target) ? 'rtl' : 'ltr'} className="truncate">
-                  {LOCALE_NAMES[target]}
+                <span
+                  aria-hidden="true"
+                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-surface-sunken text-[17px] leading-none"
+                >
+                  {LOCALE_FLAGS[target]}
+                </span>
+                {/* bdi: each name keeps its own direction without moving off the row's start. */}
+                <span className="min-w-0 flex-1 truncate text-start">
+                  <bdi>{LOCALE_NAMES[target]}</bdi>
                 </span>
                 {target === locale && <IoCheckmark className="h-4 w-4 shrink-0" aria-hidden="true" />}
               </a>

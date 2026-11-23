@@ -14,6 +14,7 @@ import en from '@/locales/en.json';
 import { HeaderShell } from './header-shell';
 import { LogoMark } from './logo-mark';
 import { MARK_SLOT_ID } from './logo-mark-3d';
+import { type MenuLink, SiteMenu } from './site-menu';
 import { ThemeToggle } from './theme-toggle';
 import { Wordmark } from './wordmark';
 
@@ -22,14 +23,33 @@ const COPY = { ar, en, de } as const;
 const navLink =
   'flex items-center gap-1.5 whitespace-nowrap text-ink transition-colors hover:text-primary';
 
-/** The site's top bar: the wordmark, the sections, and the light/dark pill. */
+/** The site's top bar: the wordmark, then the sections and the light/dark
+ * pill, or on a phone a menu button that holds them. */
 export function SiteHeader({ locale }: { locale: SeoLocale }) {
   const t = COPY[locale];
   const home = withLocale(locale, '/');
+  const icon = 'h-[18px] w-[18px]';
+  const links: MenuLink[] = [
+    {
+      href: `${home}#reciters`,
+      label: t['nav.reciters'],
+      icon: <IoPeopleOutline className={icon} aria-hidden="true" />,
+    },
+    {
+      href: `${home}#tools`,
+      label: t['nav.tools'],
+      icon: <IoCodeSlashOutline className={icon} aria-hidden="true" />,
+    },
+    {
+      href: withLocale(locale, '/about'),
+      label: t['nav.about'],
+      icon: <IoInformationCircleOutline className={icon} aria-hidden="true" />,
+    },
+  ];
 
   return (
     <HeaderShell>
-      <header className="mx-auto flex w-full max-w-[1360px] flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-2.5 sm:gap-x-8 sm:px-6 sm:py-4">
+      <header className="mx-auto flex w-full max-w-[1360px] items-center justify-between gap-4 px-4 py-2.5 sm:gap-8 sm:px-6 sm:py-4">
         <Link
           href={home}
           aria-label={t['nav.home']}
@@ -47,31 +67,26 @@ export function SiteHeader({ locale }: { locale: SeoLocale }) {
           <span className="sr-only">{BRAND[locale]}</span>
         </Link>
 
+        {/* Wider screens: the sections and the light/dark pill in the bar. */}
         <nav
           aria-label={t['nav.reciters']}
-          className="order-3 flex w-full gap-6 overflow-x-auto text-[15px] font-medium sm:order-none sm:ms-auto sm:w-auto sm:gap-7 sm:text-base"
+          className="ms-auto hidden gap-7 text-base font-medium sm:flex"
         >
-          <a href={`${home}#reciters`} className={navLink}>
-            <IoPeopleOutline className="h-[18px] w-[18px]" aria-hidden="true" />
-            {t['nav.reciters']}
-          </a>
-          <a href={`${home}#tools`} className={navLink}>
-            <IoCodeSlashOutline
-              className="h-[18px] w-[18px]"
-              aria-hidden="true"
-            />
-            {t['nav.tools']}
-          </a>
-          <Link href={withLocale(locale, '/about')} className={navLink}>
-            <IoInformationCircleOutline
-              className="h-[18px] w-[18px]"
-              aria-hidden="true"
-            />
-            {t['nav.about']}
-          </Link>
+          {links.map((link) => (
+            <a key={link.href} href={link.href} className={navLink}>
+              {link.icon}
+              {link.label}
+            </a>
+          ))}
         </nav>
+        <div className="hidden sm:block">
+          <ThemeToggle />
+        </div>
 
-        <ThemeToggle />
+        {/* Phones: one row, everything else behind the menu button. */}
+        <div className="sm:hidden">
+          <SiteMenu links={links} />
+        </div>
       </header>
     </HeaderShell>
   );

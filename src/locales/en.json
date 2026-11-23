@@ -285,9 +285,6 @@
   "hero.title1": "Listen to the Quran,",
   "hero.title2": "and follow each ayah in the mushaf",
   "hero.body": "Complete recitations, with the ayah lit on the printed ink of the Jamahiriya mushaf as you listen. We start with Qalun from Nafi; other riwayat will follow.",
-  "hero.listen": "Start listening",
-  "hero.browse": "Browse reciters",
-  "hero.project": "A Dhikr project · dhikr.ly",
   "hero.art": "Gold and green petal ornament",
   "browse.searchLabel": "Search",
   "browse.placeholderReciter": "Search reciters",
@@ -366,5 +363,7 @@
   "nav.darkMode": "Dark mode",
   "nav.lightMode": "Light mode",
   "tools.apiAnswer": "200 · {count} reciters",
-  "nav.appearance": "Appearance"
+  "nav.appearance": "Appearance",
+  "nav.menu": "Menu",
+  "nav.closeMenu": "Close menu"
 }

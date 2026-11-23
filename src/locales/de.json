@@ -267,9 +267,6 @@
   "hero.title1": "Höre den Koran",
   "hero.title2": "und folge jeder Aya im Mushaf",
   "hero.body": "Vollständige Rezitationen, bei denen die Aya auf der gedruckten Tinte des Jamahiriya-Mushaf aufleuchtet, während du zuhörst. Wir beginnen mit Qalun nach Nafi; weitere Riwayat folgen.",
-  "hero.listen": "Jetzt anhören",
-  "hero.browse": "Rezitatoren ansehen",
-  "hero.project": "Ein Dhikr-Projekt · dhikr.ly",
   "hero.art": "Ornament aus goldenen und grünen Blättern",
   "browse.searchLabel": "Suche",
   "browse.placeholderReciter": "Rezitatoren suchen",
@@ -348,5 +345,7 @@
   "nav.darkMode": "Dunkler Modus",
   "nav.lightMode": "Heller Modus",
   "tools.apiAnswer": "200 · {count} Rezitatoren",
-  "nav.appearance": "Darstellung"
+  "nav.appearance": "Darstellung",
+  "nav.menu": "Menü",
+  "nav.closeMenu": "Menü schließen"
 }

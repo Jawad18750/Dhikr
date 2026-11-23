@@ -27,7 +27,7 @@ export async function HomeRoute({ locale }: { locale: SeoLocale }) {
 
   return (
     <div className="flex w-full flex-col gap-12 px-4 pb-16 sm:gap-[72px] sm:px-6">
-      <HomeHero locale={locale} listenHref={reciters[0]?.href} />
+      <HomeHero locale={locale} />
       <div className="mx-auto flex w-full max-w-[1360px] flex-col gap-12 sm:gap-[72px]">
         <HomeClient reciters={reciters} />
         <ToolsSection

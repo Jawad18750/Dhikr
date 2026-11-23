@@ -687,3 +687,29 @@ html[data-mark-dock='in'] #brand-mark-slot > :is(svg, .mark-dock) {
   --background: #ffffff;
   background-color: rgb(255 255 255 / 0.72);
 }
+
+/* The phone menu (site-menu.tsx): the veil fades, the card drops in. */
+@keyframes site-menu-veil {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes site-menu-card {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+}
+.site-menu-veil {
+  animation: site-menu-veil 200ms ease-out;
+}
+.site-menu-card {
+  transform-origin: top center;
+  animation: site-menu-card 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-menu-veil,
+  .site-menu-card {
+    animation: none;
+  }
+}

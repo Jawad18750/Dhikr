@@ -1,5 +1,3 @@
-import { IoGridOutline, IoPlay } from 'react-icons/io5';
-
 import type { SeoLocale } from '@/lib/seo/routes';
 import ar from '@/locales/ar.json';
 import de from '@/locales/de.json';
@@ -9,15 +7,8 @@ import { LogoMark3D } from './logo-mark-3d';
 
 const COPY = { ar, en, de } as const;
 
-/** The black hero card: what the site is, and the way in. */
-export function HomeHero({
-  locale,
-  listenHref,
-}: {
-  locale: SeoLocale;
-  /** The first recitation to play (the most listened one). */
-  listenHref?: string;
-}) {
+/** The hero card: what the site is; the reciters follow right below it. */
+export function HomeHero({ locale }: { locale: SeoLocale }) {
   const t = COPY[locale];
 
   return (
@@ -45,27 +36,6 @@ export function HomeHero({
         <p className="max-w-[560px] text-lg leading-[1.75] text-on-hero/70 sm:text-[22px]">
           {t['hero.body']}
         </p>
-        <div className="flex flex-wrap justify-center gap-3 lg:justify-start">
-          {listenHref && (
-            <a
-              href={listenHref}
-              className="flex h-[52px] items-center gap-2.5 rounded-full bg-gradient-to-b from-gold-light to-gold px-7 text-[17px] font-bold text-[#1b1712] transition-transform hover:-translate-y-0.5"
-            >
-              <IoPlay className="h-4 w-4" aria-hidden="true" />
-              {t['hero.listen']}
-            </a>
-          )}
-          <a
-            href="#reciters"
-            className="flex h-[52px] items-center gap-2.5 rounded-full border-[1.5px] border-on-hero/40 px-7 text-[17px] font-bold text-on-hero transition-colors hover:border-on-hero/80"
-          >
-            <IoGridOutline className="h-[18px] w-[18px]" aria-hidden="true" />
-            {t['hero.browse']}
-          </a>
-        </div>
-        <span className="mt-2 text-xs font-bold tracking-[0.12em] text-on-hero/50">
-          {t['hero.project']}
-        </span>
       </div>
       <div className="flex w-full items-center justify-center px-6 pt-10 lg:w-[46%] lg:p-8">
         <LogoMark3D

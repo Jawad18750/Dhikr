@@ -286,9 +286,6 @@
   "hero.title1": "استمع إلى القرآن،",
   "hero.title2": "وتابع الآية في المصحف",
   "hero.body": "تلاوات كاملة تُضاء معها الآية على حبر مصحف الجماهيرية وأنت تستمع. نبدأ برواية قالون عن نافع، وتتبعها روايات أخرى.",
-  "hero.listen": "ابدأ الاستماع",
-  "hero.browse": "تصفّح القرّاء",
-  "hero.project": "من مشروع ذكر · dhikr.ly",
   "hero.art": "زخرفة من بتلات ذهبية وخضراء",
   "browse.searchLabel": "البحث",
   "browse.placeholderReciter": "ابحث عن قارئ",
@@ -367,5 +364,7 @@
   "nav.darkMode": "الوضع الداكن",
   "nav.lightMode": "الوضع الفاتح",
   "tools.apiAnswer": "200 · {count} قارئًا",
-  "nav.appearance": "المظهر"
+  "nav.appearance": "المظهر",
+  "nav.menu": "القائمة",
+  "nav.closeMenu": "إغلاق القائمة"
 }

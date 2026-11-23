@@ -59,6 +59,9 @@ The v3 envelope, unchanged:
     `alt_source_surahs` where a recitation has one
 - `ranking`: `popular[id]`, `new[{id, until}]`, `hidden[id]`
 - `portraits`: `{recitation id: url | null}`
+- `hidden_surahs` (added 2026-11-23): `{recitation id: [surah, …]}`: surahs not offered for
+  that recitation (not listed, played or downloaded), e.g. a wrong file at the source. A top-level
+  key, because the owner's panel rewrites `ranking` whole.
 
 Additions (optional; absent or null means unknown):
 

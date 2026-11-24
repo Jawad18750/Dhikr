@@ -10,17 +10,18 @@ const INK_VERSION = 3;
 /**
  * An ayah (or one word of it) in the Jamahiriya mushaf's own ink: the printed words,
  * wrapped to this column, coloured by the text colour (a mask, so it follows the theme).
- * The words stay in the page as text too, for search, copying and screen readers.
+ * The words are never in the page as text (not even while loading, not in its data): the
+ * mushaf's text stays ours. Screen readers hear which ayah it is (`label`).
  *
  * The picture is asked for once the ayah nears the screen, at the screen's density, and
- * the browser keeps it. Until it comes, the text holds the place. `wrap={false}` (and a
+ * the browser keeps it. Until it comes, an empty line holds the place. `wrap={false}` (and a
  * single `word`) draws one line whatever the column, with no measuring.
  */
 export function AyahInk({
   surah,
   ayah,
   word,
-  text,
+  label,
   line = 44,
   wrap = true,
   className,
@@ -28,8 +29,8 @@ export function AyahInk({
   surah: number;
   ayah: number;
   word?: number;
-  /** The same words as text. */
-  text: string;
+  /** What a screen reader says, «سورة البقرة، الآية 255»; by default the ayah's number. */
+  label?: string;
   /** One printed line's height, CSS px. */
   line?: number;
   wrap?: boolean;
@@ -91,31 +92,35 @@ export function AyahInk({
   }, [surah, ayah, word, columns, line]);
 
   return (
-    <span ref={box} className={cn('relative inline-block max-w-full align-middle', className)}>
+    <span
+      ref={box}
+      role="img"
+      aria-label={label ?? `﴿${surah}:${ayah}${word ? `:${word}` : ''}﴾`}
+      className={cn('relative inline-block max-w-full align-middle', !picture && !oneLine && 'w-full', className)}
+    >
       {picture ? (
-        <>
-          <span
-            aria-hidden="true"
-            className="block max-w-full bg-current"
-            style={{
-              width: picture.w,
-              height: picture.h,
-              maskImage: `url(${picture.url})`,
-              WebkitMaskImage: `url(${picture.url})`,
-              maskSize: 'contain',
-              WebkitMaskSize: 'contain',
-              maskRepeat: 'no-repeat',
-              WebkitMaskRepeat: 'no-repeat',
-              maskPosition: 'right center',
-              WebkitMaskPosition: 'right center',
-            }}
-          />
-          <span className="sr-only">{text}</span>
-        </>
+        <span
+          aria-hidden="true"
+          className="block max-w-full bg-current"
+          style={{
+            width: picture.w,
+            height: picture.h,
+            maskImage: `url(${picture.url})`,
+            WebkitMaskImage: `url(${picture.url})`,
+            maskSize: 'contain',
+            WebkitMaskSize: 'contain',
+            maskRepeat: 'no-repeat',
+            WebkitMaskRepeat: 'no-repeat',
+            maskPosition: 'right center',
+            WebkitMaskPosition: 'right center',
+          }}
+        />
       ) : (
-        <span lang="ar" className="opacity-60" style={{ lineHeight: `${line}px`, fontSize: line * 0.5 }}>
-          {text}
-        </span>
+        <span
+          aria-hidden="true"
+          className="block animate-pulse rounded-lg bg-current opacity-[0.07]"
+          style={{ height: line, width: oneLine ? line * (word ? 1.6 : 5) : '100%' }}
+        />
       )}
     </span>
   );

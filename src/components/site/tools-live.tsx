@@ -37,13 +37,13 @@ function useLoopClock(lengthMs: number) {
 
 /** Al-Fatiha in Qalun's (Madinan) count, as عبدالحميد القريو recites it: ms from the start. */
 const FATIHA = [
-  { ayah: 1, start: 13_080, end: 17_080, text: 'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ' },
-  { ayah: 2, start: 19_480, end: 22_520, text: 'الرَّحْمَٰنِ الرَّحِيمِ' },
-  { ayah: 3, start: 23_800, end: 25_320, text: 'مَلِكِ يَوْمِ الدِّينِ' },
-  { ayah: 4, start: 28_022, end: 32_742, text: 'إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ' },
-  { ayah: 5, start: 34_342, end: 37_702, text: 'اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ' },
-  { ayah: 6, start: 40_182, end: 44_102, text: 'صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ' },
-  { ayah: 7, start: 45_565, end: 54_205, text: 'غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ' },
+  { ayah: 1, start: 13_080, end: 17_080 },
+  { ayah: 2, start: 19_480, end: 22_520 },
+  { ayah: 3, start: 23_800, end: 25_320 },
+  { ayah: 4, start: 28_022, end: 32_742 },
+  { ayah: 5, start: 34_342, end: 37_702 },
+  { ayah: 6, start: 40_182, end: 44_102 },
+  { ayah: 7, start: 45_565, end: 54_205 },
 ];
 const FROM = 12_000;
 const TO = 55_000;
@@ -60,7 +60,7 @@ export function AyahTimeline() {
   return (
     <div ref={ref} className="flex h-full flex-col justify-between gap-2">
       <span dir="rtl" lang="ar" className="block h-[34px] overflow-hidden text-white">
-        <AyahInk key={current.ayah} surah={1} ayah={current.ayah} text={current.text} line={34} wrap={false} />
+        <AyahInk key={current.ayah} surah={1} ayah={current.ayah} line={34} wrap={false} />
       </span>
       <div className="relative h-2.5 rounded-full bg-white/[0.1]">
         {FATIHA.map((a) => (
@@ -86,10 +86,10 @@ export function AyahTimeline() {
 
 /** 1:4 word by word in the same recitation: ms from the ayah's start. */
 const WORDS = [
-  { text: 'إِيَّاكَ', start: 0, end: 960 },
-  { text: 'نَعْبُدُ', start: 960, end: 1920 },
-  { text: 'وَإِيَّاكَ', start: 1920, end: 3200 },
-  { text: 'نَسْتَعِينُ', start: 3200, end: 4720 },
+  { start: 0, end: 960 },
+  { start: 960, end: 1920 },
+  { start: 1920, end: 3200 },
+  { start: 3200, end: 4720 },
 ];
 const WORDS_LOOP = 6200;
 
@@ -101,12 +101,12 @@ export function WordLights() {
       <div dir="rtl" lang="ar" className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
         {WORDS.map((w, index) => (
           <span
-            key={w.text}
+            key={w.start}
             className={`rounded-lg px-1 transition-colors duration-150 ${
               index === lit ? 'bg-gold-light/15 text-gold-light' : 'text-white/45'
             }`}
           >
-            <AyahInk surah={1} ayah={4} word={index + 1} text={w.text} line={38} />
+            <AyahInk surah={1} ayah={4} word={index + 1} line={38} />
           </span>
         ))}
       </div>

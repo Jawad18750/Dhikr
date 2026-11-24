@@ -36,9 +36,9 @@ function HitCard({ hit }: { hit: Hit }) {
           <span className="font-bold text-ink">{hit.title}</span>
           {hit.where && <span className="text-ink-subtle">{hit.where}</span>}
         </span>
-        {hit.group === 'quran' && hit.surah && hit.ayah && hit.text ? (
+        {hit.group === 'quran' && hit.surah && hit.ayah ? (
           <span className="block text-ink">
-            <AyahInk surah={hit.surah} ayah={hit.ayah} text={hit.text} line={46} />
+            <AyahInk surah={hit.surah} ayah={hit.ayah} label={hit.title} line={46} />
           </span>
         ) : (
           <span className="text-[16px] leading-[2] text-ink-muted">

@@ -301,7 +301,7 @@ export function ToolsSection({
           preview={
             <div className="flex h-full flex-col justify-between gap-2">
               <p dir="rtl" lang="ar" className="text-[#1b1712]">
-                <AyahInk surah={1} ayah={3} text="مَلِكِ يَوْمِ الدِّينِ" line={40} wrap={false} />
+                <AyahInk surah={1} ayah={3} line={40} wrap={false} />
               </p>
               <div className="flex flex-wrap gap-1.5 text-[12px] font-bold">
                 <span className="rounded-lg bg-white/55 px-2 py-0.5">{t('tools.ayahs', { count: 6214 })}</span>

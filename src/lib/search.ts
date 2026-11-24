@@ -245,8 +245,10 @@ export async function search(query: string, group: Group | null, page = 1, per =
       title: doc.title,
       where: doc.where,
       href: doc.href,
-      ...(doc.group === 'quran' ? { surah: doc.surah, ayah: doc.ayah, text: doc.text } : {}),
-      ...snippet(doc.text, doc.group === 'quran' ? [quranPhrase] : [phrase, ...words.toSorted((a, b) => b.length - a.length)], doc.group === 'quran'),
+      // An ayah is found by its text but shown in ink: neither it nor a snippet leaves here.
+      ...(doc.group === 'quran'
+        ? { surah: doc.surah, ayah: doc.ayah, before: '', match: '', after: '' }
+        : snippet(doc.text, [phrase, ...words.toSorted((a, b) => b.length - a.length)], false)),
   }));
   // The tafsirs take their place among the kinds.
   const ordered =

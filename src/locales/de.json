@@ -532,5 +532,9 @@
   "contact.privacy_note": "Deine E-Mail nutzen wir nur für die Antwort.",
   "footer.apps": "Unsere Apps",
   "apps.mushaf": "Jamahiriya-Koran",
-  "footer.write": "Schreib uns"
+  "footer.write": "Schreib uns",
+  "tools.qibla": "Qibla-Richtung",
+  "tools.qiblaBody": "Richtung und Entfernung zur Kaaba von jeder Stadt, jedem Land oder deinem Standort, mit Live-Kompass auf dem Handy.",
+  "tools.qiblaIdea": "Jeder findet die Qibla überall, und Entwickler bauen sie mit einem Aufruf in ihre App ein.",
+  "tools.qiblaMeter": "{n} Orte · Live-Kompass"
 }

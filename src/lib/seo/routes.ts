@@ -169,6 +169,15 @@ export const ROUTES: readonly SeoRoute[] = [
     priority: 0.6,
   },
   {
+    name: 'qibla',
+    path: '/qibla',
+    arabicOnly: true,
+    index: true,
+    sitemap: true,
+    changeFrequency: 'yearly',
+    priority: 0.6,
+  },
+  {
     name: 'hadith',
     path: '/hadith',
     arabicOnly: true,

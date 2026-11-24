@@ -4,6 +4,7 @@ import {
   IoArrowBack,
   IoCloudDownloadOutline,
   IoCodeSlashOutline,
+  IoCompassOutline,
   IoDocumentTextOutline,
   IoEarthOutline,
   IoKeyOutline,
@@ -17,6 +18,7 @@ import { SURAHS } from '@/constants';
 import world from '@/data/prayer-world.json';
 import { cityDay, libyaCities, libyaCity, libyaToday } from '@/lib/prayer-libya';
 import { methodFor, METHODS, times, todayIn } from '@/lib/prayer-methods';
+import { compassPoint, qiblaBearing, qiblaDistance } from '@/lib/qibla';
 import type { SeoLocale } from '@/lib/seo/routes';
 import type { Coverage } from '@/lib/tool-coverage';
 import { MESSAGES } from '@/locales';
@@ -459,6 +461,45 @@ function PrayerCards({ t }: { t: (id: string, values?: Record<string, string | n
         }
         meter={{ label: t('tools.prayerWorldMeter', { n: world.length, m: methods }), share: 1 }}
       />
+      <QiblaCard t={t} />
     </>
+  );
+}
+
+/** The qibla tool's card: Tripoli's direction, drawn. */
+function QiblaCard({ t }: { t: (id: string, values?: Record<string, string | number>) => string }) {
+  const city = libyaCity('tripoli')!;
+  const bearing = qiblaBearing(city.lat, city.lng);
+  return (
+    <ToolCard
+      tone="green"
+      icon={IoCompassOutline}
+      title={t('tools.qibla')}
+      body={t('tools.qiblaBody')}
+      idea={t('tools.qiblaIdea')}
+      ideaLabel={t('tools.ideaLabel')}
+      href="/qibla"
+      details={t('tools.learnMore')}
+      preview={
+        <div className="flex h-full items-center gap-4">
+          <svg viewBox="-40 -40 80 80" className="h-[76px] w-[76px] flex-none" aria-hidden="true">
+            <circle r="36" fill="none" stroke="currentColor" strokeOpacity="0.3" />
+            <text y="-24" textAnchor="middle" className="fill-current text-[10px] font-bold">
+              ش
+            </text>
+            <line x1="0" y1="0" x2="0" y2="-28" stroke="var(--gold-light)" strokeWidth="3" strokeLinecap="round" transform={`rotate(${bearing})`} />
+            <circle r="3.5" fill="var(--gold-light)" />
+          </svg>
+          <span className="flex flex-col gap-0.5">
+            <span className="text-[13px] font-bold">{city.name_ar}</span>
+            <span className="text-[22px] font-bold tabular-nums">{bearing.toFixed(1)}°</span>
+            <span className="text-[12.5px] opacity-75">
+              {compassPoint(bearing)} · {Math.round(qiblaDistance(city.lat, city.lng)).toLocaleString('en')} km
+            </span>
+          </span>
+        </div>
+      }
+      meter={{ label: t('tools.qiblaMeter', { n: libyaCities().length + world.length - 1 }), share: 1 }}
+    />
   );
 }

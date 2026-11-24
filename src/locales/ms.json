@@ -532,5 +532,9 @@
   "contact.privacy_note": "E-mel anda hanya digunakan untuk membalas.",
   "footer.apps": "Aplikasi kami",
   "apps.mushaf": "Mushaf Jamahiriya",
-  "footer.write": "Hubungi kami"
+  "footer.write": "Hubungi kami",
+  "tools.qibla": "Arah kiblat",
+  "tools.qiblaBody": "Arah dan jarak ke Kaabah dari mana-mana bandar, negara atau lokasi anda, dengan kompas langsung di telefon.",
+  "tools.qiblaIdea": "Sesiapa boleh mencari kiblat di mana-mana, dan pembangun boleh membinanya dalam aplikasi dengan satu panggilan.",
+  "tools.qiblaMeter": "{n} tempat · kompas langsung"
 }

@@ -532,5 +532,9 @@
   "contact.privacy_note": "E-postanızı yalnızca size yanıt vermek için kullanırız.",
   "footer.apps": "Uygulamalarımız",
   "apps.mushaf": "Cemâhiriye Mushafı",
-  "footer.write": "Bize yazın"
+  "footer.write": "Bize yazın",
+  "tools.qibla": "Kıble yönü",
+  "tools.qiblaBody": "Herhangi bir şehirden, ülkeden ya da konumunuzdan Kâbe’nin yönü ve uzaklığı; telefonda canlı pusula.",
+  "tools.qiblaIdea": "Herkes her yerde kıbleyi bulur, geliştirici de tek çağrıyla uygulamasına ekler.",
+  "tools.qiblaMeter": "{n} yer · canlı pusula"
 }

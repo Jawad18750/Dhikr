@@ -532,5 +532,9 @@
   "contact.privacy_note": "Votre e-mail sert uniquement à vous répondre.",
   "footer.apps": "Nos applications",
   "apps.mushaf": "Coran de la Jamahiriya",
-  "footer.write": "Écrivez-nous"
+  "footer.write": "Écrivez-nous",
+  "tools.qibla": "Direction de la qibla",
+  "tools.qiblaBody": "La direction et la distance de la Kaaba depuis toute ville, tout pays ou votre position, avec une boussole en direct sur mobile.",
+  "tools.qiblaIdea": "Chacun trouve la qibla partout, et un développeur l’intègre à son application en un appel.",
+  "tools.qiblaMeter": "{n} lieux · boussole en direct"
 }

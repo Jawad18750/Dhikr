@@ -223,6 +223,7 @@ Tools: https://dhikr.ly/prayer-times and https://dhikr.ly/prayer-methods
 - \`/prayer-times/libya/download/libya-prayer-times.csv\` (also \`.json\`, \`.sqlite\`, \`cities.json\`)
 - \`/prayer-times/methods\` → every method in numbers, and each country's default
 - \`/prayer-times/world/{country}\` → a country's method and today's times at its capital
+- \`/qibla?lat=&lng=\` → the qibla's bearing from true north and the distance (open, no key)
 - \`/prayer-times/calc?lat=&lng=&tz=\` → anywhere (\`&method=\`, \`&country=\`, \`&madhab=shafi|hanafi\`, \`&date=\`)
 
 ## 7. Errors

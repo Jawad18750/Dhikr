@@ -542,7 +542,8 @@ GET /prayer-times/libya/{city}           اليوم في مدينة (?date= ?mon
 GET /prayer-times/libya/download/libya-prayer-times.csv   (.json .sqlite)
 GET /prayer-times/methods                كل طريقة بأرقامها، وطريقة كل بلد
 GET /prayer-times/world/{country}        طريقة البلد ومواقيت عاصمته اليوم
-GET /prayer-times/calc?lat=&lng=&tz=     أي مكان (&method= &country= &madhab=)`}</Code>
+GET /prayer-times/calc?lat=&lng=&tz=     أي مكان (&method= &country= &madhab=)
+GET /qibla?lat=&lng=                     اتجاه القبلة والمسافة`}</Code>
       </Section>
 
       <Section id="errors" title="الأخطاء">

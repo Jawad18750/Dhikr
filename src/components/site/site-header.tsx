@@ -16,7 +16,6 @@ import { MESSAGES } from '@/locales';
 import { HeaderMark } from './header-mark';
 import { HeaderShell } from './header-shell';
 import { LanguageSwitch } from './language-switch';
-import { LogoMark } from './logo-mark';
 import { MARK_SLOT_ID } from './logo-mark-3d';
 import { type MenuLink, SiteMenu } from './site-menu';
 import { SiteNav } from './site-nav';
@@ -79,7 +78,9 @@ export function SiteHeader({ locale }: { locale: SeoLocale }) {
             className="block h-9 w-[46px] shrink-0 overflow-hidden sm:h-11 sm:w-[54px]"
           >
             <HeaderMark label={BRAND[locale]} />
-            <LogoMark className="h-full w-9 text-gold sm:w-11" />
+            {/* Before the script runs (and wherever the 3D cannot draw): the rendered 3D mark, never a flat drawing. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/brand/mark-hero.webp" alt="" aria-hidden="true" width={44} height={44} className="slot-still block h-9 w-9 sm:h-11 sm:w-11" />
           </span>
           {isRtl(locale) ? (
             <Wordmark className="h-9 w-auto sm:h-11" />

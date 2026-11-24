@@ -1,235 +1,159 @@
 'use client';
 
-import Image from 'next/image';
+import Link from 'next/link';
 import React, { useState } from 'react';
+import { IoCheckmarkCircle, IoCodeSlashOutline, IoLogoGithub, IoPaperPlaneOutline, IoPhonePortraitOutline } from 'react-icons/io5';
 import { useIntl } from 'react-intl';
 
-import Loader from '@/components/loader';
-import LocalizedLink from '@/components/localized-link';
-import sendSVG from '@/svgs/send.svg';
-import { isValidEmail } from '@/utils';
+import { CardMark } from '@/components/site/logo-mark';
+import { cn, isValidEmail } from '@/utils';
 
-const sendFeedback = async (
-  name: string,
-  email: string,
-  message: string
-): Promise<Response | undefined> => {
-  try {
-    const response = await fetch('api/send-feedback', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name,
-        email,
-        message,
-      }),
-    });
-    return response;
-  } catch {
-    // Handle error silently
-  }
-};
+const TOPICS = ['general', 'text', 'reciter', 'api', 'apps'] as const;
 
+/** Write to us: what it is about, the message, and the other ways in. */
 export default function ContactPage() {
-  const { formatMessage } = useIntl();
+  const { formatMessage, locale } = useIntl();
+  const t = (id: string) => formatMessage({ id });
+  const [topic, setTopic] = useState<(typeof TOPICS)[number]>('general');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [sent, setSent] = useState(false);
 
-  const validateAndSend = (): void => {
-    if (name === '') {
-      setError(formatMessage({ id: 'contact.please_enter_name' }));
-      return;
-    }
-    if (email === '') {
-      setError(formatMessage({ id: 'contact.please_enter_email' }));
-      return;
-    }
-    if (!isValidEmail(email)) {
-      setError(formatMessage({ id: 'contact.please_enter_valid_email' }));
-      return;
-    }
-    if (message === '') {
-      setError(formatMessage({ id: 'contact.please_enter_message' }));
-      return;
-    }
+  const send = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!name.trim()) return setError(t('contact.please_enter_name'));
+    if (!email.trim()) return setError(t('contact.please_enter_email'));
+    if (!isValidEmail(email)) return setError(t('contact.please_enter_valid_email'));
+    if (!message.trim()) return setError(t('contact.please_enter_message'));
+    setError('');
     setLoading(true);
-    sendFeedback(name, email, message)
-      .then((response) => {
-        setLoading(false);
-        if (response?.status === 200) {
-          setFormSubmitted(true);
-        } else {
-          setError(formatMessage({ id: 'contact.error_sending_message' }));
-        }
-      })
-      .catch(() => {
-        setError(formatMessage({ id: 'contact.error_sending_message' }));
+    try {
+      const response = await fetch('/api/send-feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, message: `[${t(`contact.topic.${topic}`)}]\n\n${message}` }),
       });
+      if (response.status === 200) setSent(true);
+      else setError(t('contact.error_sending_message'));
+    } catch {
+      setError(t('contact.error_sending_message'));
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const buttonContent = loading ? (
-    <Loader message={formatMessage({ id: 'contact.sending' })} rightIcon />
-  ) : (
-    <div
-      className={`flex items-center justify-center gap-3 ${
-        formatMessage({ id: 'contact.send' }) === 'Send'
-          ? 'flex-row'
-          : 'flex-row-reverse'
-      }`}
-    >
-      <span className="text-xl font-bold">
-        {formatMessage({ id: 'contact.send' })}
-      </span>
-      <Image
-        src={sendSVG}
-        alt={formatMessage({ id: 'contact.send' })}
-        width={24}
-        height={24}
-      />
-    </div>
-  );
+  const field = 'h-12 w-full rounded-2xl border border-border bg-background px-4 text-[16px] text-ink outline-none transition-colors placeholder:text-ink-subtle focus:border-border-strong';
+  const label = 'mb-1.5 block text-[14px] font-bold text-ink';
+  const home = locale === 'ar' ? '/' : `/${locale}`;
 
   return (
-    <div className="flex min-h-[70vh] w-full flex-col items-center justify-center gap-6 p-4 md:p-8">
-      <h1 className="text-center text-2xl font-bold text-ink">
-        {formatMessage({ id: 'contact.contact_us' })}
-      </h1>
-      {formSubmitted ? (
-        <div
-          className="flex w-full max-w-lg animate-fade-up flex-col items-center justify-center gap-6 rounded-3xl border border-gray-200/60 bg-white/60 p-10 shadow-2xl backdrop-blur-xl dark:border-gray-700/60 dark:bg-gray-900/60"
-          dir={formatMessage({ id: 'contact.send' }) === 'Send' ? 'ltr' : 'rtl'}
-        >
-          <div className="flex size-24 items-center justify-center rounded-full bg-green-100 text-green-600 shadow-inner dark:bg-green-900/30 dark:text-green-400">
-            <svg
-              className="size-12"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2.5}
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
-          </div>
-          <p
-            className="text-center text-3xl font-bold text-gray-800 dark:text-gray-100"
-            role="alert"
-          >
-            {formatMessage({ id: 'contact.thank_you_for_contacting' })}
-          </p>
-          <LocalizedLink href="/" className="mt-4 flex w-full justify-center">
-            <button className="w-full rounded-xl bg-gray-100 px-6 py-4 text-lg font-bold text-gray-700 transition-all hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
-              {formatMessage({ id: 'contact.back_to_home' })}
-            </button>
-          </LocalizedLink>
-        </div>
-      ) : (
-        <div className="w-full max-w-2xl animate-fade-up">
-          <div className="rounded-3xl border border-gray-200/60 bg-white/60 p-6 shadow-2xl backdrop-blur-xl dark:border-gray-700/60 dark:bg-gray-900/60 sm:p-10">
-            <form
-              className="flex flex-col gap-6"
-              dir={
-                formatMessage({ id: 'contact.send' }) === 'Send' ? 'ltr' : 'rtl'
-              }
-            >
-              <div>
-                <label
-                  htmlFor="name"
-                  className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300"
-                >
-                  {formatMessage({ id: 'contact.name' })}
-                </label>
-                <input
-                  type="text"
-                  required
-                  className="dark:focus:border-brand-CTA-blue-400 w-full rounded-xl border border-gray-300 bg-gray-50/50 p-4 text-lg text-gray-900 transition-all focus:border-brand-CTA-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-CTA-blue-500/20 dark:border-gray-700 dark:bg-gray-800/50 dark:text-white dark:focus:bg-gray-800"
-                  id="name"
-                  placeholder={formatMessage({ id: 'contact.name' })}
-                  value={name}
-                  onChange={(event) => {
-                    setError('');
-                    setName(event.target.value);
-                  }}
-                />
-              </div>
+    <div className="mx-auto flex w-full max-w-[1100px] flex-col gap-6 px-4 pb-16 pt-6 text-foreground sm:px-6 sm:pt-10">
+      <section data-header-tone="dark" className="relative isolate flex flex-col gap-3 overflow-hidden rounded-[28px] bg-hero p-6 text-on-hero sm:rounded-[36px] sm:p-9">
+        <CardMark />
+        <h1 className="font-display text-[32px] font-black leading-[1.25] sm:text-[46px]">{t('contact.contact_us')}</h1>
+        <p className="max-w-[640px] text-[17px] leading-[1.85] text-on-hero/70">{t('contact.lead')}</p>
+      </section>
 
-              <div>
-                <label
-                  htmlFor="email"
-                  className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300"
-                >
-                  {formatMessage({ id: 'contact.email' })}
-                </label>
-                <input
-                  type="email"
-                  required
-                  className="dark:focus:border-brand-CTA-blue-400 w-full rounded-xl border border-gray-300 bg-gray-50/50 p-4 text-lg text-gray-900 transition-all focus:border-brand-CTA-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-CTA-blue-500/20 dark:border-gray-700 dark:bg-gray-800/50 dark:text-white dark:focus:bg-gray-800"
-                  id="email"
-                  placeholder={formatMessage({ id: 'contact.email' })}
-                  value={email}
-                  onChange={(event) => {
-                    setError('');
-                    setEmail(event.target.value);
-                  }}
-                />
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+        <section className="rounded-[26px] border border-border bg-surface p-5 sm:p-7">
+          {sent ? (
+            <div className="flex flex-col items-center gap-4 py-10 text-center" role="status">
+              <IoCheckmarkCircle className="h-16 w-16 text-gold" aria-hidden="true" />
+              <p className="font-display text-[26px] font-black text-ink">{t('contact.thank_you_for_contacting')}</p>
+              <p className="text-[15px] text-ink-muted">{t('contact.reply_note')}</p>
+              <Link href={home} className="mt-2 flex h-11 items-center rounded-full bg-ink px-6 text-[15px] font-bold text-background hover:opacity-90">
+                {t('contact.back_to_home')}
+              </Link>
+            </div>
+          ) : (
+            <form className="flex flex-col gap-5" onSubmit={send} noValidate>
+              <fieldset>
+                <legend className={label}>{t('contact.topic')}</legend>
+                <div className="flex flex-wrap gap-2">
+                  {TOPICS.map((id) => (
+                    <button
+                      key={id}
+                      type="button"
+                      aria-pressed={topic === id}
+                      onClick={() => setTopic(id)}
+                      className={cn(
+                        'rounded-full px-4 py-2 text-[14px] font-bold transition-colors',
+                        topic === id ? 'bg-ink text-background' : 'bg-surface-sunken text-ink hover:bg-border'
+                      )}
+                    >
+                      {t(`contact.topic.${id}`)}
+                    </button>
+                  ))}
+                </div>
+              </fieldset>
+              <div className="grid gap-5 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="name" className={label}>
+                    {t('contact.name')}
+                  </label>
+                  <input id="name" type="text" autoComplete="name" maxLength={100} value={name} onChange={(e) => setName(e.target.value)} className={field} />
+                </div>
+                <div>
+                  <label htmlFor="email" className={label}>
+                    {t('contact.email')}
+                  </label>
+                  <input id="email" type="email" dir="ltr" autoComplete="email" maxLength={254} value={email} onChange={(e) => setEmail(e.target.value)} className={cn(field, 'text-start')} />
+                </div>
               </div>
-
               <div>
-                <label
-                  htmlFor="message"
-                  className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300"
-                >
-                  {formatMessage({ id: 'contact.message' })}
+                <label htmlFor="message" className={label}>
+                  {t('contact.message')}
                 </label>
                 <textarea
-                  className="dark:focus:border-brand-CTA-blue-400 w-full rounded-xl border border-gray-300 bg-gray-50/50 p-4 text-lg text-gray-900 transition-all focus:border-brand-CTA-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-CTA-blue-500/20 dark:border-gray-700 dark:bg-gray-800/50 dark:text-white dark:focus:bg-gray-800"
                   id="message"
-                  rows={4}
-                  required
-                  placeholder={formatMessage({ id: 'contact.message' })}
+                  rows={7}
+                  maxLength={5000}
                   value={message}
-                  onChange={(event) => {
-                    setError('');
-                    setMessage(event.target.value);
-                  }}
-                ></textarea>
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder={t('contact.message_hint')}
+                  className={cn(field, 'h-auto min-h-[180px] resize-y py-3 leading-[1.8]')}
+                />
               </div>
-
-              {error?.length > 0 && (
-                <div
-                  className="rounded-lg bg-red-50 p-4 text-red-600 dark:bg-red-900/30 dark:text-red-400"
-                  role="alert"
-                >
-                  <p className="text-sm font-medium">{error}</p>
-                </div>
+              {error && (
+                <p role="alert" className="rounded-2xl bg-red-500/10 px-4 py-3 text-[14px] font-bold text-red-600 dark:text-red-400">
+                  {error}
+                </p>
               )}
-
               <button
                 type="submit"
-                aria-label={formatMessage({ id: 'contact.send' })}
-                title={formatMessage({ id: 'contact.send' })}
-                role="button"
-                aria-disabled={loading}
-                onClick={(event) => {
-                  event.preventDefault();
-                  validateAndSend();
-                }}
-                className="dark:to-brand-CTA-blue-400 dark:shadow-brand-CTA-blue-400/20 dark:hover:shadow-brand-CTA-blue-400/30 mt-2 flex w-full items-center justify-center rounded-xl bg-brand-CTA-blue-500 py-4 text-lg font-bold text-white shadow-lg shadow-brand-CTA-blue-500/30 transition-all duration-200 hover:scale-[1.02] hover:shadow-brand-CTA-blue-500/40 active:scale-[0.98] disabled:scale-100 disabled:opacity-70"
                 disabled={loading}
+                className="flex h-12 items-center justify-center gap-2 rounded-full bg-gradient-to-b from-gold-light to-gold px-6 text-[16px] font-bold text-[#1b1712] transition-opacity disabled:opacity-60"
               >
-                {buttonContent}
+                <IoPaperPlaneOutline className="h-5 w-5 rtl:-scale-x-100" aria-hidden="true" />
+                {loading ? t('contact.sending') : t('contact.send')}
               </button>
             </form>
-          </div>
-        </div>
-      )}
+          )}
+        </section>
+
+        <aside className="flex flex-col gap-3">
+          <h2 className="text-[17px] font-bold text-ink">{t('contact.other_ways')}</h2>
+          {[
+            { href: 'https://adhan.dhikr.ly/support', icon: IoPhonePortraitOutline, title: t('contact.apps_support'), body: t('contact.apps_support_body') },
+            { href: '/developers', icon: IoCodeSlashOutline, title: t('nav.developers'), body: t('contact.developers_body') },
+            { href: 'https://github.com/Jawad18750/libya-prayer-times/issues', icon: IoLogoGithub, title: t('contact.dataset'), body: t('contact.dataset_body') },
+          ].map(({ href, icon: Icon, title, body }) => (
+            <a key={href} href={href} className="flex items-start gap-3 rounded-[20px] border border-border bg-surface p-4 transition-colors hover:border-border-strong">
+              <span className="grid h-10 w-10 flex-none place-items-center rounded-xl bg-surface-sunken text-gold">
+                <Icon className="h-5 w-5" aria-hidden="true" />
+              </span>
+              <span className="flex flex-col gap-0.5">
+                <span className="text-[15px] font-bold text-ink">{title}</span>
+                <span className="text-[14px] leading-[1.7] text-ink-muted">{body}</span>
+              </span>
+            </a>
+          ))}
+          <p className="px-1 text-[13px] leading-[1.8] text-ink-subtle">{t('contact.privacy_note')}</p>
+        </aside>
+      </div>
     </div>
   );
 }

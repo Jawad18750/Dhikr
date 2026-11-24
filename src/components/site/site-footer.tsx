@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { IoCodeSlashOutline, IoKeyOutline } from 'react-icons/io5';
+import { IoCodeSlashOutline, IoKeyOutline, IoMailOutline } from 'react-icons/io5';
 
 import { isRtl, type SeoLocale, withLocale } from '@/lib/seo/routes';
 import { BRAND } from '@/lib/seo/site';
@@ -66,11 +66,17 @@ export function SiteFooter({ locale }: { locale: SeoLocale }) {
             <p className="leading-[1.8] text-ink-muted">{t['hero.body']}</p>
           </div>
 
-          <div className="flex gap-16 sm:gap-20">
+          <div className="grid grid-cols-2 gap-x-12 gap-y-8 sm:flex sm:gap-16">
             <nav aria-label={t['footer.explore']} className="flex flex-col gap-3">
               <span className={heading}>{t['footer.explore']}</span>
               <Link href="/surahs" className={link}>
                 {t['nav.surahs']}
+              </Link>
+              <Link href="/library" className={link}>
+                {t['nav.library']}
+              </Link>
+              <Link href="/prayer-times" className={link}>
+                {t['tools.prayerLibya']}
               </Link>
               <Link href="/developers" className={link}>
                 {t['nav.developers']}
@@ -78,6 +84,18 @@ export function SiteFooter({ locale }: { locale: SeoLocale }) {
               <Link href="/account" className={link}>
                 {t['nav.account']}
               </Link>
+            </nav>
+            <nav aria-label={t['footer.apps']} className="flex flex-col gap-3">
+              <span className={heading}>{t['footer.apps']}</span>
+              <a href="https://adhan.dhikr.ly" className={link}>
+                {t['apps.adhan']}
+              </a>
+              <a href="https://mushaf.dhikr.ly" className={link}>
+                {t['apps.mushaf']}
+              </a>
+              <a href="https://masahif.dhikr.ly" className={link}>
+                {t['apps.masahif']}
+              </a>
             </nav>
             <nav aria-label={t['footer.more']} className="flex flex-col gap-3">
               <span className={heading}>{t['footer.more']}</span>
@@ -96,6 +114,13 @@ export function SiteFooter({ locale }: { locale: SeoLocale }) {
 
         <div className="flex flex-wrap items-center justify-between gap-4 border-t border-border pt-6 text-sm text-ink-subtle">
           <span>{t['footer.rights'].replace('{year}', String(year))}</span>
+          <Link
+            href={withLocale(locale, '/contact')}
+            className="flex h-10 items-center gap-2 rounded-full border border-border px-4 text-[14px] font-bold text-ink hover:border-border-strong"
+          >
+            <IoMailOutline className="h-[17px] w-[17px]" aria-hidden="true" />
+            {t['footer.write']}
+          </Link>
         </div>
       </div>
     </footer>

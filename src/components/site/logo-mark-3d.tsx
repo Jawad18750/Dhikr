@@ -685,10 +685,21 @@ export function LogoMark3D({
   // arrives at once), never an anchor the header or the flight look for.
   if (badge) {
     return (
-      <div role="img" aria-label={label} className={`mark-badge ${className ?? ''}`}>
+      <div role="img" aria-label={label} className={`mark-badge relative ${className ?? ''}`}>
+        {/* The rendered mark until the live scene has drawn (or for good, without WebGL). */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/brand/mark-hero.webp"
+          alt=""
+          aria-hidden="true"
+          width={720}
+          height={720}
+          decoding="async"
+          className={`absolute inset-0 h-full w-full transition-opacity delay-300 duration-200 ${ready ? 'opacity-0' : 'opacity-100'}`}
+        />
         <div
           ref={hostRef}
-          className={`h-full w-full transition-opacity duration-500 ${
+          className={`relative h-full w-full transition-opacity duration-500 ${
             ready ? 'opacity-100' : 'opacity-0'
           }`}
         />

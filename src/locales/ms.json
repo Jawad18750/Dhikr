@@ -504,5 +504,14 @@
   "account.created": "Dibuat {date}",
   "account.lastUsed": "terakhir digunakan {date}",
   "account.neverUsed": "belum digunakan",
-  "account.deleteKey": "Padam kunci {name}"
+  "account.deleteKey": "Padam kunci {name}",
+  "tools.prayerLibya": "Waktu solat bandar-bandar Libya",
+  "tools.prayerLibyaBody": "Jadual rasmi 122 bandar Libya daripada Awqaf, sepanjang tahun: peta, muat turun dan API, percuma tanpa daftar.",
+  "tools.prayerLibyaIdea": "Setiap masjid atau aplikasi boleh berpandukan jadual rasmi bandarnya, bukan anggaran.",
+  "tools.prayerWorld": "Kaedah pengiraan di dunia",
+  "tools.prayerWorldBody": "Kaedah setiap negara dengan sudut dan pelarasannya, dan waktu hari ini di ibu negaranya mengikut setiap kaedah.",
+  "tools.prayerWorldIdea": "Pembangun tahu apa yang diguna setiap negara, dan mengira di mana-mana dengan tetapan yang sama seperti aplikasi kami.",
+  "tools.cities": "Bandar",
+  "tools.prayerLibyaMeter": "{n} bandar · {d} hari setiap satu",
+  "tools.prayerWorldMeter": "{n} negara · {m} kaedah"
 }

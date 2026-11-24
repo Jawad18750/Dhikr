@@ -2882,6 +2882,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"adhan@npm:4.4.3":
+  version: 4.4.3
+  resolution: "adhan@npm:4.4.3"
+  checksum: 10c0/03518563ccc4d4e9887a7ca5eee3e22f83cdec2d3fd8c21b2df720f84649d66a551f410342704e07d5400c806ce018064138442772519691589d680bb556978b
+  languageName: node
+  linkType: hard
+
 "agent-base@npm:^7.1.0, agent-base@npm:^7.1.2":
   version: 7.1.4
   resolution: "agent-base@npm:7.1.4"
@@ -4015,6 +4022,7 @@ __metadata:
     "@typescript-eslint/parser": "npm:^8.21.0"
     "@vitejs/plugin-react": "npm:^5.1.3"
     "@vitest/coverage-v8": "npm:^4.0.18"
+    adhan: "npm:4.4.3"
     babel-plugin-react-compiler: "npm:^1.0.0"
     capture-flow: "npm:^0.2.2"
     clsx: "npm:^2.1.1"

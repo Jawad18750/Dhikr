@@ -505,5 +505,14 @@
   "account.created": "أُنشئ {date}",
   "account.lastUsed": "آخر استعمال {date}",
   "account.neverUsed": "لم يُستعمل بعد",
-  "account.deleteKey": "حذف المفتاح {name}"
+  "account.deleteKey": "حذف المفتاح {name}",
+  "tools.prayerLibya": "مواقيت المدن الليبية",
+  "tools.prayerLibyaBody": "الجداول الرسمية لـ١٢٢ مدينة ليبية من الأوقاف، السنة كاملة: خريطة وتنزيل وواجهة برمجية، مجانًا دون تسجيل.",
+  "tools.prayerLibyaIdea": "أن يبني أي مسجد أو تطبيق على الجدول الرسمي لمدينته، لا على حساب تقريبي.",
+  "tools.prayerWorld": "طرق الحساب في العالم",
+  "tools.prayerWorldBody": "الطريقة المعتمدة في كل بلد بزواياها وتعديلاتها، ومواقيت اليوم في عاصمته بكل طريقة.",
+  "tools.prayerWorldIdea": "أن يعرف المطوّر ماذا يعتمد كل بلد، ويحسب لأي مكان بالإعدادات نفسها التي في تطبيقاتنا.",
+  "tools.cities": "المدن",
+  "tools.prayerLibyaMeter": "{n} مدينة · {d} يومًا لكل مدينة",
+  "tools.prayerWorldMeter": "{n} بلدًا · {m} طريقة"
 }

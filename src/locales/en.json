@@ -504,5 +504,14 @@
   "account.created": "Created {date}",
   "account.lastUsed": "last used {date}",
   "account.neverUsed": "not used yet",
-  "account.deleteKey": "Delete the key {name}"
+  "account.deleteKey": "Delete the key {name}",
+  "tools.prayerLibya": "Libyan cities' prayer times",
+  "tools.prayerLibyaBody": "The official tables of 122 Libyan cities from the Awqaf, the whole year: a map, downloads and an API, free with no sign-up.",
+  "tools.prayerLibyaIdea": "Any mosque or app can build on its city's official table, not an approximation.",
+  "tools.prayerWorld": "The world's calculation methods",
+  "tools.prayerWorldBody": "Each country's method with its angles and adjustments, and today's times at its capital under every method.",
+  "tools.prayerWorldIdea": "Developers see what each country uses, and compute anywhere with the same settings as our apps.",
+  "tools.cities": "Cities",
+  "tools.prayerLibyaMeter": "{n} cities · {d} days each",
+  "tools.prayerWorldMeter": "{n} countries · {m} methods"
 }

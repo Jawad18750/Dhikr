@@ -21,6 +21,12 @@ rsync -rlt --compress --delete "$QP/" "$DEST/quranpedia/"
 rm -rf "$QP"
 # Readable by the site whatever the copies' modes were here (macOS rsync has no --chmod).
 ssh Abdeljawad 'chmod -R u=rwX,go=rX /opt/dhikr-content/quranpedia /opt/dhikr-content/masahif_app /opt/dhikr-content/app/assets/data/hadith'
+# The open prayer-times dataset's downloads (CSV, JSON, SQLite), built from the apps' tables.
+PT="$(mktemp -d)"
+node --no-warnings "$(dirname "$0")/build-prayer-libya.mjs" "$SRC" --out "$PT" >/dev/null
+rsync -rlt --compress --delete "$PT/" "$DEST/prayer/"
+rm -rf "$PT"
+ssh Abdeljawad 'chmod -R u=rwX,go=rX /opt/dhikr-content/prayer'
 # The tafsirs folded into Postgres for search (skipped when the files are unchanged).
 ssh Abdeljawad 'cd /opt/dhikr-site/src && set -a && . ./.env.production && set +a && node scripts/index-tafsir.mjs'
 echo "synced from $SRC ($(cd "$SRC" && git rev-parse --short HEAD 2>/dev/null || echo 'no git'))"

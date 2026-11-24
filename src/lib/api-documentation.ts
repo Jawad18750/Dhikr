@@ -20,7 +20,7 @@ Arabic documentation: https://dhikr.ly/developers
 4. Response shape
 5. Concepts and numbering
 6. Endpoints: /reciters, /reciters/{slug}, /timings, /word-timings, /text, /numbering,
-   /tafsir, /ayah, /library, /mawsuah, /hadith
+   /tafsir, /ayah, /library, /mawsuah, /hadith, /prayer-times (open, no key)
 7. Errors
 8. Guides: highlight the recited ayah; word by word; Hafs tafsir beside a Qalun ayah;
    download a whole recitation
@@ -213,6 +213,18 @@ The seven hadith collections the apps carry (اللؤلؤ والمرجان, ري
 - \`/hadith/{slug}/{number}\` → \`{ collection, number, chapter, title, text, narrator, grade, reference, page }\`
   (\`title\` is the باب where it differs from the chapter; missing fields are null).
 
+### Prayer times: open, no key
+These need no key and no account, and are licensed CC BY 4.0. Libyan cities use the Awqaf's
+official tables; elsewhere times are calculated by each country's method, as in our apps.
+Tools: https://dhikr.ly/prayer-times and https://dhikr.ly/prayer-methods
+- \`/prayer-times/libya\` → the 122 cities \`{ slug, name_ar, name_en, lat, lng, new_fajr }\`
+- \`/prayer-times/libya/today\` → today in every city
+- \`/prayer-times/libya/{city}\` → today; \`?date=YYYY-MM-DD\`, \`?month=1..12\` or \`?year\` (366 days)
+- \`/prayer-times/libya/download/libya-prayer-times.csv\` (also \`.json\`, \`.sqlite\`, \`cities.json\`)
+- \`/prayer-times/methods\` → every method in numbers, and each country's default
+- \`/prayer-times/world/{country}\` → a country's method and today's times at its capital
+- \`/prayer-times/calc?lat=&lng=&tz=\` → anywhere (\`&method=\`, \`&country=\`, \`&madhab=shafi|hanafi\`, \`&date=\`)
+
 ## 7. Errors
 
 \`{ "error": { "code": "...", "message": "...", "docs": "https://dhikr.ly/developers" } }\`
@@ -295,7 +307,8 @@ used; you see your own use on your account page. https://dhikr.ly/privacy
 ## 12. Changelog
 
 - 2026-11-24: tafsirs (/tafsir), the ayah study (/ayah), the library (/library) and the
-  thematic encyclopedia (/mawsuah) and the hadith collections (/hadith).
+  thematic encyclopedia (/mawsuah), the hadith collections (/hadith) and open prayer times
+  (/prayer-times, no key).
 - 2026-11-23: the Qalun text (/text) and the numbering converter (/numbering).
 - 2026-11-23: v1: reciters, ayah and word timings, with personal keys.
 

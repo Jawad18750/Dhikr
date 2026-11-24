@@ -5,13 +5,18 @@ import {
   IoCloudDownloadOutline,
   IoCodeSlashOutline,
   IoDocumentTextOutline,
+  IoEarthOutline,
   IoKeyOutline,
+  IoMoonOutline,
   IoSwapHorizontalOutline,
   IoTextOutline,
   IoTimeOutline,
 } from 'react-icons/io5';
 
 import { SURAHS } from '@/constants';
+import world from '@/data/prayer-world.json';
+import { cityDay, libyaCities, libyaCity, libyaToday } from '@/lib/prayer-libya';
+import { methodFor, METHODS, times, todayIn } from '@/lib/prayer-methods';
 import type { SeoLocale } from '@/lib/seo/routes';
 import type { Coverage } from '@/lib/tool-coverage';
 import { MESSAGES } from '@/locales';
@@ -386,7 +391,74 @@ export function ToolsSection({
             </a>
           }
         />
+        <PrayerCards t={t} />
       </div>
     </section>
+  );
+}
+
+const PRAYER_NAMES = ['الفجر', 'الشروق', 'الظهر', 'العصر', 'المغرب', 'العشاء'];
+
+/** The two prayer-time tools: Libya's official tables, and the world's methods. */
+function PrayerCards({ t }: { t: (id: string, values?: Record<string, string | number>) => string }) {
+  const today = libyaToday();
+  const tripoli = cityDay(libyaCity('tripoli')!, today.month, today.day)!;
+  const riyadh = world.find((c) => c.cc === 'SA')!;
+  const sa = times(riyadh, todayIn(riyadh.tz));
+  const methods = new Set(world.map((c) => methodFor(c.cc))).size;
+  return (
+    <>
+      <ToolCard
+        tone="gold"
+        icon={IoMoonOutline}
+        title={t('tools.prayerLibya')}
+        body={t('tools.prayerLibyaBody')}
+        idea={t('tools.prayerLibyaIdea')}
+        ideaLabel={t('tools.ideaLabel')}
+        href="/prayer-times"
+        details={t('tools.learnMore')}
+        preview={
+          <div className="flex h-full flex-col justify-between gap-2">
+            <span className="text-[13px] font-bold">طرابلس</span>
+            <span dir="rtl" className="grid grid-cols-6 gap-1 text-center">
+              {[tripoli.fajr, tripoli.sunrise, tripoli.dhuhr, tripoli.asr, tripoli.maghrib, tripoli.isha].map((time, index) => (
+                <span key={PRAYER_NAMES[index]} className="flex flex-col">
+                  <span className="text-[10.5px] opacity-70">{PRAYER_NAMES[index]}</span>
+                  <span className="text-[13px] font-bold tabular-nums">{time}</span>
+                </span>
+              ))}
+            </span>
+          </div>
+        }
+        meter={{ label: t('tools.prayerLibyaMeter', { n: libyaCities().length, d: 366 }), share: 1 }}
+      />
+      <ToolCard
+        tone="blue"
+        icon={IoEarthOutline}
+        title={t('tools.prayerWorld')}
+        body={t('tools.prayerWorldBody')}
+        idea={t('tools.prayerWorldIdea')}
+        ideaLabel={t('tools.ideaLabel')}
+        href="/prayer-methods"
+        details={t('tools.learnMore')}
+        preview={
+          <div className="flex h-full flex-col justify-between gap-2">
+            <span className="flex items-center justify-between text-[13px]">
+              <span className="font-bold">{riyadh.name_ar}</span>
+              <span className="opacity-70">{METHODS[methodFor('SA')].ar}</span>
+            </span>
+            <span className="grid grid-cols-6 gap-1 text-center">
+              {[sa.fajr, sa.sunrise, sa.dhuhr, sa.asr, sa.maghrib, sa.isha].map((time, index) => (
+                <span key={PRAYER_NAMES[index]} className="flex flex-col">
+                  <span className="text-[10.5px] opacity-70">{PRAYER_NAMES[index]}</span>
+                  <span className="text-[13px] font-bold tabular-nums">{time}</span>
+                </span>
+              ))}
+            </span>
+          </div>
+        }
+        meter={{ label: t('tools.prayerWorldMeter', { n: world.length, m: methods }), share: 1 }}
+      />
+    </>
   );
 }

@@ -504,5 +504,14 @@
   "account.created": "ساخته‌شده در {date}",
   "account.lastUsed": "آخرین استفاده: {date}",
   "account.neverUsed": "هنوز استفاده نشده",
-  "account.deleteKey": "حذف کلید {name}"
+  "account.deleteKey": "حذف کلید {name}",
+  "tools.prayerLibya": "اوقات نماز شهرهای لیبی",
+  "tools.prayerLibyaBody": "جدول‌های رسمی ۱۲۲ شهر لیبی از اوقاف، کل سال: نقشه، دانلود و API، رایگان و بدون ثبت‌نام.",
+  "tools.prayerLibyaIdea": "هر مسجد یا برنامه‌ای می‌تواند بر جدول رسمی شهر خود تکیه کند، نه بر محاسبه‌ای تقریبی.",
+  "tools.prayerWorld": "روش‌های محاسبه در جهان",
+  "tools.prayerWorldBody": "روش هر کشور با زاویه‌ها و تنظیم‌هایش، و اوقات امروز در پایتخت آن با هر روش.",
+  "tools.prayerWorldIdea": "توسعه‌دهنده می‌بیند هر کشور چه روشی دارد و برای هر جا با همان تنظیمات برنامه‌های ما حساب می‌کند.",
+  "tools.cities": "شهرها",
+  "tools.prayerLibyaMeter": "{n} شهر · هر کدام {d} روز",
+  "tools.prayerWorldMeter": "{n} کشور · {m} روش"
 }

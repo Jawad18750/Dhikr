@@ -504,5 +504,14 @@
   "account.created": "Dibuat {date}",
   "account.lastUsed": "terakhir digunakan {date}",
   "account.neverUsed": "belum digunakan",
-  "account.deleteKey": "Hapus kunci {name}"
+  "account.deleteKey": "Hapus kunci {name}",
+  "tools.prayerLibya": "Jadwal salat kota-kota Libya",
+  "tools.prayerLibyaBody": "Tabel resmi 122 kota Libya dari Awqaf, sepanjang tahun: peta, unduhan dan API, gratis tanpa daftar.",
+  "tools.prayerLibyaIdea": "Setiap masjid atau aplikasi dapat memakai tabel resmi kotanya, bukan perkiraan.",
+  "tools.prayerWorld": "Metode perhitungan di dunia",
+  "tools.prayerWorldBody": "Metode setiap negara beserta sudut dan penyesuaiannya, dan jadwal hari ini di ibu kotanya dengan setiap metode.",
+  "tools.prayerWorldIdea": "Pengembang tahu apa yang dipakai tiap negara, dan menghitung di mana saja dengan pengaturan yang sama seperti aplikasi kami.",
+  "tools.cities": "Kota",
+  "tools.prayerLibyaMeter": "{n} kota · {d} hari tiap kota",
+  "tools.prayerWorldMeter": "{n} negara · {m} metode"
 }

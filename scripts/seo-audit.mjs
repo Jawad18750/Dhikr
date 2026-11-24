@@ -78,7 +78,7 @@ const main = async () => {
   const TWINS = 13;
   const paired = locs.filter(
     (loc) =>
-      !/\/(?:reciter|surah|library|tafsir|mawsuah|hadith|ayah)\/|\/(?:surahs|developers|library|tafsir|mawsuah|hadith)$/.test(loc)
+      !/\/(?:reciter|surah|library|tafsir|mawsuah|hadith|ayah)\/|\/(?:surahs|developers|library|tafsir|mawsuah|hadith|prayer-times|prayer-methods)$/.test(loc)
   );
   check(
     `every paired URL has ${TWINS} language twins`,

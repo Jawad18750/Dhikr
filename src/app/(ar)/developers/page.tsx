@@ -33,6 +33,7 @@ const TOC: ContentsItem[] = [
   { id: 'library', title: 'المكتبة', group: 'المرجع' },
   { id: 'mawsuah', title: 'التفسير الموضوعي', group: 'المرجع' },
   { id: 'hadith', title: 'كتب الحديث', group: 'المرجع' },
+  { id: 'prayer', title: 'مواقيت الصلاة (مفتوحة)', group: 'المرجع' },
   { id: 'errors', title: 'الأخطاء', group: 'المرجع' },
   { id: 'guide-ayah', title: 'تظليل الآية مع التلاوة', group: 'دروس' },
   { id: 'guide-words', title: 'تظليل كلمة كلمة', group: 'دروس' },
@@ -522,6 +523,28 @@ GET /numbering/qalun/1/1
   "text": "حديث عليّ قال: …", "reference": "أخرجه البخاري في: 3 كتاب العلم: 38 باب …" }`}</Code>
       </Section>
 
+      <Section id="prayer" title="مواقيت الصلاة (مفتوحة)">
+        <p className={p}>
+          هذه العناوين مفتوحة: <b>دون مفتاح ولا حساب</b>، وبترخيص المشاع الإبداعي، نسب المصنَّف 4.0. للمدن الليبية جداولها الرسمية من
+          الأوقاف، ولغيرها الحساب بطريقة كل بلد. التفاصيل والتنزيل في{' '}
+          <Link href="/prayer-times" className="font-bold text-ink underline">
+            أداة المدن الليبية
+          </Link>{' '}
+          و
+          <Link href="/prayer-methods" className="font-bold text-ink underline">
+            أداة طرق الحساب
+          </Link>
+          .
+        </p>
+        <Code>{`GET /prayer-times/libya                  المدن
+GET /prayer-times/libya/today            اليوم في كل مدينة
+GET /prayer-times/libya/{city}           اليوم في مدينة (?date= ?month= ?year)
+GET /prayer-times/libya/download/libya-prayer-times.csv   (.json .sqlite)
+GET /prayer-times/methods                كل طريقة بأرقامها، وطريقة كل بلد
+GET /prayer-times/world/{country}        طريقة البلد ومواقيت عاصمته اليوم
+GET /prayer-times/calc?lat=&lng=&tz=     أي مكان (&method= &country= &madhab=)`}</Code>
+      </Section>
+
       <Section id="errors" title="الأخطاء">
         <p className={p}>كل خطأ يجيب بهذا الشكل، مع رمز ثابت تبني عليه:</p>
         <Code>{`{ "error": { "code": "not_found",
@@ -644,7 +667,7 @@ for s in reciter["surahs"]:
       <Section id="changelog" title="سجل التغييرات">
         <ul className="flex flex-col gap-2.5">
           {[
-            ['2026-11-24', 'التفاسير (/tafsir)، ودراسة الآية (/ayah)، والمكتبة (/library)، والتفسير الموضوعي (/mawsuah)، وكتب الحديث (/hadith).'],
+            ['2026-11-24', 'التفاسير (/tafsir)، ودراسة الآية (/ayah)، والمكتبة (/library)، والتفسير الموضوعي (/mawsuah)، وكتب الحديث (/hadith)، ومواقيت الصلاة المفتوحة دون مفتاح (/prayer-times).'],
             ['2026-11-23', 'نص القرآن برواية قالون (/text) ومحوّل الترقيم (/numbering).'],
             ['2026-11-23', 'الإصدار 1: القرّاء، وتوقيت الآيات والكلمات، بمفتاح شخصي.'],
           ].map(([date, what]) => (

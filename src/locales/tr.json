@@ -504,5 +504,14 @@
   "account.created": "Oluşturulma: {date}",
   "account.lastUsed": "son kullanım: {date}",
   "account.neverUsed": "henüz kullanılmadı",
-  "account.deleteKey": "{name} anahtarını sil"
+  "account.deleteKey": "{name} anahtarını sil",
+  "tools.prayerLibya": "Libya şehirlerinin namaz vakitleri",
+  "tools.prayerLibyaBody": "Evkaf'ın 122 Libya şehri için resmî tabloları, yılın tamamı: harita, indirme ve API, kayıt olmadan ücretsiz.",
+  "tools.prayerLibyaIdea": "Her cami ve uygulama, yaklaşık bir hesap yerine şehrinin resmî tablosunu kullanabilir.",
+  "tools.prayerWorld": "Dünyadaki hesaplama yöntemleri",
+  "tools.prayerWorldBody": "Her ülkenin açıları ve düzeltmeleriyle yöntemi, ve başkentinde her yönteme göre bugünün vakitleri.",
+  "tools.prayerWorldIdea": "Geliştirici her ülkenin neyi esas aldığını görür, uygulamalarımızla aynı ayarlarla her yerde hesaplar.",
+  "tools.cities": "Şehirler",
+  "tools.prayerLibyaMeter": "{n} şehir · her biri {d} gün",
+  "tools.prayerWorldMeter": "{n} ülke · {m} yöntem"
 }

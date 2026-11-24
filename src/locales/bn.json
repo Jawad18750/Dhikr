@@ -504,5 +504,14 @@
   "account.created": "তৈরি: {date}",
   "account.lastUsed": "শেষ ব্যবহার: {date}",
   "account.neverUsed": "এখনও ব্যবহার হয়নি",
-  "account.deleteKey": "{name} কী মুছুন"
+  "account.deleteKey": "{name} কী মুছুন",
+  "tools.prayerLibya": "লিবিয়ার শহরগুলোর নামাজের সময়",
+  "tools.prayerLibyaBody": "আওকাফের ১২২টি লিবীয় শহরের সরকারি সময়সূচি, পুরো বছর: মানচিত্র, ডাউনলোড ও API, নিবন্ধন ছাড়াই বিনামূল্যে।",
+  "tools.prayerLibyaIdea": "যেকোনো মসজিদ বা অ্যাপ আনুমানিক হিসাব নয়, নিজের শহরের সরকারি সূচির ওপর ভিত্তি করতে পারে।",
+  "tools.prayerWorld": "বিশ্বের হিসাব পদ্ধতি",
+  "tools.prayerWorldBody": "প্রতিটি দেশের পদ্ধতি, তার কোণ ও সমন্বয়, আর প্রতিটি পদ্ধতিতে রাজধানীর আজকের সময়।",
+  "tools.prayerWorldIdea": "ডেভেলপার জানেন কোন দেশ কী মানে, আর আমাদের অ্যাপের একই সেটিংসে যেকোনো জায়গার হিসাব করেন।",
+  "tools.cities": "শহর",
+  "tools.prayerLibyaMeter": "{n}টি শহর · প্রতিটি {d} দিন",
+  "tools.prayerWorldMeter": "{n}টি দেশ · {m}টি পদ্ধতি"
 }

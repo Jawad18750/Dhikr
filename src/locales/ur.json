@@ -504,5 +504,14 @@
   "account.created": "بنائی گئی: {date}",
   "account.lastUsed": "آخری استعمال: {date}",
   "account.neverUsed": "ابھی استعمال نہیں ہوئی",
-  "account.deleteKey": "کلید {name} حذف کریں"
+  "account.deleteKey": "کلید {name} حذف کریں",
+  "tools.prayerLibya": "لیبیا کے شہروں کے اوقاتِ نماز",
+  "tools.prayerLibyaBody": "اوقاف کی جانب سے لیبیا کے ۱۲۲ شہروں کی سرکاری جدولیں، پورا سال: نقشہ، ڈاؤن لوڈ اور API، بغیر رجسٹریشن مفت۔",
+  "tools.prayerLibyaIdea": "ہر مسجد یا ایپ اپنے شہر کی سرکاری جدول پر انحصار کر سکے، اندازے پر نہیں۔",
+  "tools.prayerWorld": "دنیا کے حساب کے طریقے",
+  "tools.prayerWorldBody": "ہر ملک کا طریقہ اس کے زاویوں اور ترمیمات کے ساتھ، اور ہر طریقے سے اس کے دارالحکومت میں آج کے اوقات۔",
+  "tools.prayerWorldIdea": "ڈویلپر دیکھے کہ ہر ملک کیا اپناتا ہے، اور ہماری ایپس جیسی ترتیبات سے کہیں کا بھی حساب کرے۔",
+  "tools.cities": "شہر",
+  "tools.prayerLibyaMeter": "{n} شہر · ہر ایک کے {d} دن",
+  "tools.prayerWorldMeter": "{n} ممالک · {m} طریقے"
 }

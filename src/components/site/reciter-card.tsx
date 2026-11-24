@@ -13,8 +13,8 @@ const SURAHS = 114;
 
 /**
  * One recitation as a near-square box: the portrait on top, left clear of any
- * label, then the name and one line of what sets it apart. The ranking sits
- * in the photo's start corner (the right in Arabic), the first three in gold.
+ * label, then the name and one line of what sets it apart. The ranking is a
+ * large numeral in the free corner beside the name, the first three in gold.
  * The whole box opens the reciter.
  */
 /** The recitation's style in the page's script: «مرتل» is «Murattal» in Latin, «Мураттал» in Cyrillic. */
@@ -72,13 +72,29 @@ export function ReciterCard({ reciter }: { reciter: CatalogueReciter }) {
             {initials}
           </span>
         )}
+        {reciter.isNew && (
+          <span className="absolute end-2 top-2 rounded-full bg-gold-light px-2.5 py-1 text-xs font-bold text-[#1b1712] sm:end-2.5 sm:top-2.5">
+            {formatMessage({ id: 'browse.new' })}
+          </span>
+        )}
+      </span>
+
+      <span className="flex flex-1 items-end gap-2 px-1.5 pb-1.5 sm:px-2 sm:pb-2">
+        <span className="flex min-w-0 flex-1 flex-col gap-1 self-stretch">
+          <span className="line-clamp-2 text-[15px] font-bold leading-[1.4] text-ink sm:text-lg">
+            {reciter.name}
+          </span>
+          <span className="mt-auto truncate text-[13px] text-ink-muted sm:text-sm">
+            {facts.join(' · ')}
+          </span>
+        </span>
         {reciter.rank !== null && (
           <span
             className={cn(
-              'absolute start-2 top-2 flex h-7 min-w-7 items-center justify-center rounded-full px-2 font-display text-[15px] font-black leading-none shadow-[0_2px_10px_rgb(0_0_0/0.25)] sm:start-2.5 sm:top-2.5 sm:h-8 sm:min-w-8 sm:text-base',
+              'font-display shrink-0 text-[30px] font-black leading-[0.8] tabular-nums sm:text-[38px]',
               podium
-                ? 'bg-gradient-to-b from-gold-light to-gold text-[#1b1712]'
-                : 'bg-white/90 text-[#0b0b0c] backdrop-blur-sm'
+                ? 'bg-gradient-to-b from-gold to-[#8a6420] bg-clip-text text-transparent dark:from-gold-light dark:to-gold'
+                : 'text-ink-subtle opacity-45'
             )}
             aria-label={formatMessage(
               { id: 'browse.rank' },
@@ -88,20 +104,6 @@ export function ReciterCard({ reciter }: { reciter: CatalogueReciter }) {
             {reciter.rank}
           </span>
         )}
-        {reciter.isNew && (
-          <span className="absolute end-2 top-2 rounded-full bg-gold-light px-2.5 py-1 text-xs font-bold text-[#1b1712] sm:end-2.5 sm:top-2.5">
-            {formatMessage({ id: 'browse.new' })}
-          </span>
-        )}
-      </span>
-
-      <span className="flex flex-1 flex-col gap-1 px-1.5 pb-1.5 sm:px-2 sm:pb-2">
-        <span className="line-clamp-2 text-[15px] font-bold leading-[1.4] text-ink sm:text-lg">
-          {reciter.name}
-        </span>
-        <span className="mt-auto truncate text-[13px] text-ink-muted sm:text-sm">
-          {facts.join(' · ')}
-        </span>
       </span>
     </a>
   );

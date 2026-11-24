@@ -24,6 +24,20 @@ function sizeLabel(bytes: number, locale: SeoLocale) {
   }).format(big ? mb / 1024 : mb);
 }
 
+/** «31 ساعة و21 دقيقة», «2 hours, 5 minutes»: the length in words, in the page's language. */
+function lengthLabel(seconds: number, locale: SeoLocale) {
+  let hours = Math.floor(seconds / 3600);
+  let minutes = Math.round((seconds % 3600) / 60);
+  if (minutes === 60) {
+    hours += 1;
+    minutes = 0;
+  }
+  const unit = (value: number, name: 'hour' | 'minute') =>
+    new Intl.NumberFormat(locale === 'ar' ? 'ar-u-nu-latn' : locale, { style: 'unit', unit: name, unitDisplay: 'long' }).format(value);
+  const parts = [hours > 0 && unit(hours, 'hour'), (minutes > 0 || hours === 0) && unit(minutes, 'minute')].filter(Boolean) as string[];
+  return new Intl.ListFormat(locale, { type: 'unit', style: 'long' }).format(parts);
+}
+
 /**
  * The reciter's black card: portrait and name side by side, the riwaya and country, and
  * the recitation in four figures along its foot. The actions follow just under it.
@@ -61,7 +75,7 @@ export function ReciterHero({
       },
     figures &&
       figures.seconds > 0 && {
-        value: `${Math.floor(figures.seconds / 3600)}:${String(Math.floor((figures.seconds % 3600) / 60)).padStart(2, '0')}`,
+        value: lengthLabel(figures.seconds, locale),
         label: `${t['stats.length']}`,
         icon: IoTimeOutline,
       },
@@ -122,12 +136,12 @@ export function ReciterHero({
           style={{ gridTemplateColumns: `repeat(${cells.length}, minmax(0, 1fr))` }}
         >
           {cells.map((cell) => (
-            <div key={cell.label} className="flex min-w-0 flex-col items-center gap-0.5 px-1 text-center">
+            <div key={cell.label} className="flex min-w-0 flex-col items-center justify-end gap-0.5 px-1 text-center">
               <dt className="order-last flex min-w-0 flex-col items-center gap-0.5 text-[11px] leading-tight text-on-hero/55 sm:flex-row sm:gap-1 sm:text-[13px]">
                 <cell.icon className="h-3 w-3 shrink-0 text-hero-gold/80 sm:h-3.5 sm:w-3.5" aria-hidden="true" />
                 <span className="text-balance">{cell.label}</span>
               </dt>
-              <dd className="truncate text-[16px] font-bold tabular-nums sm:text-[22px]">{cell.value}</dd>
+              <dd className="text-balance text-[16px] font-bold leading-tight tabular-nums sm:text-[22px]">{cell.value}</dd>
             </div>
           ))}
         </dl>

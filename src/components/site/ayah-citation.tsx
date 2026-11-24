@@ -19,8 +19,8 @@ export function AyahCitation({
 }: {
   label: string;
   surah: number;
-  /** Our ayahs the citation covers (drawn in ink; their text never reaches the page). */
-  ayahs: { ayah: number }[];
+  /** Our ayahs the citation covers, with their text (for the ink's place and for readers). */
+  ayahs: { ayah: number; text: string }[];
 }) {
   const [open, setOpen] = useState(false);
 
@@ -62,7 +62,7 @@ export function AyahCitation({
               </div>
               {ayahs.map((a) => (
                 <div key={a.ayah} className="flex flex-col gap-2 rounded-[18px] bg-surface-sunken px-4 py-3 text-ink">
-                  <AyahInk surah={surah} ayah={a.ayah} label={`${label}، الآية ${a.ayah}`} line={56} />
+                  <AyahInk surah={surah} ayah={a.ayah} text={a.text} line={56} />
                   <Link href={`/ayah/${surah}/${a.ayah}`} className="self-start text-[13.5px] font-bold text-ink-muted hover:text-ink">
                     معاني الآية وبلاغتها وأحكامها ←
                   </Link>

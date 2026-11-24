@@ -26,8 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     locale: 'ar',
     path: `/ayah/${surah}/${ayah}`,
     title: `${surahName(Number(surah))} ${ayah}: المعاني والبلاغة والأحكام والتدبّر | ذكر`,
-    // Never the ayah itself: the mushaf's text stays out of the page.
-    description: `الآية ${ayah} من سورة ${surahName(Number(surah))}: معاني الكلمات وأسباب النزول والبلاغة والأحكام والتدبّر، من الموسوعة القرآنية، برواية قالون.`,
+    description: a.text,
     omitLanguages: true,
   });
 }
@@ -179,7 +178,7 @@ export default async function Page({ params }: Props) {
           )}
         </div>
         <div className="rounded-[22px] bg-surface-sunken px-5 py-4 text-ink">
-          <AyahInk surah={n} ayah={a.ayah} label={`سورة ${surahName(n)}، الآية ${a.ayah}`} line={84} />
+          <AyahInk surah={n} ayah={a.ayah} text={a.text} line={84} />
         </div>
         <div className="flex flex-wrap gap-2">
           {tafsirs().map((t) => (

@@ -73,7 +73,7 @@ export default async function Page({ params }: Props) {
                 className="flex flex-col gap-2.5 rounded-[22px] border border-border bg-surface p-4 transition-colors hover:border-border-strong sm:p-5"
               >
                 <div className="text-ink">
-                  <AyahInk surah={n} ayah={a.ayah} label={`الآية ${a.ayah}`} line={64} />
+                  <AyahInk surah={n} ayah={a.ayah} text={a.text} line={64} />
                 </div>
                 {passages.length > 0 && (
                   <p className="text-[15px] leading-[1.9] text-ink-muted">{excerpt(passages.map((p) => p.text).join(' '))}</p>

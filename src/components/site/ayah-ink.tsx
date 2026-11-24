@@ -11,8 +11,8 @@ const INK_VERSION = 3;
 /**
  * An ayah (or one word of it) in the Jamahiriya mushaf's own ink: the printed words,
  * wrapped to this column, coloured by the text colour (a mask, so it follows the theme).
- * The words are never in the page as text (not even while loading, not in its data): the
- * mushaf's text stays ours. Screen readers hear which ayah it is (`label`).
+ * Only the ink is ever seen: the words are in the page as text for search engines, copying
+ * and screen readers (our own Qalun text, shareable), never drawn in a font.
  *
  * The picture is asked for once the ayah nears the screen, at the screen's density, in a
  * reader session (opened when the first picture is refused for want of one), and the
@@ -23,7 +23,7 @@ export function AyahInk({
   surah,
   ayah,
   word,
-  label,
+  text,
   line = 44,
   wrap = true,
   className,
@@ -31,8 +31,8 @@ export function AyahInk({
   surah: number;
   ayah: number;
   word?: number;
-  /** What a screen reader says, «سورة البقرة، الآية 255»; by default the ayah's number. */
-  label?: string;
+  /** The same words as text (read, never drawn). */
+  text: string;
   /** One printed line's height, CSS px. */
   line?: number;
   wrap?: boolean;
@@ -104,8 +104,7 @@ export function AyahInk({
   return (
     <span
       ref={box}
-      role="img"
-      aria-label={label ?? `﴿${surah}:${ayah}${word ? `:${word}` : ''}﴾`}
+      lang="ar"
       className={cn('relative inline-block max-w-full align-middle', !picture && !oneLine && 'w-full', className)}
     >
       {picture ? (
@@ -132,6 +131,7 @@ export function AyahInk({
           style={{ height: line, width: oneLine ? line * (word ? 1.6 : 5) : '100%' }}
         />
       )}
+      <span className="sr-only">{text}</span>
     </span>
   );
 }

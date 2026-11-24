@@ -6,7 +6,7 @@ import { qalunForHafs } from '@/lib/ayah-numbering';
 import type { MawsuahBlock, Run } from '@/lib/mawsuah';
 import { qalunSurah } from '@/lib/qalun-text';
 
-/** Our ayahs a Hafs citation covers (those our text holds); a long range keeps its first five. */
+/** Our ayahs a Hafs citation covers, with their text; a long range keeps its first five. */
 function citedAyahs(surah: number, from: number, to: number) {
   const ours = new Set<number>();
   for (let hafs = from; hafs <= Math.min(to, from + 20); hafs++) {
@@ -14,12 +14,12 @@ function citedAyahs(surah: number, from: number, to: number) {
     if (found.length === 0 && surah === 1 && hafs === 1) ours.add(1);
     for (const a of found) ours.add(a);
   }
-  const held = new Set(qalunSurah(surah).map((x) => x.ayah));
+  const text = qalunSurah(surah);
   return [...ours]
-    .filter((ayah) => held.has(ayah))
     .sort((a, b) => a - b)
     .slice(0, 5)
-    .map((ayah) => ({ ayah }));
+    .map((ayah) => ({ ayah, text: text.find((x) => x.ayah === ayah)?.text ?? '' }))
+    .filter((a) => a.text);
 }
 
 export function Runs({ runs }: { runs: Run[] | undefined }) {

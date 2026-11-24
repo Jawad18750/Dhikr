@@ -46,7 +46,13 @@ const P = (lng, lat) => `${Math.round((lng + 180) * 2)},${Math.round((90 - lat) 
 const parts = [];
 for (const g of t.objects.land.geometries) {
   const polys = g.type === 'Polygon' ? [g.arcs] : g.arcs;
-  for (const poly of polys) for (const ring of poly) parts.push(`M${ring.flatMap((index) => arc(index)).map(([lng, lat]) => P(lng, lat)).join('L')}Z`);
+  for (const poly of polys)
+    for (const ring of poly) {
+      const pts = ring.flatMap((index) => arc(index));
+      // Antarctica is left out: the maps stop at 60°S, where its edge would draw a line.
+      if (pts.every(([, lat]) => lat < -55)) continue;
+      parts.push(`M${pts.map(([lng, lat]) => P(lng, lat)).join('L')}Z`);
+    }
 }
 fs.writeFileSync('src/data/world-land.json', JSON.stringify({ path: parts.join(''), width: 720, height: 360 }));
 console.log('world-land', parts.join('').length);

@@ -21,7 +21,7 @@ const config: Config = {
         border: 'var(--border)',
         muted: 'var(--muted)',
         accent: 'var(--accent)',
-        // Semantic aliases used by new components (DESIGN.md).
+        // Semantic aliases used by new components.
         canvas: 'var(--background)',
         ink: 'var(--foreground)',
         'ink-muted': 'var(--muted)',

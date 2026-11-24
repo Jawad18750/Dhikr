@@ -26,7 +26,7 @@ if (
     buildAppUrl.includes('127.0.0.1'))
 ) {
   console.warn(
-    '\n[open-tarteel] NEXT_PUBLIC_APP_URL is missing or points to localhost. ' +
+    '\n[dhikr] NEXT_PUBLIC_APP_URL is missing or points to localhost. ' +
       'Metadata, sitemap, robots.txt and share links will be generated with ' +
       'the wrong origin. Set it before running `next build`.\n'
   );

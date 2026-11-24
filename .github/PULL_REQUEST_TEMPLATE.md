@@ -20,10 +20,9 @@ Fixes #<!-- issue number, or remove this line if unrelated -->
 
 <!-- What you ran locally. -->
 
-- [ ] `yarn format:check`
+- [ ] `yarn tsc --noEmit`
 - [ ] `yarn lint`
-- [ ] `yarn type-check`
-- [ ] `yarn test:coverage`
+- [ ] `yarn test`
 - [ ] `yarn build`
 - [ ] Manual QA on `yarn dev` (route(s) exercised: <!-- ... -->)
 
@@ -38,7 +37,8 @@ Fixes #<!-- issue number, or remove this line if unrelated -->
       `.prettierrc.mjs`
 - [ ] I have performed a self-review of the diff
 - [ ] I have commented code only where the intent is non-obvious
-- [ ] I have updated docs / `CHANGELOG.md` where appropriate
+- [ ] I have updated the docs where appropriate
+- [ ] This pull request targets `tilawat` and I have not merged or pushed to it
 - [ ] I have added or updated tests for new behavior
 - [ ] If AI-assisted, I have re-read the diff and verified each change
       manually

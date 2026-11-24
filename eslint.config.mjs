@@ -118,7 +118,6 @@ const config = [
       'node_modules/**',
       'coverage/**',
       '.husky/**',
-      '.agent/**',
       '**/*.d.ts',
       'public/**',
       '.cache/**',

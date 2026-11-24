@@ -106,7 +106,7 @@ jobs:
       - name: Build production bundle
         run: yarn build
         env:
-          NEXT_PUBLIC_APP_URL: https://tarteel.quran.us.kg
-          NEXT_PUBLIC_APP_NAME: Open Tarteel
+          NEXT_PUBLIC_APP_URL: https://dhikr.ly
+          NEXT_PUBLIC_APP_NAME: ذكر
           NEXT_PUBLIC_APP_VERSION: ${{ github.sha }}
           NEXT_PUBLIC_DEBUG: 'false'

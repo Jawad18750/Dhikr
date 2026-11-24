@@ -2,6 +2,7 @@
 
 import { useEffect, useLayoutEffect, useState } from 'react';
 
+import { openReaderSession } from '@/lib/reader/session';
 import { cn } from '@/utils';
 
 /**
@@ -30,10 +31,12 @@ function namesAt(height: number, surah?: number): Promise<Names | null> {
   let held = sheets.get(key);
   if (!held) {
     held = (async () => {
-      const response = await fetch(
-        `/api/reader/names?height=${height}${surah ? `&surah=${surah}` : ''}&v=${VERSION}`,
-        { credentials: 'same-origin' }
-      ).catch(() => null);
+      const url = `/api/reader/names?height=${height}${surah ? `&surah=${surah}` : ''}&v=${VERSION}`;
+      let response = await fetch(url, { credentials: 'same-origin' }).catch(() => null);
+      // The names need a reader session: open one when refused for want of it, and ask again.
+      if (response?.status === 401 && (await openReaderSession())) {
+        response = await fetch(url, { credentials: 'same-origin' }).catch(() => null);
+      }
       if (!response?.ok) return null;
       const cell = Number(response.headers.get('x-name-cell'));
       const names = { url: URL.createObjectURL(await response.blob()), cell, height };

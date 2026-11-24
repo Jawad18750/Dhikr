@@ -101,25 +101,31 @@ export const denied = (status: number) =>
 export function gate(
   request: Request,
   cookie: string | undefined,
-  kind: 'layout' | 'row' | 'lit' | 'hit' | 'names'
+  kind: 'layout' | 'row' | 'lit' | 'hit' | 'ink' | 'names'
 ): { session: string } | { response: NextResponse } {
   if (!sameOrigin(request)) return { response: denied(403) };
   const session = readSession(cookie);
   if (!session) return { response: denied(401) };
   const address = clientAddress(request);
-  // Per minute per session, and per hour per address: roomy for one listener, far
-  // short of what collecting the book would take.
-  const minute: Record<typeof kind, number> = { layout: 30, row: 240, lit: 600, hit: 60, names: 30 };
+  // Per minute and per hour per session, and per hour and per day per address: roomy for
+  // one reader (and for a shared address), far short of what collecting the book would
+  // take. `ink` is an ayah quoted in its ink anywhere on the site; `names` the surah names.
+  const minute: Record<typeof kind, number> = { layout: 30, row: 240, lit: 600, hit: 60, ink: 240, names: 20 };
+  const perSession: Partial<Record<typeof kind, number>> = { ink: 900, names: 60 };
   const hour: Record<typeof kind, number> = {
     layout: 400,
     row: 4000,
     lit: 12000,
     hit: 1200,
-    names: 600,
+    ink: 1200,
+    names: 120,
   };
+  const day: Partial<Record<typeof kind, number>> = { ink: 4000, names: 400 };
   if (
     !allow(`${kind}:s:${session}`, minute[kind], 60_000) ||
-    !allow(`${kind}:a:${address}`, hour[kind], 3600_000)
+    (perSession[kind] !== undefined && !allow(`${kind}:sh:${session}`, perSession[kind], 3600_000)) ||
+    !allow(`${kind}:a:${address}`, hour[kind], 3600_000) ||
+    (day[kind] !== undefined && !allow(`${kind}:d:${address}`, day[kind], 86_400_000))
   ) {
     return { response: denied(429) };
   }

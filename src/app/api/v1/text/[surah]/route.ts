@@ -11,8 +11,9 @@ type Ayah = { ayah: number; text: string; juz: number; thumun?: number; hizb?: n
 const TEXT = text as Record<string, Ayah[]>;
 
 /**
- * A surah's text in Qalun, ayah by ayah as the Jamahiriya mushaf prints them (6214 in
- * all), with the juz each ayah is in and where a thumun (and so a hizb) begins.
+ * A surah's text in Qalun, ayah by ayah (6214 in all): the Madina mushaf's Qalun text as
+ * revised by Dhikr, the apps' own quran.db (shareable; the Jamahiriya's ink never is), with
+ * the juz each ayah is in and where a thumun (and so a hizb) begins.
  */
 export async function GET(request: Request, { params }: { params: Promise<{ surah: string }> }) {
   const { surah: s } = await params;

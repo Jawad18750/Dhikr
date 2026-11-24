@@ -152,7 +152,8 @@ them; one without answers 404.
 \`{ "slug", "surah", "words": [{ "ayah", "word", "start", "end" }] }\` in reciting order.
 
 ### GET /text/{surah}
-The surah's text ayah by ayah as the Jamahiriya mushaf prints it, in Qalun orthography,
+The surah's text ayah by ayah: the Madina mushaf's Qalun text (King Fahd Complex), as revised
+by Dhikr, in Qalun orthography,
 each ayah with its juz; the ayah where a thumun begins also carries \`thumun\` (1–480) and
 \`hizb\` (1–60). In two places (2:84, 18:22) the thumun sign falls inside the ayah, as printed.
 \`{ "surah", "name", "riwaya": "qalun", "count", "ayahs": [{ "ayah", "text", "juz", "thumun"?, "hizb"? }] }\`

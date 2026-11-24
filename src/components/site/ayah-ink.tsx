@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 
+import { openReaderSession } from '@/lib/reader/session';
 import { cn } from '@/utils';
 
 /** Bumped when the reader draws ayahs differently, so browsers drop their old copies. */
@@ -13,8 +14,9 @@ const INK_VERSION = 3;
  * The words are never in the page as text (not even while loading, not in its data): the
  * mushaf's text stays ours. Screen readers hear which ayah it is (`label`).
  *
- * The picture is asked for once the ayah nears the screen, at the screen's density, and
- * the browser keeps it. Until it comes, an empty line holds the place. `wrap={false}` (and a
+ * The picture is asked for once the ayah nears the screen, at the screen's density, in a
+ * reader session (opened when the first picture is refused for want of one), and the
+ * browser keeps it. Until it comes, an empty line holds the place. `wrap={false}` (and a
  * single `word`) draws one line whatever the column, with no measuring.
  */
 export function AyahInk({
@@ -81,11 +83,19 @@ export function AyahInk({
     const ratio = line / height;
     const url = `/api/reader/ayah?v=${INK_VERSION}&surah=${surah}&ayah=${ayah}&height=${height}&width=${width}${word ? `&word=${word}` : ''}`;
     let live = true;
-    const image = new Image();
-    image.onload = () => {
-      if (live) setPicture({ url, w: image.naturalWidth * ratio, h: image.naturalHeight * ratio });
+    const load = (again: boolean) => {
+      const image = new Image();
+      image.onload = () => {
+        if (live) setPicture({ url, w: image.naturalWidth * ratio, h: image.naturalHeight * ratio });
+      };
+      // Refused (no session yet, or it ran out): open one and ask once more.
+      image.onerror = () => {
+        if (again || !live) return;
+        void openReaderSession().then((ok) => ok && live && load(true));
+      };
+      image.src = url;
     };
-    image.src = url;
+    load(false);
     return () => {
       live = false;
     };

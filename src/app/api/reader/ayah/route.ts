@@ -1,4 +1,6 @@
-import { allow, clientAddress, denied, sameOrigin } from '@/lib/reader/guard';
+import { cookies } from 'next/headers';
+
+import { denied, gate, READER_COOKIE, sessionTag } from '@/lib/reader/guard';
 import { png } from '@/lib/reader/raster';
 import { readerAvailable, readerAyah } from '@/lib/reader/service';
 
@@ -11,14 +13,14 @@ export const dynamic = 'force-dynamic';
  * width; the ayah wraps to it; `word` draws that word alone). Pixels only, black ink the page colours as a mask, never the
  * shapes.
  *
- * Asked for by this site's pages only (same origin), within budgets per address, and
+ * Asked for by this site's pages only (same origin), in a reader session, within budgets
+ * per session and per address, with the session's tag woven into the ink (raster.ts), and
  * kept in the browser's own cache (never a shared one).
  */
 export async function GET(request: Request) {
   if (!readerAvailable()) return denied(503);
-  if (!sameOrigin(request)) return denied(403);
-  const address = clientAddress(request);
-  if (!allow(`ayah:m:${address}`, 240, 60_000) || !allow(`ayah:h:${address}`, 1500, 3600_000)) return denied(429);
+  const passed = gate(request, (await cookies()).get(READER_COOKIE)?.value, 'ink');
+  if ('response' in passed) return passed.response;
   const q = new URL(request.url).searchParams;
   const surah = Number(q.get('surah'));
   const ayah = Number(q.get('ayah'));
@@ -36,5 +38,5 @@ export async function GET(request: Request) {
   } catch {
     return denied(404);
   }
-  return png(svg, 0, { 'Cache-Control': 'private, max-age=2592000, immutable' });
+  return png(svg, sessionTag(passed.session), { 'Cache-Control': 'private, max-age=2592000, immutable' });
 }

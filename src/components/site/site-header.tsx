@@ -15,7 +15,6 @@ import { MESSAGES } from '@/locales';
 
 import { HeaderMark } from './header-mark';
 import { HeaderShell } from './header-shell';
-import { InstallApp } from './install-app';
 import { LanguageSwitch } from './language-switch';
 import { MARK_SLOT_ID } from './logo-mark-3d';
 import { type MenuLink, SiteMenu } from './site-menu';
@@ -112,7 +111,6 @@ export function SiteHeader({ locale }: { locale: SeoLocale }) {
           >
             <IoSearchOutline className="h-[19px] w-[19px]" aria-hidden="true" />
           </Link>
-          <InstallApp locale={locale} look="icon" />
           <Link
             href={account.href}
             aria-label={account.label}
@@ -136,7 +134,6 @@ export function SiteHeader({ locale }: { locale: SeoLocale }) {
           >
             <IoSearchOutline className="h-5 w-5" aria-hidden="true" />
           </Link>
-          <InstallApp locale={locale} look="icon" />
           <SiteMenu links={[...links, account]} locale={locale} />
         </div>
       </header>

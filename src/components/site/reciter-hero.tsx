@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { IconType } from 'react-icons';
 import { IoCloudDownloadOutline, IoHeadsetOutline, IoTimeOutline, IoTrophyOutline } from 'react-icons/io5';
 
@@ -35,7 +36,30 @@ function lengthLabel(seconds: number, locale: SeoLocale) {
   const unit = (value: number, name: 'hour' | 'minute') =>
     new Intl.NumberFormat(locale === 'ar' ? 'ar-u-nu-latn' : locale, { style: 'unit', unit: name, unitDisplay: 'long' }).format(value);
   const parts = [hours > 0 && unit(hours, 'hour'), (minutes > 0 || hours === 0) && unit(minutes, 'minute')].filter(Boolean) as string[];
-  return new Intl.ListFormat(locale, { type: 'unit', style: 'long' }).format(parts);
+  // Kept whole, so a narrow cell breaks only between the hours and the minutes:
+  // «28 ساعة» over «و54 دقيقة», «31 hours,» over «21 minutes».
+  const pieces: string[] = [];
+  let carry = '';
+  for (const part of new Intl.ListFormat(locale, { type: 'unit', style: 'long' }).formatToParts(parts)) {
+    if (part.type === 'element') {
+      pieces.push(carry + part.value);
+      carry = '';
+      continue;
+    }
+    const cut = part.value.trimEnd().lastIndexOf(' ') + 1 || (part.value.endsWith(' ') ? part.value.length : 0);
+    if (pieces.length) pieces[pieces.length - 1] += part.value.slice(0, cut).trimEnd();
+    carry = part.value.slice(cut).trimStart();
+  }
+  return (
+    <>
+      {pieces.map((piece, index) => (
+        <span key={piece} className="whitespace-nowrap">
+          {index > 0 ? ' ' : ''}
+          {piece}
+        </span>
+      ))}
+    </>
+  );
 }
 
 /**
@@ -82,7 +106,7 @@ export function ReciterHero({
     figures && figures.bytes > 0 && { value: sizeLabel(figures.bytes, locale), label: t['stats.size'], icon: IoCloudDownloadOutline },
     figures &&
       figures.rank !== null && { value: `#${figures.rank}`, label: t['stats.rankValue'], icon: IoTrophyOutline },
-  ].filter(Boolean) as { value: string; label: string; icon: IconType }[];
+  ].filter(Boolean) as { value: ReactNode; label: string; icon: IconType }[];
 
   return (
     <section

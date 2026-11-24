@@ -2,7 +2,7 @@
 /**
  * Audit the deployed sitemap and the pages it lists.
  *
- *   CHECK_URL=https://tarteel.quran.us.kg node scripts/seo-audit.mjs
+ *   CHECK_URL=https://dhikr.ly node scripts/seo-audit.mjs
  *   CHECK_URL=http://127.0.0.1:3101 node scripts/seo-audit.mjs
  *
  * This catches the failures Search Console reports days later: a listed page
@@ -26,7 +26,7 @@ const check = (label, ok, detail = '') => {
 
 const get = async (url) => {
   const response = await fetch(url, {
-    headers: { 'user-agent': 'open-tarteel-seo-audit/1.0' },
+    headers: { 'user-agent': 'dhikr-seo-audit/1.0' },
   });
   return { response, text: await response.text() };
 };

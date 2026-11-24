@@ -26,7 +26,7 @@ const makeTrack = (surahNumber: number): ItqanSurah => ({
   surah_name_en: 'Surah',
   audio_url: `https://storage.cms.itqan.dev/media/uploads/assets/11/recitations/${String(
     surahNumber
-  ).padStart(3, '0')}.mp3?c=open-tarteel-d0a6`,
+  ).padStart(3, '0')}.mp3?c=dhikr-d0a6`,
   duration_ms: 60_000,
   size_bytes: 500_000,
   revelation_order: surahNumber,
@@ -103,7 +103,7 @@ describe('ItqanAdapter', () => {
           headers: expect.objectContaining({
             'Accept-Language': 'ar',
             'X-API-Key': 'test-key',
-            'X-Client-Name': 'open-tarteel',
+            'X-Client-Name': 'dhikr',
             'X-Client-Version': '1.2.3',
           }),
         })
@@ -216,7 +216,7 @@ describe('ItqanAdapter', () => {
         { id: '11' } as Moshaf,
         'ar'
       );
-      expect(playlist[0]?.link).toContain('c=open-tarteel-d0a6');
+      expect(playlist[0]?.link).toContain('c=dhikr-d0a6');
     });
 
     it('sends the localized header', async () => {

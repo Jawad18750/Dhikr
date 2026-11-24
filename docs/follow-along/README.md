@@ -32,7 +32,7 @@ mode no longer draws pitch at all; see [D21](decisions.md).
 - No full mushaf page view (only the line data is reused).
 - No timings for non-Hafs riwayat.
 - No modified or reformatted copy of the English translation (CC BY-ND).
-- No derived npm package; this ships inside Open Tarteel.
+- No derived npm package; this ships inside Dhikr.
 
 ## Locked sources
 

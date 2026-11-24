@@ -16,19 +16,19 @@ afterEach(() => {
 describe('robots', () => {
   it('names an absolute sitemap and host in production', async () => {
     const result = await load({
-      NEXT_PUBLIC_APP_URL: 'https://tarteel.example',
+      NEXT_PUBLIC_APP_URL: 'https://dhikr.example',
       NEXT_PUBLIC_IS_PREVIEW: '',
       SEO_NOINDEX: '',
     });
 
-    expect(result.sitemap).toBe('https://tarteel.example/sitemap.xml');
-    expect(result.host).toBe('https://tarteel.example');
+    expect(result.sitemap).toBe('https://dhikr.example/sitemap.xml');
+    expect(result.host).toBe('https://dhikr.example');
     expect(result.rules).toMatchObject({ allow: '/' });
   });
 
   it('blocks every path on a deploy preview', async () => {
     const result = await load({
-      NEXT_PUBLIC_APP_URL: 'https://tarteel.example',
+      NEXT_PUBLIC_APP_URL: 'https://dhikr.example',
       NEXT_PUBLIC_IS_PREVIEW: 'true',
     });
 
@@ -38,7 +38,7 @@ describe('robots', () => {
 
   it('blocks every path when SEO_NOINDEX is true', async () => {
     const result = await load({
-      NEXT_PUBLIC_APP_URL: 'https://tarteel.example',
+      NEXT_PUBLIC_APP_URL: 'https://dhikr.example',
       SEO_NOINDEX: 'true',
     });
 

@@ -21,8 +21,8 @@ export function createSheetLayer(deps: SheetLayerDeps) {
 
   const ours = () =>
     Boolean(
-      (deps.state() as { tarteelSheet?: unknown } | null | undefined)
-        ?.tarteelSheet
+      (deps.state() as { dhikrSheet?: unknown } | null | undefined)
+        ?.dhikrSheet
     );
 
   return {
@@ -31,7 +31,7 @@ export function createSheetLayer(deps: SheetLayerDeps) {
     acquire(token: string, close: () => void) {
       if (open.length === 0 && !ours()) {
         here = deps.href();
-        deps.push({ tarteelSheet: true });
+        deps.push({ dhikrSheet: true });
       }
       open.push({ token, close });
     },

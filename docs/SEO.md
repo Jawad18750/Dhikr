@@ -47,7 +47,7 @@ npx playwright test tests/seo.spec.ts tests/sitemap.spec.ts
 Deployed audit:
 
 ```bash
-CHECK_URL=https://tarteel.quran.us.kg npm run seo:audit
+CHECK_URL=https://dhikr.ly npm run seo:audit
 ```
 
 The audit fetches `/sitemap.xml`, checks the language twins, samples every hub page and two reciter pages, verifies self-canonicals, and confirms that no listed page is `noindex`.

@@ -13,7 +13,6 @@ const isNetlifyPreview =
 const buildAppUrl =
   (isNetlifyPreview ? process.env.DEPLOY_PRIME_URL : undefined) ||
   process.env.NEXT_PUBLIC_APP_URL ||
-  process.env.NEXT_PUBLIC_TARTEEL_APP_URL ||
   // Netlify sets these at build time. DEPLOY_PRIME_URL is the primary URL for
   // the current deploy (branch deploy or deploy preview).
   process.env.DEPLOY_PRIME_URL ||

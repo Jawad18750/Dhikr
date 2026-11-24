@@ -140,6 +140,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 ## Licence
 
-- **Code:** MIT, see [LICENSE](LICENSE). The project began as a fork of [Open Tarteel](https://github.com/adelpro/open-tarteel) (MIT) and has since been rebuilt.
+- **Code:** MIT, see [LICENSE](LICENSE).
 - **Data served by the API:** [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/): free for non-commercial use, with attribution to «ذكر · dhikr.ly».
 - **Third-party texts** (tafsirs, hadith collections, books, the Quranic encyclopedia) remain their authors' and publishers', credited on each page.

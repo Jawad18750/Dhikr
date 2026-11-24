@@ -30,7 +30,7 @@ describe('canUseAudioAnalyser', () => {
   it('rejects Itqan audio, which has no CORS headers', () => {
     expect(
       canUseAudioAnalyser(
-        'https://storage.cms.itqan.dev/media/uploads/assets/11/recitations/001.mp3?c=open-tarteel-d0a6'
+        'https://storage.cms.itqan.dev/media/uploads/assets/11/recitations/001.mp3?c=dhikr-d0a6'
       )
     ).toBe(false);
   });

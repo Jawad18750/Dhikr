@@ -5,7 +5,7 @@ import { breadcrumbTrail, faqPage, itemList, websiteGraph } from './json-ld';
 describe('websiteGraph', () => {
   it('builds the site graph with stable @ids', () => {
     const graph = websiteGraph({
-      origin: 'https://tarteel.example',
+      origin: 'https://dhikr.example',
       locale: 'ar',
     }) as {
       '@graph': Array<Record<string, unknown>>;
@@ -24,8 +24,8 @@ describe('websiteGraph', () => {
 describe('breadcrumbTrail', () => {
   it('numbers positions from 1', () => {
     const crumbs = breadcrumbTrail([
-      { name: 'Home', url: 'https://tarteel.example/' },
-      { name: 'About', url: 'https://tarteel.example/about' },
+      { name: 'Home', url: 'https://dhikr.example/' },
+      { name: 'About', url: 'https://dhikr.example/about' },
     ]) as { itemListElement: Array<{ position: number }> };
 
     expect(crumbs.itemListElement.map((item) => item.position)).toEqual([1, 2]);
@@ -35,7 +35,7 @@ describe('breadcrumbTrail', () => {
 describe('itemList', () => {
   it('names each item and keeps its URL', () => {
     const list = itemList('Surahs', [
-      { name: 'Al-Fatihah', url: 'https://tarteel.example/reciter/x?surah=1' },
+      { name: 'Al-Fatihah', url: 'https://dhikr.example/reciter/x?surah=1' },
     ]) as { itemListElement: Array<Record<string, unknown>> };
 
     expect(list.itemListElement[0]).toMatchObject({

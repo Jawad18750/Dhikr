@@ -19,7 +19,7 @@ const buildHeaders = (lang: Language): Record<string, string> => {
   // until the provider adds it.
   const headers: Record<string, string> = {
     'Accept-Language': lang === 'ar' ? 'ar' : 'en',
-    'X-Client-Name': 'open-tarteel',
+    'X-Client-Name': 'dhikr',
   };
 
   // Optional server-only key: public endpoints work without it, but the key

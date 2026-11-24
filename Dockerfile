@@ -16,7 +16,7 @@ RUN yarn install --immutable
 FROM base AS builder
 # Public variables are inlined into the client bundle at build time.
 ARG NEXT_PUBLIC_APP_URL
-ARG NEXT_PUBLIC_APP_NAME="Open Tarteel"
+ARG NEXT_PUBLIC_APP_NAME="ذكر"
 ARG NEXT_PUBLIC_APP_VERSION="N/A"
 ARG NEXT_PUBLIC_DEBUG="false"
 ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL \

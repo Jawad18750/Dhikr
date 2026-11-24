@@ -16,13 +16,10 @@ const toValidUrl = (url?: string) => {
 /**
  * Public URL of the deployed application.
  *
- * `NEXT_PUBLIC_APP_URL` is the canonical variable. The legacy
- * `NEXT_PUBLIC_TARTEEL_APP_URL` name is still accepted so existing
- * deployments keep working.
+ * Set by `NEXT_PUBLIC_APP_URL`.
  */
 const appUrl =
   toValidUrl(process.env.NEXT_PUBLIC_APP_URL) ||
-  toValidUrl(process.env.NEXT_PUBLIC_TARTEEL_APP_URL) ||
   'http://localhost:3000';
 
 export const clientConfig = {

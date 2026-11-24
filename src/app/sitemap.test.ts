@@ -14,7 +14,7 @@ vi.mock('@/utils/api', () => ({
 let sitemap: typeof import('./sitemap').default;
 
 beforeAll(async () => {
-  vi.stubEnv('NEXT_PUBLIC_APP_URL', 'https://tarteel.example');
+  vi.stubEnv('NEXT_PUBLIC_APP_URL', 'https://dhikr.example');
   vi.resetModules();
   sitemap = (await import('./sitemap')).default;
 });
@@ -26,15 +26,15 @@ describe('sitemap', () => {
 
     expect(urls).toEqual(
       expect.arrayContaining([
-        'https://tarteel.example',
-        'https://tarteel.example/en',
-        'https://tarteel.example/de',
-        'https://tarteel.example/about',
-        'https://tarteel.example/en/about',
-        'https://tarteel.example/de/about',
-        'https://tarteel.example/fr',
-        'https://tarteel.example/ur/about',
-        'https://tarteel.example/ru/privacy',
+        'https://dhikr.example',
+        'https://dhikr.example/en',
+        'https://dhikr.example/de',
+        'https://dhikr.example/about',
+        'https://dhikr.example/en/about',
+        'https://dhikr.example/de/about',
+        'https://dhikr.example/fr',
+        'https://dhikr.example/ur/about',
+        'https://dhikr.example/ru/privacy',
       ])
     );
   });
@@ -49,20 +49,20 @@ describe('sitemap', () => {
   it('declares the language twins on every entry', async () => {
     const entries = await sitemap();
     const about = entries.find(
-      (entry) => entry.url === 'https://tarteel.example/about'
+      (entry) => entry.url === 'https://dhikr.example/about'
     );
 
     expect(about?.alternates?.languages).toMatchObject({
-      ar: 'https://tarteel.example/about',
-      en: 'https://tarteel.example/en/about',
-      de: 'https://tarteel.example/de/about',
-      'x-default': 'https://tarteel.example/about',
+      ar: 'https://dhikr.example/about',
+      en: 'https://dhikr.example/en/about',
+      de: 'https://dhikr.example/de/about',
+      'x-default': 'https://dhikr.example/about',
     });
   });
 
   it('keeps every URL absolute on the configured origin', async () => {
     const urls = (await sitemap()).map((entry) => entry.url);
-    expect(urls.every((url) => url.startsWith('https://tarteel.example'))).toBe(
+    expect(urls.every((url) => url.startsWith('https://dhikr.example'))).toBe(
       true
     );
   });

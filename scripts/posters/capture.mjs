@@ -10,7 +10,7 @@ import { chromium } from 'playwright';
  * family. Everything here is a browser screenshot at the family's native pixel
  * size; capture-flow's build step does the framing and the resizing.
  */
-const BASE = process.env.POSTERS_BASE ?? 'https://staging-tarteel.quran.us.kg';
+const BASE = process.env.POSTERS_BASE ?? 'https://dhikr.ly';
 const OUT = path.join(import.meta.dirname, 'captures');
 
 /** CSS viewport × deviceScaleFactor gives the native store pixel size. */

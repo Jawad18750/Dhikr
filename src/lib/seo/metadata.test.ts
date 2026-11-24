@@ -4,23 +4,23 @@ import { buildPageMetadata } from './metadata';
 
 describe('buildPageMetadata', () => {
   const meta = buildPageMetadata({
-    origin: 'https://tarteel.example',
+    origin: 'https://dhikr.example',
     locale: 'en',
     path: '/about',
-    title: 'About Open Tarteel',
+    title: 'About Dhikr',
     description: 'Open-source Quran audio player.',
   });
 
   it('uses the locale canonical', () => {
-    expect(meta.alternates?.canonical).toBe('https://tarteel.example/en/about');
+    expect(meta.alternates?.canonical).toBe('https://dhikr.example/en/about');
   });
 
   it('declares all language twins and x-default', () => {
     expect(meta.alternates?.languages).toMatchObject({
-      ar: 'https://tarteel.example/about',
-      en: 'https://tarteel.example/en/about',
-      de: 'https://tarteel.example/de/about',
-      'x-default': 'https://tarteel.example/about',
+      ar: 'https://dhikr.example/about',
+      en: 'https://dhikr.example/en/about',
+      de: 'https://dhikr.example/de/about',
+      'x-default': 'https://dhikr.example/about',
     });
   });
 
@@ -41,7 +41,7 @@ describe('buildPageMetadata', () => {
 
   it('can mark a page noindex', () => {
     const privateMeta = buildPageMetadata({
-      origin: 'https://tarteel.example',
+      origin: 'https://dhikr.example',
       locale: 'ar',
       path: '/settings',
       title: 'Settings',
@@ -53,7 +53,7 @@ describe('buildPageMetadata', () => {
 
   it('can omit hreflang for a canonicalised reciter twin', () => {
     const reciterMeta = buildPageMetadata({
-      origin: 'https://tarteel.example',
+      origin: 'https://dhikr.example',
       locale: 'ar',
       path: '/reciter/itqan.dev-2',
       title: 'Badr',
@@ -61,7 +61,7 @@ describe('buildPageMetadata', () => {
       omitLanguages: true,
     });
     expect(reciterMeta.alternates?.canonical).toBe(
-      'https://tarteel.example/reciter/itqan.dev-2'
+      'https://dhikr.example/reciter/itqan.dev-2'
     );
     expect(reciterMeta.alternates?.languages).toBeUndefined();
   });

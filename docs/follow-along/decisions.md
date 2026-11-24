@@ -4,7 +4,7 @@ Numbered so later discussions can cite them. Each is a call, not a preference.
 
 | #   | Decision                                                                 | Why                                                                |
 | --- | ------------------------------------------------------------------------ | ------------------------------------------------------------------ |
-| D1  | Ship inside Open Tarteel as a player mode, not a separate package        | One codebase, one release; the provider layer already exists here  |
+| D1  | Ship inside Dhikr as a player mode, not a separate package        | One codebase, one release; the provider layer already exists here  |
 | D2  | Mode name is تتبّع التلاوة / Follow-along                                | Describes the task; avoids musical framing                         |
 | D4  | Store Tanzil text verbatim, never edit it                                | Tanzil terms allow verbatim copies; no modification                |
 | D5  | Word index is derived from the verbatim text, not stored as text         | One coordinate space with tajweed offsets                          |

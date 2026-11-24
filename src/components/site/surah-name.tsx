@@ -88,25 +88,28 @@ export function SurahName({
     };
   }, [size, only, names]);
 
-  const scale = names ? size / names.height : 1;
   const row = alone ? 0 : surah - 1;
   const rows = alone ? 1 : 114;
+  // The name keeps its printed width when there is room, and shrinks to the space it is
+  // given when there is not (a narrow column on a small phone), never cut. Size and place
+  // are in percentages of the box, so the right cell of the sheet follows the scale.
+  const at = rows > 1 ? ((row / (rows - 1)) * 100).toFixed(5) : '0';
   return (
-    <span className={cn('block', className)} style={{ height: size }}>
+    <span className={cn('flex items-center', className)} style={{ height: size }}>
       <span className="sr-only">{name}</span>
       {names && (
         <span
           aria-hidden="true"
-          className="name-in block max-w-full bg-current"
+          className="name-in block bg-current"
           style={{
-            width: names.cell * scale,
-            height: size,
+            width: `min(${(names.cell * size) / names.height}px, 100%)`,
+            aspectRatio: `${names.cell} / ${names.height}`,
             maskImage: `url(${names.url})`,
             WebkitMaskImage: `url(${names.url})`,
-            maskSize: `${names.cell * scale}px ${size * rows}px`,
-            WebkitMaskSize: `${names.cell * scale}px ${size * rows}px`,
-            maskPosition: `0 ${-row * size}px`,
-            WebkitMaskPosition: `0 ${-row * size}px`,
+            maskSize: `100% ${rows * 100}%`,
+            WebkitMaskSize: `100% ${rows * 100}%`,
+            maskPosition: `0 ${at}%`,
+            WebkitMaskPosition: `0 ${at}%`,
             maskRepeat: 'no-repeat',
             WebkitMaskRepeat: 'no-repeat',
           }}

@@ -9,11 +9,11 @@ const size = (path: string) => {
 
 describe('social images', () => {
   it('uses 1200x630 for OG and Twitter', () => {
-    expect(size('src/app/opengraph-image.png')).toEqual({
+    expect(size('public/opengraph-image.png')).toEqual({
       width: 1200,
       height: 630,
     });
-    expect(size('src/app/twitter-image.png')).toEqual({
+    expect(size('public/twitter-image.png')).toEqual({
       width: 1200,
       height: 630,
     });

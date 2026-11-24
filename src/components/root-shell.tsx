@@ -86,6 +86,14 @@ export function RootShell({
             >
               {MESSAGES[locale]['a11y.skip']}
             </a>
+            {/* Chrome offers the install once, often before the page is interactive: keep
+                the offer for the install button (hooks/use-install.ts). */}
+            <script
+              dangerouslySetInnerHTML={{
+                __html:
+                  "addEventListener('beforeinstallprompt',function(e){e.preventDefault();window.__dhikrInstall=e;dispatchEvent(new Event('dhikr-installable'))})",
+              }}
+            />
             <script
               type="application/ld+json"
               dangerouslySetInnerHTML={{

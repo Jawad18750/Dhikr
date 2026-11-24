@@ -5,6 +5,7 @@ import { isRtl, type SeoLocale, withLocale } from '@/lib/seo/routes';
 import { BRAND } from '@/lib/seo/site';
 import { MESSAGES } from '@/locales';
 
+import { InstallApp } from './install-app';
 import { LogoMark3D } from './logo-mark-3d';
 import { LatinWordmark, Wordmark } from './wordmark';
 
@@ -87,6 +88,7 @@ export function SiteFooter({ locale }: { locale: SeoLocale }) {
             </nav>
             <nav aria-label={t['footer.apps']} className="flex flex-col gap-3">
               <span className={heading}>{t['footer.apps']}</span>
+              <InstallApp locale={locale} look="link" className={link} />
               <a href="https://adhan.dhikr.ly" className={link}>
                 {t['apps.adhan']}
               </a>

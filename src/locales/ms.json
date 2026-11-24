@@ -536,5 +536,15 @@
   "tools.qibla": "Arah kiblat",
   "tools.qiblaBody": "Arah dan jarak ke Kaabah dari mana-mana bandar, negara atau lokasi anda, dengan kompas langsung di telefon.",
   "tools.qiblaIdea": "Sesiapa boleh mencari kiblat di mana-mana, dan pembangun boleh membinanya dalam aplikasi dengan satu panggilan.",
-  "tools.qiblaMeter": "{n} tempat · kompas langsung"
+  "tools.qiblaMeter": "{n} tempat · kompas langsung",
+  "install.button": "Pasang {brand}",
+  "install.title": "{brand} di peranti anda",
+  "install.lead": "Tanpa gedung aplikasi, tanpa akaun, percuma: dibuka dari skrin utama seperti aplikasi lain, skrin penuh.",
+  "install.ios1": "Ketik butang Kongsi (petak dengan anak panah).",
+  "install.ios2": "Pilih “Tambah ke Skrin Utama” (tatal jika tidak kelihatan).",
+  "install.ios3": "Ketik “Tambah”.",
+  "install.mac1": "Dalam menu Fail Safari, pilih “Tambah ke Dock”.",
+  "install.other1": "Buka menu pelayar anda.",
+  "install.other2": "Pilih “Pasang aplikasi” atau “Tambah ke skrin utama”.",
+  "install.close": "Tutup"
 }

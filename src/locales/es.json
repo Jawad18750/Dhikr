@@ -536,5 +536,15 @@
   "tools.qibla": "Dirección de la qibla",
   "tools.qiblaBody": "La dirección y la distancia a la Kaaba desde cualquier ciudad, país o tu ubicación, con brújula en vivo en el móvil.",
   "tools.qiblaIdea": "Cualquiera encuentra la qibla en cualquier lugar, y un desarrollador la integra en su app con una llamada.",
-  "tools.qiblaMeter": "{n} lugares · brújula en vivo"
+  "tools.qiblaMeter": "{n} lugares · brújula en vivo",
+  "install.button": "Instalar {brand}",
+  "install.title": "{brand} en tu dispositivo",
+  "install.lead": "Sin tienda ni cuenta, gratis: se abre desde tu pantalla de inicio como cualquier app, a pantalla completa.",
+  "install.ios1": "Toca el botón Compartir (un cuadrado con una flecha).",
+  "install.ios2": "Elige «Añadir a pantalla de inicio» (desliza si no lo ves).",
+  "install.ios3": "Toca «Añadir».",
+  "install.mac1": "En el menú Archivo de Safari, elige «Añadir al Dock».",
+  "install.other1": "Abre el menú de tu navegador.",
+  "install.other2": "Elige «Instalar aplicación» o «Añadir a pantalla de inicio».",
+  "install.close": "Cerrar"
 }

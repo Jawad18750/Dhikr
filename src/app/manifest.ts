@@ -21,10 +21,10 @@ export default function manifest(): MetadataRoute.Manifest {
     start_url: '/',
     name: 'ذكر',
     short_name: 'ذكر',
-    description: 'مجموعة من تلاوات القرآن الكريم ومصادره الرقمية، للاستماع والقراءة والبحث.',
+    description: 'تلاوات ومصحف وتفاسير وحديث وكتب، في مكان واحد.',
 
-    dir: 'auto',
-    lang: 'auto',
+    dir: 'rtl',
+    lang: 'ar',
     orientation: 'portrait',
     launch_handler: {
       client_mode: 'auto',
@@ -94,31 +94,12 @@ export default function manifest(): MetadataRoute.Manifest {
       },
     ],
 
+    // Long-press the icon: the four places people come back to.
     shortcuts: [
-      {
-        name: 'اتصل بنا',
-        url: '/contact',
-        description: 'اتصل بنا',
-        icons: [
-          {
-            src: '/images/shortcuts/contact.png',
-            sizes: '96x96',
-            type: 'image/png',
-          },
-        ],
-      },
-      {
-        name: 'عن الموقع',
-        url: '/about',
-        description: 'عن الموقع',
-        icons: [
-          {
-            src: '/images/shortcuts/about.png',
-            sizes: '96x96',
-            type: 'image/png',
-          },
-        ],
-      },
+      { name: 'البحث', short_name: 'البحث', url: '/search', description: 'ابحث في القرآن والتفاسير والحديث والكتب' },
+      { name: 'السور', short_name: 'السور', url: '/surahs', description: 'سور القرآن بكل التلاوات' },
+      { name: 'مواقيت الصلاة', short_name: 'المواقيت', url: '/prayer-times', description: 'مواقيت المدن الليبية' },
+      { name: 'القبلة', short_name: 'القبلة', url: '/qibla', description: 'اتجاه القبلة من أي مكان' },
     ],
   };
 }

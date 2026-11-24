@@ -536,5 +536,15 @@
   "tools.qibla": "Qibla direction",
   "tools.qiblaBody": "The direction of and distance to the Kaaba from any city, country or your own location, with a live compass on phones.",
   "tools.qiblaIdea": "Anyone can find the qibla anywhere, and a developer can build it into an app with one call.",
-  "tools.qiblaMeter": "{n} places · live compass"
+  "tools.qiblaMeter": "{n} places · live compass",
+  "install.button": "Install {brand}",
+  "install.title": "{brand} on your device",
+  "install.lead": "No store, no account, free: it opens from your home screen like any app, full screen.",
+  "install.ios1": "Tap the Share button (a square with an arrow).",
+  "install.ios2": "Choose “Add to Home Screen” (scroll down if you don’t see it).",
+  "install.ios3": "Tap “Add”.",
+  "install.mac1": "In Safari’s File menu, choose “Add to Dock”.",
+  "install.other1": "Open your browser’s menu.",
+  "install.other2": "Choose “Install app” or “Add to Home screen”.",
+  "install.close": "Close"
 }

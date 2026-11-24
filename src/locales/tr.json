@@ -536,5 +536,15 @@
   "tools.qibla": "Kıble yönü",
   "tools.qiblaBody": "Herhangi bir şehirden, ülkeden ya da konumunuzdan Kâbe’nin yönü ve uzaklığı; telefonda canlı pusula.",
   "tools.qiblaIdea": "Herkes her yerde kıbleyi bulur, geliştirici de tek çağrıyla uygulamasına ekler.",
-  "tools.qiblaMeter": "{n} yer · canlı pusula"
+  "tools.qiblaMeter": "{n} yer · canlı pusula",
+  "install.button": "{brand} uygulamasını yükle",
+  "install.title": "{brand} cihazınızda",
+  "install.lead": "Mağaza yok, hesap yok, ücretsiz: ana ekranınızdan her uygulama gibi tam ekran açılır.",
+  "install.ios1": "Paylaş düğmesine dokunun (oklu bir kare).",
+  "install.ios2": "“Ana Ekrana Ekle”yi seçin (görmüyorsanız aşağı kaydırın).",
+  "install.ios3": "“Ekle”ye dokunun.",
+  "install.mac1": "Safari’nin Dosya menüsünden “Dock’a Ekle”yi seçin.",
+  "install.other1": "Tarayıcınızın menüsünü açın.",
+  "install.other2": "“Uygulamayı yükle” veya “Ana ekrana ekle”yi seçin.",
+  "install.close": "Kapat"
 }

@@ -14,7 +14,7 @@ import { hafsForQalun, qalunForHafs } from '@/lib/ayah-numbering';
  * A paragraph is a list of runs: prose, ["q", quote], ["a", surah, from, to, label] (Hafs
  * numbers) and ["f", footnote].
  */
-const ROOT = process.env.CONTENT_ROOT ?? '/Users/jawad/Developer/dhikr/dhikr-app';
+const ROOT = process.env.CONTENT_ROOT ?? path.join(process.cwd(), '.content');
 const DIR = path.join(ROOT, 'masahif_app/assets/data/library/mawsuah');
 
 export type Run = string | ['q', string] | ['a', number, number, number, string] | ['f', number];

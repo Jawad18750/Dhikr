@@ -9,7 +9,7 @@ import pg from 'pg';
 
 import { fold } from '../src/lib/arabic-fold.mjs';
 
-const root = process.env.CONTENT_ROOT ?? '/Users/jawad/Developer/dhikr/dhikr-app';
+const root = process.env.CONTENT_ROOT ?? path.join(process.cwd(), '.content');
 const library = path.join(root, 'app/assets/data/library');
 const index = JSON.parse(fs.readFileSync(path.join(library, 'index.json'), 'utf8'));
 const folders = index.books

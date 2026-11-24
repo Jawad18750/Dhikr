@@ -8,12 +8,12 @@ import zlib from 'node:zlib';
  * bytes the apps ship), so the site and the apps never hold two different texts.
  *
  * CONTENT_ROOT points at a copy of the apps' data (scripts/sync-content.sh puts one on the
- * server; in development it is the dhikr-app checkout). Layout, as in the apps:
+ * server; locally, the apps' checkout or the default .content folder). Layout, as in the apps:
  *   app/assets/data/library/index.json          categories and books
  *   app/assets/data/library/books/<id>.json.br  one book: chapters → sections → blocks
  *   app/assets/images/library/<cover>           covers
  */
-const ROOT = process.env.CONTENT_ROOT ?? '/Users/jawad/Developer/dhikr/dhikr-app';
+const ROOT = process.env.CONTENT_ROOT ?? path.join(process.cwd(), '.content');
 const LIBRARY = path.join(ROOT, 'app/assets/data/library');
 
 export type Category = { id: string; title: string; subtitle: string; order: number };

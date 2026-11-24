@@ -10,7 +10,7 @@ import zlib from 'node:zlib';
  * A hadith's chapter is its `chapter_ar` (اللؤلؤ والمرجان: the كتاب, with the باب as its
  * title) or else its `title_ar`.
  */
-const ROOT = process.env.CONTENT_ROOT ?? '/Users/jawad/Developer/dhikr/dhikr-app';
+const ROOT = process.env.CONTENT_ROOT ?? path.join(process.cwd(), '.content');
 const DIR = path.join(ROOT, 'app/assets/data/hadith');
 
 export type Collection = { id: number; slug: string; title: string; count: number };

@@ -11,7 +11,7 @@ import { hafsForQalun } from '@/lib/ayah-numbering';
  * numbering tables the converter uses. An entry may explain several ayahs at once (al-
  * Jalalayn groups them): it is filed under the first, and covers up to the next entry.
  */
-const ROOT = process.env.CONTENT_ROOT ?? '/Users/jawad/Developer/dhikr/dhikr-app';
+const ROOT = process.env.CONTENT_ROOT ?? path.join(process.cwd(), '.content');
 const LIBRARY = path.join(ROOT, 'app/assets/data/library');
 
 export type TafsirMeta = { id: string; folder: string; title: string; author: string; hasCover: boolean };

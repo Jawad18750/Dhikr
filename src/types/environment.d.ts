@@ -13,10 +13,6 @@ declare namespace NodeJS {
     PORT?: string;
     DEBUG?: string;
 
-    FEED_BACK_EMAIL?: string;
-    FEED_BACK_PASSWORD?: string;
-    FEED_BACK_SERVICE?: string;
-    FEED_BACK_HOST?: string;
-    FEED_BACK_PORT?: string;
+    CONTACT_TO?: string;
   }
 }

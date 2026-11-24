@@ -3,19 +3,12 @@ import PostgresAdapter from '@auth/pg-adapter';
 import NextAuth from 'next-auth';
 import Google from 'next-auth/providers/google';
 import Nodemailer from 'next-auth/providers/nodemailer';
-import { createTransport } from 'nodemailer';
 
 import { pool } from '@/lib/database';
 import { signInEmail } from '@/lib/sign-in-email';
+import { SITE_FROM, siteMail } from '@/lib/site-mail';
 
-/**
- * The email link is sent by this server's own mail (Postfix on the VPS, signed with
- * dhikr.ly's DKIM key). In development, with no mail server, the link is printed instead.
- */
-const transport = process.env.EMAIL_SERVER
-  ? createTransport(process.env.EMAIL_SERVER)
-  : createTransport({ host: '127.0.0.1', port: 25, secure: false, tls: { rejectUnauthorized: false } });
-
+/** The email link is sent by the site's own mail (site-mail.ts); in development it is printed instead. */
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PostgresAdapter(pool),
   session: { strategy: 'database', maxAge: 90 * 24 * 3600 },
@@ -24,7 +17,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Google,
     Nodemailer({
       server: {},
-      from: 'ذكر <no-reply@dhikr.ly>',
+      from: SITE_FROM,
       // A link works once, for ten minutes.
       maxAge: 10 * 60,
       async sendVerificationRequest({ identifier, url }) {
@@ -33,8 +26,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           console.log(`sign-in link for ${identifier}: ${url}`);
           return;
         }
-        await transport.sendMail({
-          from: 'ذكر <no-reply@dhikr.ly>',
+        await siteMail.sendMail({
+          from: SITE_FROM,
           to: identifier,
           subject: message.subject,
           text: message.text,

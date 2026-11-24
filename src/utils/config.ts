@@ -34,9 +34,4 @@ export const clientConfig = {
 
 export const serverConfig = {
   PORT: process.env.PORT || 3000,
-  FEED_BACK_EMAIL: process.env.FEED_BACK_EMAIL,
-  FEED_BACK_PASSWORD: process.env.FEED_BACK_PASSWORD,
-  FEED_BACK_SERVICE: process.env.FEED_BACK_SERVICE,
-  FEED_BACK_HOST: process.env.FEED_BACK_HOST,
-  FEED_BACK_PORT: process.env.FEED_BACK_PORT,
 } as const;

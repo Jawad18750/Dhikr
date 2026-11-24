@@ -1,18 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { contactInbox, SITE_FROM, siteMail } from '@/lib/site-mail';
 import { clientConfig, isValidEmail, sanitizeHTML } from '@/utils';
-import {
-  getTransporter,
-  isMailConfigured,
-  mailOptions,
-} from '@/utils/node-mailer';
 
 // --- Rate Limiting Logic ---
-// NOTE: this is an in-memory, per-instance limiter. It is enough to stop
-// casual abuse on a single node, but deployments with multiple instances
-// should put a shared limiter (e.g. Redis/Upstash) in front of this route.
+// In memory, one server process. A few messages an hour per address, and a cap a day
+// for the whole form, so it cannot be turned into a way of filling the inbox.
 const LIMIT = 5;
-const WINDOW_MS = 60 * 1000;
+const WINDOW_MS = 60 * 60 * 1000;
+const DAY_LIMIT = 100;
+let day = { count: 0, start: 0 };
 const MAX_RATE_LIMIT_ENTRIES = 10_000;
 
 const MAX_BODY_BYTES = 16 * 1024;
@@ -52,6 +49,8 @@ const cleanupRateLimit = (now: number) => {
 };
 
 const getClientIp = (request: NextRequest): string => {
+  const cloudflare = request.headers.get('cf-connecting-ip');
+  if (cloudflare) return cloudflare.trim();
   const forwarded = request.headers.get('x-forwarded-for');
   if (forwarded) return forwarded.split(',')[0]?.trim() || 'unknown';
 
@@ -62,7 +61,8 @@ const badRequest = (message: string, status: number) =>
   NextResponse.json({ message }, { status });
 
 export async function POST(request: NextRequest) {
-  if (!isMailConfigured) {
+  const inbox = contactInbox();
+  if (!inbox) {
     return badRequest('Feedback is not configured on this server.', 503);
   }
 
@@ -127,17 +127,31 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  if (now - day.start > 24 * 3600 * 1000) day = { count: 0, start: now };
+  if (day.count >= DAY_LIMIT) {
+    return NextResponse.json({ message: 'Too many requests, please try again later.' }, { status: 429 });
+  }
+
   userData.count += 1;
   rateLimitMap.set(ip, userData);
+  day.count += 1;
 
   try {
     const safeName = sanitizeHTML(trimmedName);
     const safeEmail = sanitizeHTML(trimmedEmail);
     const safeMessage = sanitizeHTML(trimmedMessage);
 
-    await getTransporter().sendMail({
-      ...mailOptions,
-      subject: `${clientConfig.APP_NAME} - feedback`,
+    if (process.env.EMAIL_DEV_LOG === '1') {
+      console.log(`contact form from ${trimmedEmail}: ${trimmedMessage.slice(0, 200)}`);
+      return NextResponse.json({ message: 'Feedback sent successfully' });
+    }
+    // From the site's own address (signed, so it lands in the inbox), with the visitor
+    // as Reply-To: answering is one tap.
+    await siteMail.sendMail({
+      from: SITE_FROM,
+      to: inbox,
+      replyTo: { name: trimmedName.replace(/[\r\n"<>]/g, ' '), address: trimmedEmail },
+      subject: `${clientConfig.APP_NAME} - رسالة من صفحة التواصل: ${trimmedName.replace(/[\r\n]/g, ' ').slice(0, 60)}`,
       text: `Contact form submitted from ${clientConfig.APP_NAME}\nName: ${safeName}\nEmail: ${safeEmail}\nMessage: ${safeMessage}`,
       html: `
         <section style="font-family: Arial, sans-serif; color: #333; padding: 20px;">

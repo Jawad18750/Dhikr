@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { Fragment, type ReactNode } from 'react';
 import type { IconType } from 'react-icons';
 import { IoCloudDownloadOutline, IoHeadsetOutline, IoTimeOutline, IoTrophyOutline } from 'react-icons/io5';
 
@@ -53,10 +53,10 @@ function lengthLabel(seconds: number, locale: SeoLocale) {
   return (
     <>
       {pieces.map((piece, index) => (
-        <span key={piece} className="whitespace-nowrap">
-          {index > 0 ? ' ' : ''}
-          {piece}
-        </span>
+        <Fragment key={piece}>
+          {index > 0 && ' '}
+          <span className="whitespace-nowrap">{piece}</span>
+        </Fragment>
       ))}
     </>
   );

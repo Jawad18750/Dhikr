@@ -7,6 +7,8 @@ const config = {
       [
         'feat', // New feature
         'fix', // Bug fix
+        'perf', // A change that makes something faster or lighter
+        'copy', // Wording changes in the site's text
         'refactor', // A code change that neither fixes a bug nor adds a feature
         'revert', // Revert to a commit
         'style', // Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)

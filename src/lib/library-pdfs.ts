@@ -7,7 +7,7 @@ import path from 'node:path';
  * Libyan Awqaf authority's site (awqaf.gov.ly) and quranly.com.ly, which publishes the
  * authority's books. Some books have only their PDF here, no text yet.
  */
-const ROOT = process.env.CONTENT_ROOT ?? '/Users/jawad/Developer/dhikr/dhikr-app';
+const ROOT = process.env.CONTENT_ROOT ?? path.join(process.cwd(), '.content');
 
 export type PdfSource = { file: string; from: string; url: string };
 
